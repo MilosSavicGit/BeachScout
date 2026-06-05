@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BeachScout Europe — Local 20 km Countries</title>
+<title>BeachScout Europe — Local 20 km Countries + Analytics</title>
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{--ink:#1c1a17;--paper:#f4efe6;--panel:#fffdf8;--rule:#d8cfbe;--accent:#b5471f;--muted:#8a7f6d}
   *{box-sizing:border-box}
@@ -172,6 +173,49 @@ const countries={
 
 let markers=[],parkingMarkers=[],allBeaches=[],hoverPopup=null,activePopup=null,currentCountry="Italy",currentRegion="Liguria";
 
+/* =====================================================================
+   SUPABASE ANALYTICS
+   Reuses the existing RoadScout analytics table: roadscout_events.
+   BeachScout events are prefixed with "beachscout_".
+   ===================================================================== */
+const SUPABASE_URL = 'https://alvckuspgkjfxqlxikhl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_ivjezOdTfRGWGGEuobn_mw_5hnya-Ux';
+
+const supaReady = (typeof supabase !== 'undefined');
+const supa = supaReady ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+function getUserToken(){
+  let t = localStorage.getItem('beachscout_user_token');
+  if(!t){
+    t = 'b_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem('beachscout_user_token', t);
+  }
+  return t;
+}
+
+const USER_TOKEN = getUserToken();
+const APP_VERSION = 'beachscout_local20_europe_countries_analytics_v1';
+
+function trackEvent(eventType, mode = 'local', details = {}){
+  try{
+    if(!supaReady || !supa) return;
+
+    supa.from('roadscout_events').insert({
+      user_token: USER_TOKEN,
+      event_type: eventType,
+      app_version: APP_VERSION,
+      mode: mode,
+      details: details || {}
+    }).then(({ error }) => {
+      if(error) console.log('analytics insert error:', error.message);
+    }).catch(e => console.log('analytics failed:', e));
+  }catch(e){
+    console.log('analytics skipped:', e);
+  }
+}
+
+
+
 function $(id){return document.getElementById(id)}
 function status(msg){$('status').textContent=msg}
 function setBusy(isBusy, text="Searching..."){
@@ -260,20 +304,52 @@ async function runLocalSearchFromResult(result){
     }
     arr.sort((a,b)=>(a.originalName&&!b.originalName?-1:!a.originalName&&b.originalName?1:a.name.localeCompare(b.name)));
     allBeaches=arr; render(true);
+
+    trackEvent("beachscout_search_completed", "local", {
+      country: currentCountry,
+      selected_place: label,
+      radius_km: Math.round(radius/1000),
+      results: arr.length
+    });
+
     if(!arr.length)status(`No beach or naturist places found within ${Math.round(radius/1000)} km of ${label}. Try another nearby town.`);
-  }catch(e){status(`Local search failed: ${e.message}`)}finally{setBusy(false)}
+  }catch(e){
+    trackEvent("beachscout_search_failed", "local", {
+      country: currentCountry,
+      selected_place: label,
+      radius_km: Math.round(radius/1000),
+      error: e.message
+    });
+    status(`Local search failed: ${e.message}`);
+  }finally{setBusy(false)}
 }
 async function localScan(){
   currentCountry=$('country').value;
   const q=$('placeSearch').value.trim();
   if(!q){status("Enter a place name first, for example Genoa.");return}
+
+  trackEvent("beachscout_search_started", "local", {
+    country: currentCountry,
+    place: q,
+    radius_km: Math.round(localRadiusMeters()/1000)
+  });
+
   $("suggestions").textContent="Finding place..."; setBusy(true,"Finding place...");
   try{
     const results=await geocodePlace(q); setBusy(false);
     if(!results||!results.length){showPlaceSuggestions([]);return}
     showPlaceSuggestions(results);
     await runLocalSearchFromResult(results[0]);
-  }catch(e){setBusy(false);$("suggestions").textContent="Could not find that place. Try a nearby larger town.";status(`Place search failed: ${e.message}`)}
+  }catch(e){
+    trackEvent("beachscout_geocode_failed", "local", {
+      country: currentCountry,
+      place: q,
+      error: e.message
+    });
+    setBusy(false);
+    $("suggestions").textContent="Could not find that place. Try a nearby larger town.";
+    status(`Place search failed: ${e.message}`);
+  }
 }
 
 function clearParking(){parkingMarkers.forEach(m=>m.remove());parkingMarkers=[]}
@@ -331,6 +407,14 @@ async function wikiTitlePhoto(title,lang){try{const r=await fetch(`https://${lan
 async function getPhoto(b){const t=b.tags;if(t.image&&/^https?:\/\//i.test(t.image))return{url:t.image,source:'OpenStreetMap image tag'};if(t.wikimedia_commons&&/^File:/i.test(t.wikimedia_commons))return{url:commonsFileUrl(t.wikimedia_commons),source:'Wikimedia Commons'};if(t.wikipedia&&t.wikipedia.includes(':')){const i=t.wikipedia.indexOf(':'),p=await wikiTitlePhoto(t.wikipedia.slice(i+1),t.wikipedia.slice(0,i));if(p)return p}if(t.wikidata){try{const r=await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${encodeURIComponent(t.wikidata)}&props=claims|sitelinks&format=json&origin=*`);const j=await r.json(),e=j.entities?.[t.wikidata],img=e?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;if(img)return{url:commonsFileUrl(img),source:'Wikidata / Commons'};if(e?.sitelinks?.itwiki?.title){const p=await wikiTitlePhoto(e.sitelinks.itwiki.title,'it');if(p)return p}}catch{}}return null}
 
 function openPopup(b,num){
+  trackEvent("beachscout_place_opened", "local", {
+    country: currentCountry,
+    place: b.name,
+    status: b.status,
+    lat: b.lat,
+    lon: b.lon
+  });
+
   closeActivePopup();
 
   activePopup = new maplibregl.Popup({offset:20})
@@ -368,7 +452,12 @@ $('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter')localScan();}
 $('country').addEventListener('change',()=>{currentCountry=$('country').value;populateRegions();allBeaches=[];$('list').innerHTML='';$('stats').textContent='No beaches loaded yet.'});
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
 map.on('click',()=>closeActivePopup());
-map.on('load',()=>populateCountries());
+map.on('load',()=>{
+  populateCountries();
+  trackEvent("beachscout_page_view", "page", {
+    page: location.href
+  });
+});
 </script>
 </body>
 </html>
