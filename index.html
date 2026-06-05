@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BeachScout Europe — Local 20 km Countries</title>
+<link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<style>
+  :root{--ink:#1c1a17;--paper:#f4efe6;--panel:#fffdf8;--rule:#d8cfbe;--accent:#b5471f;--muted:#8a7f6d}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Georgia,"Times New Roman",serif;color:var(--ink);background:var(--paper)}
+  .app{display:grid;grid-template-columns:410px 1fr;height:100vh;height:100dvh}
+  .panel{background:var(--panel);border-right:1px solid var(--rule);padding:22px;overflow-y:auto}
+  h1{margin:0 0 4px;font-size:30px}.tag{color:var(--muted);font-style:italic;margin-bottom:18px;font-size:14px}
+  label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:12px 0 6px}
+  select,button{width:100%;padding:12px;font:inherit;border-radius:8px;border:1px solid var(--rule);background:#fff}
+  button{margin-top:12px;background:var(--accent);color:#fff;border:none;font-weight:bold;cursor:pointer}
+  .box{margin:14px 0 18px;padding:12px;background:#fff;border:1px solid var(--rule);border-radius:8px;font-size:13px}
+  .legend{display:grid;gap:7px}.dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px}
+  .filters{display:grid;gap:8px}.filters label{display:flex;gap:8px;align-items:center;margin:0;font-size:14px;text-transform:none;letter-spacing:0;color:var(--ink)}
+  .filters input{width:auto;accent-color:var(--accent)}
+  #status{margin:16px 0;color:var(--muted);font-size:14px;line-height:1.4;white-space:pre-line}
+  .list{list-style:none;padding:0;margin:0}.item{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:11px 12px;margin-bottom:9px;cursor:pointer}.item:hover{border-color:var(--accent)}
+  .item h3{margin:0 0 4px;font-size:16px}.item .meta{color:var(--muted);font-size:12px}
+  #map{width:100%;height:100%}
+  .marker{width:26px;height:26px;border-radius:50%;color:white;display:grid;place-items:center;font-size:12px;font-weight:bold;border:2px solid white;box-shadow:0 2px 7px rgba(0,0,0,.35);cursor:pointer}
+  .parking-marker{width:24px;height:24px;border-radius:6px;background:#111827;color:white;display:grid;place-items:center;font-size:14px;font-weight:bold;border:2px solid white;box-shadow:0 2px 7px rgba(0,0,0,.35);cursor:pointer}
+  .popup h3{margin:0 0 6px;font-size:16px}.popup p{margin:0 0 5px;font-size:13px}
+  .popup img{width:260px;height:165px;object-fit:cover;border-radius:8px;margin:8px 0;display:block;background:#eee}
+  .photo-note{color:var(--muted);font-size:12px;font-style:italic;margin-top:4px}.no-photo{text-align:center;padding:12px 6px;background:#f8f3ea;border:1px dashed var(--rule);border-radius:8px;margin:8px 0}
+
+  #busyOverlay{
+    position:absolute;
+    inset:0;
+    z-index:30;
+    display:none;
+    place-items:center;
+    background:rgba(244,239,230,.22);
+    pointer-events:none;
+  }
+  #busyOverlay.show{display:grid}
+  .spinnerBox{
+    background:rgba(255,253,248,.95);
+    border:1px solid var(--rule);
+    border-radius:14px;
+    padding:18px 22px;
+    box-shadow:0 8px 26px rgba(0,0,0,.22);
+    text-align:center;
+    color:var(--ink);
+    font-weight:bold;
+  }
+  .spinner{
+    width:42px;
+    height:42px;
+    border:5px solid #ddd1bb;
+    border-top-color:var(--accent);
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:0 auto 10px;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  #styleSwitcher{position:absolute;top:12px;right:12px;z-index:20;display:flex;gap:4px;background:rgba(255,253,248,.92);padding:4px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.22)}
+  .style-btn{font:inherit;font-size:12px;padding:6px 10px;border:none;border-radius:5px;background:transparent;color:var(--ink);cursor:pointer;width:auto;margin:0}.style-btn.active{background:var(--accent);color:#fff}
+  @media(max-width:900px){.app{grid-template-columns:1fr;grid-template-rows:430px 1fr}.panel{order:2;border-right:none;border-top:1px solid var(--rule)}#map{order:1}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="panel">
+    <h1>BeachScout Europe</h1>
+    <div class="tag">Fast local 20 km search — European countries</div>
+
+    <label for="country">European country</label>
+    <select id="country"></select>
+<div class="box">
+      <b>Default: local 20 km search</b>
+      <div class="photo-note" style="margin:6px 0 8px;">Recommended. Type a place such as Genoa, Nice, Split or Ada Ciganlija. This version does not run large regional searches.</div>
+      <input id="placeSearch" type="text" placeholder="Example: Genoa" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
+      <button id="localScan">Search 20 km around place</button>
+      <div id="suggestions" class="photo-note" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="box legend">
+      <div><span class="dot" style="background:#2563eb"></span>Beach</div>
+      <div><span class="dot" style="background:#2f6b4f"></span>Official/designated naturist</div>
+      <div><span class="dot" style="background:#d97706"></span>Customary/naturist beach</div>
+      <div><span class="dot" style="background:#7c3aed"></span>Beach resort / lido</div>
+      <div><span class="dot" style="background:#0f766e"></span>Naturist resort / village</div>
+      <div><span class="dot" style="background:#be185d"></span>Naturist campsite</div>
+      <div><span class="dot" style="background:#111827"></span>Public parking near selected beach</div>
+    </div>
+
+    <div class="box filters">
+      <b>Show / hide</b>
+      <label><input type="checkbox" class="filterToggle" value="normal" checked> Normal beaches</label>
+      <label><input type="checkbox" class="filterToggle" value="wiki" checked> Wiki / Wikidata beaches</label>
+      <label><input type="checkbox" class="filterToggle" value="naturist" checked> Naturist beaches</label>
+      <label><input type="checkbox" class="filterToggle" value="official" checked> Official/designated naturist beaches</label>
+      <label><input type="checkbox" class="filterToggle" value="resort" checked> Beach resorts / lidos</label>
+      <label><input type="checkbox" class="filterToggle" value="naturist_resort" checked> Naturist resorts / villages</label>
+      <label><input type="checkbox" class="filterToggle" value="naturist_campsite" checked> Naturist campsites</label>
+      <label><input type="checkbox" class="filterToggle" value="unnamed"> Unnamed beaches</label>
+    </div>
+
+    <div class="box" id="stats">No beaches loaded yet.</div>
+    <div id="status">Choose a country, type a place, then search within 20 km.</div>
+    <ul class="list" id="list"></ul>
+  </div>
+  <div id="map"></div>
+  <div id="busyOverlay">
+    <div class="spinnerBox">
+      <div class="spinner"></div>
+      <div id="busyText">Searching...</div>
+    </div>
+  </div>
+  <div id="styleSwitcher">
+    <button class="style-btn active" data-style="streets">Public roads</button>
+    <button class="style-btn" data-style="outdoor">Outdoor</button>
+    <button class="style-btn" data-style="satellite">Satellite</button>
+  </div>
+</div>
+
+<script>
+const MAPTILER_KEY='L0PMr6QA6YPkhSS8n4Sv';
+const MAP_STYLES={
+  streets:`https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_KEY}`,
+  outdoor:`https://api.maptiler.com/maps/outdoor-v2/style.json?key=${MAPTILER_KEY}`,
+  satellite:`https://api.maptiler.com/maps/hybrid/style.json?key=${MAPTILER_KEY}`
+};
+let currentMapStyle='streets';
+const map=new maplibregl.Map({container:'map',style:MAP_STYLES.streets,center:[12.5,42.5],zoom:5});
+map.addControl(new maplibregl.NavigationControl(),'top-right');
+
+const countries={
+"Italy":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Italy",view:[12.5,42.5,5],bbox:[35.0,6.0,47.5,19.0]}}},
+"France":{defaultRegion:"Whole country",regions:{"Whole country":{label:"France",view:[2.2,46.2,5],bbox:[41.0,-5.5,51.5,9.8]}}},
+"Spain":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Spain",view:[-3.7,40.4,5],bbox:[35.5,-10.0,44.5,4.5]}}},
+"Portugal":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Portugal",view:[-8.2,39.5,6],bbox:[36.7,-9.7,42.3,-6.0]}}},
+"Croatia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Croatia",view:[16.3,45.0,6],bbox:[42.2,13.0,46.8,19.8]}}},
+"Greece":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Greece",view:[23.7,38.5,6],bbox:[34.5,19.0,42.2,30.5]}}},
+"Montenegro":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Montenegro",view:[19.1,42.8,8],bbox:[41.8,18.4,43.7,20.5]}}},
+"Netherlands":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Netherlands",view:[5.3,52.2,7],bbox:[50.7,3.2,53.7,7.3]}}},
+"Belgium":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Belgium",view:[4.5,50.8,7],bbox:[49.4,2.5,51.6,6.5]}}},
+"Denmark":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Denmark",view:[10.0,56.1,6],bbox:[54.5,7.7,57.9,15.3]}}},
+"Sweden":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Sweden",view:[15.0,62.0,4],bbox:[55.0,10.5,69.2,24.5]}}},
+"Germany":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Germany",view:[10.5,51.2,6],bbox:[47.0,5.5,55.2,15.5]}}},
+"Poland":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Poland",view:[19.0,52.0,6],bbox:[49.0,14.0,55.2,24.3]}}},
+"Slovakia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Slovakia",view:[19.5,48.8,7],bbox:[47.6,16.5,49.8,22.7]}}},
+"Czech Republic":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Czech Republic",view:[15.5,49.8,7],bbox:[48.5,12.0,51.1,18.9]}}},
+"Austria":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Austria",view:[14.5,47.6,7],bbox:[46.3,9.4,49.1,17.2]}}},
+"Hungary":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Hungary",view:[19.5,47.1,7],bbox:[45.7,16.0,48.6,22.9]}}},
+"Serbia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Serbia",view:[20.9,44.0,7],bbox:[42.2,18.8,46.3,23.1]}}},
+"North Macedonia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"North Macedonia",view:[21.7,41.6,8],bbox:[40.8,20.4,42.4,23.1]}}},
+"Switzerland":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Switzerland",view:[8.2,46.8,7],bbox:[45.7,5.9,47.9,10.6]}}},
+"Cyprus":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Cyprus",view:[33.3,35.0,8],bbox:[34.4,32.1,35.8,34.8]}}},
+"Malta":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Malta",view:[14.4,35.9,10],bbox:[35.7,14.1,36.2,14.7]}}},
+"Romania":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Romania",view:[25.0,45.8,6],bbox:[43.5,20.1,48.4,29.9]}}},
+"Bulgaria":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Bulgaria",view:[25.2,42.7,7],bbox:[41.2,22.3,44.3,28.7]}}},
+"Albania":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Albania",view:[20.0,41.1,7],bbox:[39.5,19.0,42.7,21.2]}}},
+"Slovenia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Slovenia",view:[14.8,46.1,8],bbox:[45.4,13.3,46.9,16.7]}}},
+"Bosnia and Herzegovina":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Bosnia and Herzegovina",view:[17.8,44.1,7],bbox:[42.5,15.7,45.3,19.7]}}},
+"Ireland":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Ireland",view:[-8.0,53.3,7],bbox:[51.3,-10.8,55.5,-5.3]}}},
+"United Kingdom":{defaultRegion:"Whole country",regions:{"Whole country":{label:"United Kingdom",view:[-2.5,54.5,5],bbox:[49.8,-8.8,60.9,2.1]}}},
+"Norway":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Norway",view:[10.0,64.5,4],bbox:[57.7,4.0,71.5,31.5]}}},
+"Finland":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Finland",view:[26.0,64.0,5],bbox:[59.7,20.0,70.2,31.6]}}},
+"Estonia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Estonia",view:[25.5,58.8,7],bbox:[57.5,21.3,60.1,28.2]}}},
+"Latvia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Latvia",view:[24.8,56.9,7],bbox:[55.6,20.8,58.1,28.3]}}},
+"Lithuania":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Lithuania",view:[24.0,55.2,7],bbox:[53.9,20.7,56.5,26.8]}}}
+};
+
+let markers=[],parkingMarkers=[],allBeaches=[],hoverPopup=null,activePopup=null,currentCountry="Italy",currentRegion="Liguria";
+
+function $(id){return document.getElementById(id)}
+function status(msg){$('status').textContent=msg}
+function setBusy(isBusy, text="Searching..."){
+  const overlay = $("busyOverlay");
+  const busyText = $("busyText");
+  const scanBtn = $("scan");
+  const localBtn = $("localScan");
+  if(busyText) busyText.textContent = text;
+  if(overlay) overlay.classList.toggle("show", isBusy);
+  if(scanBtn) scanBtn.disabled = isBusy;
+  if(localBtn) localBtn.disabled = isBusy;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function populateCountries(){const c=$('country');c.innerHTML='';Object.keys(countries).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;c.appendChild(o)});c.value=currentCountry;populateRegions()}
+function populateRegions(){
+  const country=countries[currentCountry];
+  currentRegion=country.defaultRegion;
+  moveMapToSelectedRegion();
+}
+function regionData(){return countries[currentCountry].regions[currentRegion]}
+
+function localRadiusMeters(){return 20000}
+async function geocodePlace(query){
+  const country=currentCountry||$('country').value||"";
+  const q=country?`${query}, ${country}`:query;
+  let url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&addressdetails=1&q=${encodeURIComponent(q)}`;
+  let r=await fetch(url,{headers:{"Accept":"application/json"}});
+  if(!r.ok)throw new Error("Place search failed");
+  let results=await r.json();
+
+  if((!results||!results.length) && country){
+    url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&addressdetails=1&q=${encodeURIComponent(query)}`;
+    r=await fetch(url,{headers:{"Accept":"application/json"}});
+    if(r.ok)results=await r.json();
+  }
+
+  return results;
+}
+function showPlaceSuggestions(results){
+  const box=$("suggestions"); box.innerHTML="";
+  if(!results||!results.length){box.textContent="No matching place found. Try a nearby larger town or add the country name.";return}
+  const title=document.createElement("div"); title.textContent="Suggestions:"; title.style.marginBottom="5px"; box.appendChild(title);
+  results.forEach(res=>{
+    const btn=document.createElement("button");
+    btn.type="button"; btn.textContent=res.display_name;
+    btn.style.margin="4px 0"; btn.style.padding="7px 8px"; btn.style.fontSize="12px";
+    btn.style.background="#fff"; btn.style.color="var(--ink)"; btn.style.border="1px solid var(--rule)"; btn.style.borderRadius="7px";
+    btn.onclick=()=>runLocalSearchFromResult(res);
+    box.appendChild(btn);
+  });
+}
+function buildLocalQuery(lat,lon,radius){
+  return `
+[out:json][timeout:120];
+(
+node["natural"="beach"](around:${radius},${lat},${lon});way["natural"="beach"](around:${radius},${lat},${lon});
+node["leisure"="beach"](around:${radius},${lat},${lon});way["leisure"="beach"](around:${radius},${lat},${lon});
+node["sport"="swimming"](around:${radius},${lat},${lon});way["sport"="swimming"](around:${radius},${lat},${lon});
+node["leisure"="swimming_area"](around:${radius},${lat},${lon});way["leisure"="swimming_area"](around:${radius},${lat},${lon});
+node["tourism"="beach_resort"](around:${radius},${lat},${lon});way["tourism"="beach_resort"](around:${radius},${lat},${lon});
+node["leisure"="beach_resort"](around:${radius},${lat},${lon});way["leisure"="beach_resort"](around:${radius},${lat},${lon});
+node["nudism"](around:${radius},${lat},${lon});way["nudism"](around:${radius},${lat},${lon});
+node["naturism"](around:${radius},${lat},${lon});way["naturism"](around:${radius},${lat},${lon});
+node["clothing"~"optional|none"](around:${radius},${lat},${lon});way["clothing"~"optional|none"](around:${radius},${lat},${lon});
+node["name"~"naturist|naturista|naturiste|nudist|nudista|nudiste|fkk|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička",i](around:${radius},${lat},${lon});
+way["name"~"naturist|naturista|naturiste|nudist|nudista|nudiste|fkk|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička",i](around:${radius},${lat},${lon});
+);
+out center tags;`
+}
+async function runLocalSearchFromResult(result){
+  const lat=Number(result.lat),lon=Number(result.lon),label=result.display_name||"selected place",radius=localRadiusMeters();
+  $("suggestions").innerHTML=`Selected: ${escapeHtml(label)}`;
+  clearMarkers(); allBeaches=[]; $('list').innerHTML=''; $('stats').textContent='Loading local places...';
+  map.flyTo({center:[lon,lat],zoom:11}); status(`Searching within ${Math.round(radius/1000)} km of ${label}...`);
+  setBusy(true,"Local 20 km search...");
+  try{
+    const data=await fetchOverpass(buildLocalQuery(lat,lon,radius)),seen=new Set(),arr=[];
+    for(const el of data.elements||[]){
+      const tags=el.tags||{},originalName=tags.name||tags['name:en']||tags.official_name||'',name=originalName||'Unnamed beach',elLat=el.lat??el.center?.lat,elLon=el.lon??el.center?.lon;
+      if(elLat==null||elLon==null)continue;
+      const related=tags.natural==='beach'||tags.leisure==='beach'||tags.leisure==='swimming_area'||tags.sport==='swimming'||tags.tourism==='beach_resort'||tags.leisure==='beach_resort'||isNaturistTagged(tags)||/beach|plaža|plaza|strand|badesee|badeplatz|kupalište|kupaliste|jezero|lake|river|swimming|spiaggia|lido|mare|bagni|naturist|naturista|naturiste|nudist|nudista|nudiste|fkk/i.test(name);
+      if(!related)continue;
+      const key=`${name.toLowerCase()}_${Number(elLat).toFixed(4)}_${Number(elLon).toFixed(4)}`;
+      if(seen.has(key))continue; seen.add(key);
+      arr.push({name,originalName,lat:Number(elLat),lon:Number(elLon),tags,status:placeStatus(tags),wiki:wikilink(tags)});
+    }
+    arr.sort((a,b)=>(a.originalName&&!b.originalName?-1:!a.originalName&&b.originalName?1:a.name.localeCompare(b.name)));
+    allBeaches=arr; render(true);
+    if(!arr.length)status(`No beach or naturist places found within ${Math.round(radius/1000)} km of ${label}. Try another nearby town.`);
+  }catch(e){status(`Local search failed: ${e.message}`)}finally{setBusy(false)}
+}
+async function localScan(){
+  currentCountry=$('country').value;
+  const q=$('placeSearch').value.trim();
+  if(!q){status("Enter a place name first, for example Genoa.");return}
+  $("suggestions").textContent="Finding place..."; setBusy(true,"Finding place...");
+  try{
+    const results=await geocodePlace(q); setBusy(false);
+    if(!results||!results.length){showPlaceSuggestions([]);return}
+    showPlaceSuggestions(results);
+    await runLocalSearchFromResult(results[0]);
+  }catch(e){setBusy(false);$("suggestions").textContent="Could not find that place. Try a nearby larger town.";status(`Place search failed: ${e.message}`)}
+}
+
+function clearParking(){parkingMarkers.forEach(m=>m.remove());parkingMarkers=[]}
+function clearMarkers(){clearParking();markers.forEach(m=>m.remove());markers=[];if(hoverPopup)hoverPopup.remove();hoverPopup=null;closeActivePopup()}
+function closeActivePopup(){if(activePopup){activePopup.remove();activePopup=null}}
+
+function isNaturistTagged(tags){const nudism=tags.nudism||tags.naturism||'';const txt=((tags.name||'')+' '+(tags.operator||'')+' '+(tags.description||'')).toLowerCase();return ['designated','official','yes','customary','permissive'].includes(nudism)||/naturist|naturista|naturiste|nudist|nudista|nudiste|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička|fkkt|fkk/.test(txt)}
+function colourFor(tags){const nudism=tags.nudism||tags.naturism||'';if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'#be185d';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'#0f766e';if(nudism==='designated'||nudism==='official')return'#2f6b4f';if(['yes','customary','permissive'].includes(nudism))return'#d97706';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'#7c3aed';return'#2563eb'}
+function placeStatus(tags){const nudism=tags.nudism||tags.naturism||'';if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'Naturist campsite';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'Naturist resort / village';if(nudism==='designated'||nudism==='official')return'Official naturist beach';if(nudism==='customary')return'Customary naturist beach';if(['yes','permissive'].includes(nudism))return'Naturist beach';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'Beach resort / lido';return'Beach'}
+function wikilink(tags){if(!tags.wikipedia||!tags.wikipedia.includes(':'))return'';const i=tags.wikipedia.indexOf(':'),lang=tags.wikipedia.slice(0,i),title=tags.wikipedia.slice(i+1).replaceAll(' ','_');return`https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}`}
+
+function buildQuery(bbox){const box=`(${bbox[0]},${bbox[1]},${bbox[2]},${bbox[3]})`;return`
+[out:json][timeout:120];
+(
+node["natural"="beach"]${box}; way["natural"="beach"]${box};
+node["leisure"="beach"]${box}; way["leisure"="beach"]${box};
+node["sport"="swimming"]${box}; way["sport"="swimming"]${box};
+node["leisure"="swimming_area"]${box}; way["leisure"="swimming_area"]${box};
+node["tourism"="beach_resort"]${box}; way["tourism"="beach_resort"]${box};
+node["leisure"="beach_resort"]${box}; way["leisure"="beach_resort"]${box};
+
+node["nudism"]${box}; way["nudism"]${box};
+node["naturism"]${box}; way["naturism"]${box};
+node["clothing"~"optional|none"]${box}; way["clothing"~"optional|none"]${box};
+
+node["nudism"]["natural"="beach"]${box}; way["nudism"]["natural"="beach"]${box};
+node["naturism"]["natural"="beach"]${box}; way["naturism"]["natural"="beach"]${box};
+node["nudism"]["leisure"="swimming_area"]${box}; way["nudism"]["leisure"="swimming_area"]${box};
+node["naturism"]["leisure"="swimming_area"]${box}; way["naturism"]["leisure"="swimming_area"]${box};
+
+node["nudism"]["tourism"~"resort|hotel|guest_house|chalet|apartment|camp_site|caravan_site"]${box};
+way["nudism"]["tourism"~"resort|hotel|guest_house|chalet|apartment|camp_site|caravan_site"]${box};
+node["naturism"]["tourism"~"resort|hotel|guest_house|chalet|apartment|camp_site|caravan_site"]${box};
+way["naturism"]["tourism"~"resort|hotel|guest_house|chalet|apartment|camp_site|caravan_site"]${box};
+
+node["name"~"naturist|naturista|naturiste|nudist|nudista|nudiste|fkk|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička",i]["tourism"~"resort|hotel|guest_house|camp_site|caravan_site"]${box};
+way["name"~"naturist|naturista|naturiste|nudist|nudista|nudiste|fkk|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička",i]["tourism"~"resort|hotel|guest_house|camp_site|caravan_site"]${box};
+
+node["name"~"beach|plaža|plaza|strand|badesee|badeplatz|praia|spiaggia|plage|kupalište|kupalište|jezero|lake|river",i]${box};
+way["name"~"beach|plaža|plaza|strand|badesee|badeplatz|praia|spiaggia|plage|kupalište|kupaliste|jezero|lake|river",i]${box};
+);
+out center tags;`}
+
+async function fetchOverpass(query){const endpoints=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter","https://overpass.openstreetmap.ru/api/interpreter"];let last=null;for(const ep of endpoints){try{status("Trying Overpass server:\\n"+ep);let r=await fetch(ep+"?data="+encodeURIComponent(query));if(!r.ok)r=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:"data="+encodeURIComponent(query)});if(!r.ok)throw new Error(ep+" returned "+r.status);return await r.json()}catch(e){last=e}}throw last||new Error("All Overpass servers failed")}
+
+function classify(b){const t=b.tags,n=t.nudism||t.naturism||'',hasWiki=!!(t.wikipedia||t.wikidata),isResort=t.tourism==='beach_resort'||t.leisure==='beach_resort',isOfficial=n==='designated'||n==='official',isNaturist=isOfficial||['yes','customary','permissive'].includes(n),isNaturistCampsite=isNaturistTagged(t)&&(t.tourism==='camp_site'||t.tourism==='caravan_site'),isNaturistResort=isNaturistTagged(t)&&!isNaturistCampsite&&['resort','hotel','guest_house','chalet','apartment'].includes(t.tourism),isUnnamed=!b.originalName;return{hasWiki,isResort,isOfficial,isNaturist,isNaturistCampsite,isNaturistResort,isUnnamed}}
+function filters(){const f={};document.querySelectorAll('.filterToggle').forEach(cb=>f[cb.value]=cb.checked);return f}
+function shouldShow(b){const f=filters(),c=classify(b);if(c.isUnnamed&&!f.unnamed)return false;if(c.isNaturistCampsite&&f.naturist_campsite)return true;if(c.isNaturistResort&&f.naturist_resort)return true;if(c.isOfficial&&f.official)return true;if(c.isNaturist&&f.naturist)return true;if(c.isResort&&f.resort)return true;if(c.hasWiki&&f.wiki)return true;if(!c.isOfficial&&!c.isNaturist&&!c.isResort&&!c.hasWiki&&!c.isNaturistResort&&!c.isNaturistCampsite&&f.normal)return true;return false}
+
+function updateStats(v=null){let counts={wiki:0,naturist:0,official:0,customary:0,resort:0,nresort:0,ncamp:0,unnamed:0,normal:0};for(const b of allBeaches){const c=classify(b),n=b.tags.nudism||b.tags.naturism||'';if(c.hasWiki)counts.wiki++;if(c.isNaturist)counts.naturist++;if(c.isOfficial)counts.official++;if(n==='customary')counts.customary++;if(c.isResort)counts.resort++;if(c.isNaturistResort)counts.nresort++;if(c.isNaturistCampsite)counts.ncamp++;if(c.isUnnamed)counts.unnamed++;if(!c.hasWiki&&!c.isNaturist&&!c.isOfficial&&!c.isResort&&!c.isNaturistResort&&!c.isNaturistCampsite&&!c.isUnnamed)counts.normal++}
+$('stats').innerHTML=`${v===null?'':`<b>Currently shown:</b> ${v}<br>`}<b>Country:</b> ${escapeHtml(currentCountry)}<br><b>Total loaded:</b> ${allBeaches.length}<br>Normal: ${counts.normal} · Wiki/Wikidata: ${counts.wiki}<br>Naturist beaches: ${counts.naturist} · Official: ${counts.official} · Customary: ${counts.customary}<br>Naturist resorts/villages: ${counts.nresort} · Naturist campsites: ${counts.ncamp}<br>Beach resorts/lidos: ${counts.resort} · Unnamed: ${counts.unnamed}`}
+
+function commonsFileUrl(f,w=500){let clean=f.replace(/^File:/i,'').trim().replaceAll(' ','_');return`https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(clean)}?width=${w}`}
+async function wikiTitlePhoto(title,lang){try{const r=await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);if(!r.ok)return null;const j=await r.json();return j.thumbnail?.source?{url:j.thumbnail.source,source:`${lang}.wikipedia.org`}:null}catch{return null}}
+async function getPhoto(b){const t=b.tags;if(t.image&&/^https?:\/\//i.test(t.image))return{url:t.image,source:'OpenStreetMap image tag'};if(t.wikimedia_commons&&/^File:/i.test(t.wikimedia_commons))return{url:commonsFileUrl(t.wikimedia_commons),source:'Wikimedia Commons'};if(t.wikipedia&&t.wikipedia.includes(':')){const i=t.wikipedia.indexOf(':'),p=await wikiTitlePhoto(t.wikipedia.slice(i+1),t.wikipedia.slice(0,i));if(p)return p}if(t.wikidata){try{const r=await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${encodeURIComponent(t.wikidata)}&props=claims|sitelinks&format=json&origin=*`);const j=await r.json(),e=j.entities?.[t.wikidata],img=e?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;if(img)return{url:commonsFileUrl(img),source:'Wikidata / Commons'};if(e?.sitelinks?.itwiki?.title){const p=await wikiTitlePhoto(e.sitelinks.itwiki.title,'it');if(p)return p}}catch{}}return null}
+
+function openPopup(b,num){
+  closeActivePopup();
+
+  activePopup = new maplibregl.Popup({offset:20})
+    .setLngLat([b.lon,b.lat])
+    .setHTML(`
+      <div class="popup">
+        <h3>${num}. ${escapeHtml(b.name)}</h3>
+        <p><b>${escapeHtml(b.status)}</b></p>
+        <p class="photo-note">Photo rendering is disabled in this version.</p>
+        ${b.wiki ? `<p><a href="${b.wiki}" target="_blank">Open Wikipedia article</a></p>` : ""}
+      </div>
+    `)
+    .addTo(map);
+}
+
+function showHover(b){if(hoverPopup)hoverPopup.remove();hoverPopup=new maplibregl.Popup({closeButton:false,closeOnClick:false,offset:18}).setLngLat([b.lon,b.lat]).setHTML(`<strong>${escapeHtml(b.originalName||b.name)}</strong>`).addTo(map)}
+function hideHover(){if(hoverPopup){hoverPopup.remove();hoverPopup=null}}
+
+function render(fit=false){clearMarkers();const visible=allBeaches.filter(shouldShow),list=$('list');list.innerHTML='';status(`Showing ${visible.length} of ${allBeaches.length} loaded places.`);updateStats(visible.length);visible.forEach((b,i)=>{const el=document.createElement('div');el.className='marker';el.style.background=colourFor(b.tags);el.textContent=i+1;el.title=b.originalName||b.name;const marker=new maplibregl.Marker({element:el}).setLngLat([b.lon,b.lat]).addTo(map);el.addEventListener('mouseenter',()=>showHover(b));el.addEventListener('mouseleave',hideHover);el.addEventListener('click',ev=>{ev.stopPropagation();hideHover();openPopup(b,i+1)});markers.push(marker);const li=document.createElement('li');li.className='item';li.innerHTML=`<h3>${i+1}. ${escapeHtml(b.name)}</h3><div class="meta">${escapeHtml(b.status)}</div>`;li.onclick=()=>{map.flyTo({center:[b.lon,b.lat],zoom:13});openPopup(b,i+1)};list.appendChild(li)});if(fit&&visible.length){const bounds=new maplibregl.LngLatBounds();visible.forEach(b=>bounds.extend([b.lon,b.lat]));map.fitBounds(bounds,{padding:60,maxZoom:10})}}
+
+async function scan(){
+  status("Large regional search is disabled in this version. Use the local 20 km search.");
+}
+
+function moveMapToSelectedRegion(){currentCountry=$('country').value;currentRegion=$('region').value;const r=regionData();map.flyTo({center:[r.view[0],r.view[1]],zoom:r.view[2]});status(`Selected ${currentCountry}. Use the local 20 km search box above.`);updateStats()}
+
+function parkingQuery(lon,lat){return`[out:json][timeout:120];(node["amenity"="parking"]["access"!~"private|no"](around:1200,${lat},${lon});way["amenity"="parking"]["access"!~"private|no"](around:1200,${lat},${lon}););out center tags;`}
+async function showParking(b){clearParking();try{const data=await fetchOverpass(parkingQuery(b.lon,b.lat)),parks=[];for(const el of data.elements||[]){const t=el.tags||{},lat=el.lat??el.center?.lat,lon=el.lon??el.center?.lon;if(lat==null||lon==null)continue;parks.push({name:t.name||t.operator||'Public parking',lat:Number(lat),lon:Number(lon),dist:distanceKm(b.lat,b.lon,Number(lat),Number(lon))})}parks.sort((a,b)=>a.dist-b.dist);parks.slice(0,8).forEach((p,i)=>{const el=document.createElement('div');el.className='parking-marker';el.textContent='P';el.title=`${p.name} · ${p.dist.toFixed(2)} km`;const marker=new maplibregl.Marker({element:el}).setLngLat([p.lon,p.lat]).setPopup(new maplibregl.Popup({offset:18}).setHTML(`<div class="popup"><h3>Parking ${i+1}</h3><p><b>${escapeHtml(p.name)}</b></p><p>${p.dist.toFixed(2)} km from selected place</p><p class="photo-note">Straight-line estimate.</p></div>`)).addTo(map);parkingMarkers.push(marker)});if(parks.length)status(`Nearest public parking found: ${parks[0].dist.toFixed(2)} km from selected place.`)}catch(e){console.warn(e)}}
+function distanceKm(a,b,c,d){const R=6371,dl=(c-a)*Math.PI/180,dn=(d-b)*Math.PI/180,x=Math.sin(dl/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dn/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
+
+function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMapStyle=s;closeActivePopup();clearParking();markers.forEach(m=>m.remove());markers=[];document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));map.setStyle(MAP_STYLES[s]);const redraw=()=>{if(!map.isStyleLoaded()){setTimeout(redraw,100);return}render(false)};map.once('style.load',redraw);map.once('idle',redraw);setTimeout(redraw,700)}
+document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
+$('localScan').addEventListener('click',localScan);
+$('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter')localScan();});
+$('country').addEventListener('change',()=>{currentCountry=$('country').value;populateRegions();allBeaches=[];$('list').innerHTML='';$('stats').textContent='No beaches loaded yet.'});
+document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
+map.on('click',()=>closeActivePopup());
+map.on('load',()=>populateCountries());
+</script>
+</body>
+</html>
