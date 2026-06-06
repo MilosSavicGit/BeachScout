@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BeachScout Europe — Local 20 km Countries + Analytics</title>
+<title>BeachScout Global — 10 km Near Me Node Only Test</title>
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -70,16 +70,17 @@
 <body>
 <div class="app">
   <div class="panel">
-    <h1>BeachScout Europe</h1>
-    <div class="tag">Fast local 20 km search — European countries</div>
+    <h1>BeachScout Global</h1>
+    <div class="tag">Fast local 10 km search — node-only test</div>
 
-    <label for="country">European country</label>
+    <label for="country">Country / Worldwide</label>
     <select id="country"></select>
 <div class="box">
-      <b>Default: local 20 km search</b>
+      <b>Default: local 10 km search</b>
       <div class="photo-note" style="margin:6px 0 8px;">Recommended. Type a place such as Genoa, Nice, Split or Ada Ciganlija. This version does not run large regional searches.</div>
       <input id="placeSearch" type="text" placeholder="Example: Genoa" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
-      <button id="localScan">Search 20 km around place</button>
+      <button id="localScan">Search 10 km around place</button>
+      <button id="nearMeScan" type="button" style="background:#2f6b4f;">Use my current location — 10 km</button>
       <div id="suggestions" class="photo-note" style="margin-top:8px;"></div>
     </div>
 
@@ -106,7 +107,7 @@
     </div>
 
     <div class="box" id="stats">No beaches loaded yet.</div>
-    <div id="status">Choose a country, type a place, then search within 20 km.</div>
+    <div id="status">Choose a country or Worldwide, type a place, then search within 10 km.</div>
     <ul class="list" id="list"></ul>
   </div>
   <div id="map"></div>
@@ -134,44 +135,24 @@ let currentMapStyle='streets';
 const map=new maplibregl.Map({container:'map',style:MAP_STYLES.streets,center:[12.5,42.5],zoom:5});
 map.addControl(new maplibregl.NavigationControl(),'top-right');
 
-const countries={
-"Italy":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Italy",view:[12.5,42.5,5],bbox:[35.0,6.0,47.5,19.0]}}},
-"France":{defaultRegion:"Whole country",regions:{"Whole country":{label:"France",view:[2.2,46.2,5],bbox:[41.0,-5.5,51.5,9.8]}}},
-"Spain":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Spain",view:[-3.7,40.4,5],bbox:[35.5,-10.0,44.5,4.5]}}},
-"Portugal":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Portugal",view:[-8.2,39.5,6],bbox:[36.7,-9.7,42.3,-6.0]}}},
-"Croatia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Croatia",view:[16.3,45.0,6],bbox:[42.2,13.0,46.8,19.8]}}},
-"Greece":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Greece",view:[23.7,38.5,6],bbox:[34.5,19.0,42.2,30.5]}}},
-"Montenegro":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Montenegro",view:[19.1,42.8,8],bbox:[41.8,18.4,43.7,20.5]}}},
-"Netherlands":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Netherlands",view:[5.3,52.2,7],bbox:[50.7,3.2,53.7,7.3]}}},
-"Belgium":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Belgium",view:[4.5,50.8,7],bbox:[49.4,2.5,51.6,6.5]}}},
-"Denmark":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Denmark",view:[10.0,56.1,6],bbox:[54.5,7.7,57.9,15.3]}}},
-"Sweden":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Sweden",view:[15.0,62.0,4],bbox:[55.0,10.5,69.2,24.5]}}},
-"Germany":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Germany",view:[10.5,51.2,6],bbox:[47.0,5.5,55.2,15.5]}}},
-"Poland":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Poland",view:[19.0,52.0,6],bbox:[49.0,14.0,55.2,24.3]}}},
-"Slovakia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Slovakia",view:[19.5,48.8,7],bbox:[47.6,16.5,49.8,22.7]}}},
-"Czech Republic":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Czech Republic",view:[15.5,49.8,7],bbox:[48.5,12.0,51.1,18.9]}}},
-"Austria":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Austria",view:[14.5,47.6,7],bbox:[46.3,9.4,49.1,17.2]}}},
-"Hungary":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Hungary",view:[19.5,47.1,7],bbox:[45.7,16.0,48.6,22.9]}}},
-"Serbia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Serbia",view:[20.9,44.0,7],bbox:[42.2,18.8,46.3,23.1]}}},
-"North Macedonia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"North Macedonia",view:[21.7,41.6,8],bbox:[40.8,20.4,42.4,23.1]}}},
-"Switzerland":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Switzerland",view:[8.2,46.8,7],bbox:[45.7,5.9,47.9,10.6]}}},
-"Cyprus":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Cyprus",view:[33.3,35.0,8],bbox:[34.4,32.1,35.8,34.8]}}},
-"Malta":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Malta",view:[14.4,35.9,10],bbox:[35.7,14.1,36.2,14.7]}}},
-"Romania":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Romania",view:[25.0,45.8,6],bbox:[43.5,20.1,48.4,29.9]}}},
-"Bulgaria":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Bulgaria",view:[25.2,42.7,7],bbox:[41.2,22.3,44.3,28.7]}}},
-"Albania":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Albania",view:[20.0,41.1,7],bbox:[39.5,19.0,42.7,21.2]}}},
-"Slovenia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Slovenia",view:[14.8,46.1,8],bbox:[45.4,13.3,46.9,16.7]}}},
-"Bosnia and Herzegovina":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Bosnia and Herzegovina",view:[17.8,44.1,7],bbox:[42.5,15.7,45.3,19.7]}}},
-"Ireland":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Ireland",view:[-8.0,53.3,7],bbox:[51.3,-10.8,55.5,-5.3]}}},
-"United Kingdom":{defaultRegion:"Whole country",regions:{"Whole country":{label:"United Kingdom",view:[-2.5,54.5,5],bbox:[49.8,-8.8,60.9,2.1]}}},
-"Norway":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Norway",view:[10.0,64.5,4],bbox:[57.7,4.0,71.5,31.5]}}},
-"Finland":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Finland",view:[26.0,64.0,5],bbox:[59.7,20.0,70.2,31.6]}}},
-"Estonia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Estonia",view:[25.5,58.8,7],bbox:[57.5,21.3,60.1,28.2]}}},
-"Latvia":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Latvia",view:[24.8,56.9,7],bbox:[55.6,20.8,58.1,28.3]}}},
-"Lithuania":{defaultRegion:"Whole country",regions:{"Whole country":{label:"Lithuania",view:[24.0,55.2,7],bbox:[53.9,20.7,56.5,26.8]}}}
-};
+const countryNames = ["Worldwide", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan, China", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe", "Aruba", "Bermuda", "British Virgin Islands", "Cayman Islands", "Cook Islands", "Curaçao", "French Guiana", "French Polynesia", "Gibraltar", "Greenland", "Guadeloupe", "Guam", "Hong Kong", "Jersey", "Martinique", "Montserrat", "New Caledonia", "Puerto Rico", "Réunion", "Saint Martin", "Sint Maarten", "Turks and Caicos Islands", "U.S. Virgin Islands"];
 
-let markers=[],parkingMarkers=[],allBeaches=[],hoverPopup=null,activePopup=null,currentCountry="Italy",currentRegion="Liguria";
+const countries = {};
+countryNames.forEach(name => {
+  countries[name] = {
+    defaultRegion: "Whole country",
+    regions: {
+      "Whole country": {
+        label: name,
+        view: [0, 20, 2],
+        bbox: [-90, -180, 90, 180]
+      }
+    }
+  };
+});
+
+
+let markers=[],parkingMarkers=[],allBeaches=[],hoverPopup=null,activePopup=null,currentCountry="Worldwide",currentRegion="Whole country";
 
 /* =====================================================================
    SUPABASE ANALYTICS
@@ -194,7 +175,7 @@ function getUserToken(){
 }
 
 const USER_TOKEN = getUserToken();
-const APP_VERSION = 'beachscout_local20_europe_countries_analytics_v1';
+const APP_VERSION = 'beachscout_global10_nearme_photos_taiwan_china_v1';
 
 function trackEvent(eventType, mode = 'local', details = {}){
   try{
@@ -223,10 +204,12 @@ function setBusy(isBusy, text="Searching..."){
   const busyText = $("busyText");
   const scanBtn = $("scan");
   const localBtn = $("localScan");
+  const nearMeBtn = $("nearMeScan");
   if(busyText) busyText.textContent = text;
   if(overlay) overlay.classList.toggle("show", isBusy);
   if(scanBtn) scanBtn.disabled = isBusy;
   if(localBtn) localBtn.disabled = isBusy;
+  if(nearMeBtn) nearMeBtn.disabled = isBusy;
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function populateCountries(){const c=$('country');c.innerHTML='';Object.keys(countries).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;c.appendChild(o)});c.value=currentCountry;populateRegions()}
@@ -237,16 +220,18 @@ function populateRegions(){
 }
 function regionData(){return countries[currentCountry].regions[currentRegion]}
 
-function localRadiusMeters(){return 20000}
+function localRadiusMeters(){return 10000}
 async function geocodePlace(query){
-  const country=currentCountry||$('country').value||"";
-  const q=country?`${query}, ${country}`:query;
+  const country=currentCountry||$('country').value||"Worldwide";
+  const q=(country==="Worldwide") ? query : `${query}, ${country}`;
+
   let url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&addressdetails=1&q=${encodeURIComponent(q)}`;
   let r=await fetch(url,{headers:{"Accept":"application/json"}});
   if(!r.ok)throw new Error("Place search failed");
   let results=await r.json();
 
-  if((!results||!results.length) && country){
+  // Fallback: if country-specific lookup fails, try global lookup.
+  if((!results||!results.length) && country && country!=="Worldwide"){
     url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&addressdetails=1&q=${encodeURIComponent(query)}`;
     r=await fetch(url,{headers:{"Accept":"application/json"}});
     if(r.ok)results=await r.json();
@@ -254,6 +239,71 @@ async function geocodePlace(query){
 
   return results;
 }
+
+function countryFromGeocodeResult(result){
+  if(!result || !result.address) return "";
+  return result.address.country || "";
+}
+
+function findMatchingCountryOption(countryName){
+  if(!countryName) return null;
+
+  const normalized = countryName.toLowerCase().trim();
+
+  const aliases = {
+    "united states of america": "United States",
+    "usa": "United States",
+    "u.s.a.": "United States",
+    "us": "United States",
+    "uk": "United Kingdom",
+    "great britain": "United Kingdom",
+    "russian federation": "Russia",
+    "republic of korea": "South Korea",
+    "korea, republic of": "South Korea",
+    "czechia": "Czech Republic",
+    "viet nam": "Vietnam",
+    "curaçao": "Curaçao",
+    "reunion": "Réunion",
+    "taiwan": "Taiwan, China",
+    "taiwan province": "Taiwan, China",
+    "taiwan, province of china": "Taiwan, China",
+    "republic of china": "Taiwan, China"
+  };
+
+  if(aliases[normalized]) return aliases[normalized];
+
+  for(const name of Object.keys(countries)){
+    if(name.toLowerCase() === normalized) return name;
+  }
+
+  return null;
+}
+
+function autoCorrectCountryFromResult(result){
+  const detectedCountry = countryFromGeocodeResult(result);
+  const matchedCountry = findMatchingCountryOption(detectedCountry);
+
+  if(!matchedCountry) return;
+
+  const current = $('country').value;
+  if(current !== matchedCountry){
+    $('country').value = matchedCountry;
+    currentCountry = matchedCountry;
+    populateRegions();
+
+    $("suggestions").innerHTML =
+      `Country corrected automatically: <b>${escapeHtml(matchedCountry)}</b><br>` +
+      $("suggestions").innerHTML;
+
+    trackEvent("beachscout_country_auto_corrected", "local", {
+      from_country: current,
+      to_country: matchedCountry,
+      detected_country: detectedCountry,
+      selected_place: result.display_name || ""
+    });
+  }
+}
+
 function showPlaceSuggestions(results){
   const box=$("suggestions"); box.innerHTML="";
   if(!results||!results.length){box.textContent="No matching place found. Try a nearby larger town or add the country name.";return}
@@ -281,16 +331,16 @@ node["nudism"](around:${radius},${lat},${lon});way["nudism"](around:${radius},${
 node["naturism"](around:${radius},${lat},${lon});way["naturism"](around:${radius},${lat},${lon});
 node["clothing"~"optional|none"](around:${radius},${lat},${lon});way["clothing"~"optional|none"](around:${radius},${lat},${lon});
 node["name"~"naturist|naturista|naturiste|nudist|nudista|nudiste|fkk|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička",i](around:${radius},${lat},${lon});
-way["name"~"naturist|naturista|naturiste|nudist|nudista|nudiste|fkk|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička",i](around:${radius},${lat},${lon});
 );
 out center tags;`
 }
 async function runLocalSearchFromResult(result){
+  autoCorrectCountryFromResult(result);
   const lat=Number(result.lat),lon=Number(result.lon),label=result.display_name||"selected place",radius=localRadiusMeters();
   $("suggestions").innerHTML=`Selected: ${escapeHtml(label)}`;
   clearMarkers(); allBeaches=[]; $('list').innerHTML=''; $('stats').textContent='Loading local places...';
   map.flyTo({center:[lon,lat],zoom:11}); status(`Searching within ${Math.round(radius/1000)} km of ${label}...`);
-  setBusy(true,"Local 20 km search...");
+  setBusy(true,"Local 10 km search...");
   try{
     const data=await fetchOverpass(buildLocalQuery(lat,lon,radius)),seen=new Set(),arr=[];
     for(const el of data.elements||[]){
@@ -352,6 +402,67 @@ async function localScan(){
   }
 }
 
+async function nearMeScan(){
+  if(!navigator.geolocation){
+    status("Your browser does not support location access.");
+    return;
+  }
+
+  currentCountry=$('country').value;
+  $("suggestions").textContent="Asking for location permission...";
+  setBusy(true,"Waiting for location permission...");
+
+  trackEvent("beachscout_near_me_started", "near_me", {
+    country: currentCountry,
+    radius_km: Math.round(localRadiusMeters()/1000)
+  });
+
+  navigator.geolocation.getCurrentPosition(
+    async pos => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      const accuracy = pos.coords.accuracy;
+
+      $("placeSearch").value = "Current location";
+      $("suggestions").textContent = `Using your current location. Accuracy about ${Math.round(accuracy)} m.`;
+
+      trackEvent("beachscout_near_me_location_allowed", "near_me", {
+        country: currentCountry,
+        radius_km: Math.round(localRadiusMeters()/1000),
+        accuracy_m: Math.round(accuracy)
+      });
+
+      await runLocalSearchFromResult({
+        lat: lat,
+        lon: lon,
+        display_name: "Current location"
+      });
+    },
+    err => {
+      setBusy(false);
+      let msg = "Location permission was not granted.";
+      if(err.code === 1) msg = "Location permission was denied.";
+      if(err.code === 2) msg = "Location could not be determined.";
+      if(err.code === 3) msg = "Location request timed out.";
+
+      $("suggestions").textContent = msg;
+      status(msg);
+
+      trackEvent("beachscout_near_me_failed", "near_me", {
+        country: currentCountry,
+        radius_km: Math.round(localRadiusMeters()/1000),
+        error: msg
+      });
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 60000
+    }
+  );
+}
+
+
 function clearParking(){parkingMarkers.forEach(m=>m.remove());parkingMarkers=[]}
 function clearMarkers(){clearParking();markers.forEach(m=>m.remove());markers=[];if(hoverPopup)hoverPopup.remove();hoverPopup=null;closeActivePopup()}
 function closeActivePopup(){if(activePopup){activePopup.remove();activePopup=null}}
@@ -406,6 +517,26 @@ function commonsFileUrl(f,w=500){let clean=f.replace(/^File:/i,'').trim().replac
 async function wikiTitlePhoto(title,lang){try{const r=await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);if(!r.ok)return null;const j=await r.json();return j.thumbnail?.source?{url:j.thumbnail.source,source:`${lang}.wikipedia.org`}:null}catch{return null}}
 async function getPhoto(b){const t=b.tags;if(t.image&&/^https?:\/\//i.test(t.image))return{url:t.image,source:'OpenStreetMap image tag'};if(t.wikimedia_commons&&/^File:/i.test(t.wikimedia_commons))return{url:commonsFileUrl(t.wikimedia_commons),source:'Wikimedia Commons'};if(t.wikipedia&&t.wikipedia.includes(':')){const i=t.wikipedia.indexOf(':'),p=await wikiTitlePhoto(t.wikipedia.slice(i+1),t.wikipedia.slice(0,i));if(p)return p}if(t.wikidata){try{const r=await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${encodeURIComponent(t.wikidata)}&props=claims|sitelinks&format=json&origin=*`);const j=await r.json(),e=j.entities?.[t.wikidata],img=e?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;if(img)return{url:commonsFileUrl(img),source:'Wikidata / Commons'};if(e?.sitelinks?.itwiki?.title){const p=await wikiTitlePhoto(e.sitelinks.itwiki.title,'it');if(p)return p}}catch{}}return null}
 
+
+async function loadPopupPhoto(photoId, beach){
+  const target = document.getElementById(photoId);
+  if(!target) return;
+
+  try{
+    if(typeof getPhoto === 'function'){
+      const photo = await getPhoto(beach);
+      if(photo && photo.url){
+        target.innerHTML = `<img src="${photo.url}" alt="${escapeHtml(beach.name)}"><div class="photo-note">Source: ${escapeHtml(photo.source || "Wikipedia / Commons")}</div>`;
+        return;
+      }
+    }
+  }catch(e){
+    console.log("photo load failed", e);
+  }
+
+  target.innerHTML = '<div class="no-photo">No suitable photo available.</div>';
+}
+
 function openPopup(b,num){
   trackEvent("beachscout_place_opened", "local", {
     country: currentCountry,
@@ -417,17 +548,23 @@ function openPopup(b,num){
 
   closeActivePopup();
 
+  const photoId = "photo_" + Date.now();
+
   activePopup = new maplibregl.Popup({offset:20})
     .setLngLat([b.lon,b.lat])
     .setHTML(`
       <div class="popup">
         <h3>${num}. ${escapeHtml(b.name)}</h3>
         <p><b>${escapeHtml(b.status)}</b></p>
-        <p class="photo-note">Photo rendering is disabled in this version.</p>
+        <div id="${photoId}">
+          <div class="photo-note">Searching for photo...</div>
+        </div>
         ${b.wiki ? `<p><a href="${b.wiki}" target="_blank">Open Wikipedia article</a></p>` : ""}
       </div>
     `)
     .addTo(map);
+
+  setTimeout(()=>loadPopupPhoto(photoId,b),50);
 }
 
 function showHover(b){if(hoverPopup)hoverPopup.remove();hoverPopup=new maplibregl.Popup({closeButton:false,closeOnClick:false,offset:18}).setLngLat([b.lon,b.lat]).setHTML(`<strong>${escapeHtml(b.originalName||b.name)}</strong>`).addTo(map)}
@@ -436,10 +573,10 @@ function hideHover(){if(hoverPopup){hoverPopup.remove();hoverPopup=null}}
 function render(fit=false){clearMarkers();const visible=allBeaches.filter(shouldShow),list=$('list');list.innerHTML='';status(`Showing ${visible.length} of ${allBeaches.length} loaded places.`);updateStats(visible.length);visible.forEach((b,i)=>{const el=document.createElement('div');el.className='marker';el.style.background=colourFor(b.tags);el.textContent=i+1;el.title=b.originalName||b.name;const marker=new maplibregl.Marker({element:el}).setLngLat([b.lon,b.lat]).addTo(map);el.addEventListener('mouseenter',()=>showHover(b));el.addEventListener('mouseleave',hideHover);el.addEventListener('click',ev=>{ev.stopPropagation();hideHover();openPopup(b,i+1)});markers.push(marker);const li=document.createElement('li');li.className='item';li.innerHTML=`<h3>${i+1}. ${escapeHtml(b.name)}</h3><div class="meta">${escapeHtml(b.status)}</div>`;li.onclick=()=>{map.flyTo({center:[b.lon,b.lat],zoom:13});openPopup(b,i+1)};list.appendChild(li)});if(fit&&visible.length){const bounds=new maplibregl.LngLatBounds();visible.forEach(b=>bounds.extend([b.lon,b.lat]));map.fitBounds(bounds,{padding:60,maxZoom:10})}}
 
 async function scan(){
-  status("Large regional search is disabled in this version. Use the local 20 km search.");
+  status("Large regional search is disabled in this version. Use the local 10 km search.");
 }
 
-function moveMapToSelectedRegion(){currentCountry=$('country').value;currentRegion=$('region').value;const r=regionData();map.flyTo({center:[r.view[0],r.view[1]],zoom:r.view[2]});status(`Selected ${currentCountry}. Use the local 20 km search box above.`);updateStats()}
+function moveMapToSelectedRegion(){currentCountry=$('country').value;currentRegion=$('region').value;const r=regionData();map.flyTo({center:[r.view[0],r.view[1]],zoom:r.view[2]});status(`Selected ${currentCountry}. Type a place and use the local 10 km search.`);updateStats()}
 
 function parkingQuery(lon,lat){return`[out:json][timeout:120];(node["amenity"="parking"]["access"!~"private|no"](around:1200,${lat},${lon});way["amenity"="parking"]["access"!~"private|no"](around:1200,${lat},${lon}););out center tags;`}
 async function showParking(b){clearParking();try{const data=await fetchOverpass(parkingQuery(b.lon,b.lat)),parks=[];for(const el of data.elements||[]){const t=el.tags||{},lat=el.lat??el.center?.lat,lon=el.lon??el.center?.lon;if(lat==null||lon==null)continue;parks.push({name:t.name||t.operator||'Public parking',lat:Number(lat),lon:Number(lon),dist:distanceKm(b.lat,b.lon,Number(lat),Number(lon))})}parks.sort((a,b)=>a.dist-b.dist);parks.slice(0,8).forEach((p,i)=>{const el=document.createElement('div');el.className='parking-marker';el.textContent='P';el.title=`${p.name} · ${p.dist.toFixed(2)} km`;const marker=new maplibregl.Marker({element:el}).setLngLat([p.lon,p.lat]).setPopup(new maplibregl.Popup({offset:18}).setHTML(`<div class="popup"><h3>Parking ${i+1}</h3><p><b>${escapeHtml(p.name)}</b></p><p>${p.dist.toFixed(2)} km from selected place</p><p class="photo-note">Straight-line estimate.</p></div>`)).addTo(map);parkingMarkers.push(marker)});if(parks.length)status(`Nearest public parking found: ${parks[0].dist.toFixed(2)} km from selected place.`)}catch(e){console.warn(e)}}
@@ -448,6 +585,7 @@ function distanceKm(a,b,c,d){const R=6371,dl=(c-a)*Math.PI/180,dn=(d-b)*Math.PI/
 function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMapStyle=s;closeActivePopup();clearParking();markers.forEach(m=>m.remove());markers=[];document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));map.setStyle(MAP_STYLES[s]);const redraw=()=>{if(!map.isStyleLoaded()){setTimeout(redraw,100);return}render(false)};map.once('style.load',redraw);map.once('idle',redraw);setTimeout(redraw,700)}
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
 $('localScan').addEventListener('click',localScan);
+$('nearMeScan').addEventListener('click',nearMeScan);
 $('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter')localScan();});
 $('country').addEventListener('change',()=>{currentCountry=$('country').value;populateRegions();allBeaches=[];$('list').innerHTML='';$('stats').textContent='No beaches loaded yet.'});
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
