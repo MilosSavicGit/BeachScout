@@ -579,7 +579,107 @@ $('stats').innerHTML=`${v===null?'':`<b>Currently shown:</b> ${v}<br>`}<b>Countr
 
 function commonsFileUrl(f,w=500){let clean=f.replace(/^File:/i,'').trim().replaceAll(' ','_');return`https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(clean)}?width=${w}`}
 async function wikiTitlePhoto(title,lang){try{const r=await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);if(!r.ok)return null;const j=await r.json();return j.thumbnail?.source?{url:j.thumbnail.source,source:`${lang}.wikipedia.org`}:null}catch{return null}}
-async function getPhoto(b){const t=b.tags;if(t.image&&/^https?:\/\//i.test(t.image))return{url:t.image,source:'OpenStreetMap image tag'};if(t.wikimedia_commons&&/^File:/i.test(t.wikimedia_commons))return{url:commonsFileUrl(t.wikimedia_commons),source:'Wikimedia Commons'};if(t.wikipedia&&t.wikipedia.includes(':')){const i=t.wikipedia.indexOf(':'),p=await wikiTitlePhoto(t.wikipedia.slice(i+1),t.wikipedia.slice(0,i));if(p)return p}if(t.wikidata){try{const r=await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${encodeURIComponent(t.wikidata)}&props=claims|sitelinks&format=json&origin=*`);const j=await r.json(),e=j.entities?.[t.wikidata],img=e?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;if(img)return{url:commonsFileUrl(img),source:'Wikidata / Commons'};if(e?.sitelinks?.itwiki?.title){const p=await wikiTitlePhoto(e.sitelinks.itwiki.title,'it');if(p)return p}}catch{}}return null}
+async function commonsNameSearchPhoto(beach){
+  try{
+    const rawName = (beach.originalName || beach.name || "").trim();
+    if(!rawName || /^Unnamed/i.test(rawName)) return null;
+
+    const tags = beach.tags || {};
+    const country = currentCountry && currentCountry !== "Worldwide" ? currentCountry : "";
+    const extra = [
+      tags["addr:city"],
+      tags["addr:town"],
+      tags["addr:village"],
+      tags["is_in"],
+      country
+    ].filter(Boolean).join(" ");
+
+    const searchTerms = [
+      `${rawName} beach ${extra}`.trim(),
+      `${rawName} ${extra}`.trim(),
+      `${rawName} beach`.trim()
+    ];
+
+    const tried = new Set();
+
+    for(const term of searchTerms){
+      const cleanTerm = term.replace(/\s+/g, " ").trim();
+      if(!cleanTerm || tried.has(cleanTerm.toLowerCase())) continue;
+      tried.add(cleanTerm.toLowerCase());
+
+      const url =
+        "https://commons.wikimedia.org/w/api.php" +
+        "?action=query" +
+        "&format=json" +
+        "&origin=*" +
+        "&generator=search" +
+        "&gsrnamespace=6" +
+        "&gsrlimit=8" +
+        "&gsrsearch=" + encodeURIComponent(cleanTerm) +
+        "&prop=imageinfo" +
+        "&iiprop=url|mime" +
+        "&iiurlwidth=500";
+
+      const r = await fetch(url);
+      if(!r.ok) continue;
+
+      const j = await r.json();
+      const pages = Object.values(j.query?.pages || {});
+
+      for(const page of pages){
+        const info = page.imageinfo?.[0];
+        if(!info) continue;
+
+        const mime = info.mime || "";
+        const imageUrl = info.thumburl || info.url || "";
+
+        if(!imageUrl) continue;
+        if(!/^image\//i.test(mime)) continue;
+        if(/\.svg(\?|$)/i.test(imageUrl)) continue;
+
+        return {
+          url: imageUrl,
+          source: "Wikimedia Commons name search"
+        };
+      }
+    }
+  }catch(e){
+    console.log("Commons name search failed", e);
+  }
+
+  return null;
+}
+
+async function getPhoto(b){
+  const t=b.tags;
+
+  if(t.image&&/^https?:\/\//i.test(t.image))
+    return{url:t.image,source:'OpenStreetMap image tag'};
+
+  if(t.wikimedia_commons&&/^File:/i.test(t.wikimedia_commons))
+    return{url:commonsFileUrl(t.wikimedia_commons),source:'Wikimedia Commons'};
+
+  if(t.wikipedia&&t.wikipedia.includes(':')){
+    const i=t.wikipedia.indexOf(':'),p=await wikiTitlePhoto(t.wikipedia.slice(i+1),t.wikipedia.slice(0,i));
+    if(p)return p;
+  }
+
+  if(t.wikidata){
+    try{
+      const r=await fetch(`https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${encodeURIComponent(t.wikidata)}&props=claims|sitelinks&format=json&origin=*`);
+      const j=await r.json(),e=j.entities?.[t.wikidata],img=e?.claims?.P18?.[0]?.mainsnak?.datavalue?.value;
+      if(img)return{url:commonsFileUrl(img),source:'Wikidata / Commons'};
+      if(e?.sitelinks?.itwiki?.title){
+        const p=await wikiTitlePhoto(e.sitelinks.itwiki.title,'it');
+        if(p)return p;
+      }
+    }catch{}
+  }
+
+  // New fallback:
+  // If OSM has no photo/Wikipedia/Wikidata tag, search Wikimedia Commons by beach name.
+  return await commonsNameSearchPhoto(b);
+}
 
 
 async function loadPopupPhoto(photoId, beach){
