@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BeachScout Global — 10 km Near Me Node Only Test</title>
+<title>BeachScout Global — 10 km Place Picker</title>
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -71,7 +71,7 @@
 <div class="app">
   <div class="panel">
     <h1>BeachScout Global</h1>
-    <div class="tag">Fast local 10 km search — node-only test</div>
+    <div class="tag">Fast local 10 km search — choose the correct place first</div>
 
     <label for="country">Country / Worldwide</label>
     <select id="country"></select>
@@ -153,6 +153,7 @@ countryNames.forEach(name => {
 
 
 let markers=[],parkingMarkers=[],allBeaches=[],hoverPopup=null,activePopup=null,currentCountry="Worldwide",currentRegion="Whole country";
+let activeParkingBeach=null, activeParkingInfoId=null, parkingSearchRunning=false;
 
 /* =====================================================================
    SUPABASE ANALYTICS
@@ -304,16 +305,70 @@ function autoCorrectCountryFromResult(result){
   }
 }
 
+function placeChoiceLabel(res){
+  const a = res.address || {};
+  const main = a.city || a.town || a.village || a.hamlet || a.municipality || a.suburb || res.name || res.display_name || "Unknown place";
+  const parts = [
+    main,
+    a.municipality,
+    a.county,
+    a.state || a.region,
+    a.country
+  ].filter(Boolean);
+
+  // Remove repeated names while preserving order.
+  const seen = new Set();
+  const clean = parts.filter(part => {
+    const key = String(part).toLowerCase().trim();
+    if(seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  return clean.join(", ");
+}
+
+function shortPlaceLabel(res){
+  const a = res.address || {};
+  const main = a.city || a.town || a.village || a.hamlet || a.municipality || a.county || res.name || res.display_name || "Unknown place";
+  const region = a.state || a.region || a.county || a.province || "";
+  const country = a.country || "";
+  const parts = [main];
+  if(region && region !== main) parts.push(region);
+  if(country) parts.push(country);
+  return parts.filter(Boolean).join(", ");
+}
+
 function showPlaceSuggestions(results){
-  const box=$("suggestions"); box.innerHTML="";
-  if(!results||!results.length){box.textContent="No matching place found. Try a nearby larger town or add the country name.";return}
-  const title=document.createElement("div"); title.textContent="Suggestions:"; title.style.marginBottom="5px"; box.appendChild(title);
-  results.forEach(res=>{
-    const btn=document.createElement("button");
-    btn.type="button"; btn.textContent=res.display_name;
-    btn.style.margin="4px 0"; btn.style.padding="7px 8px"; btn.style.fontSize="12px";
-    btn.style.background="#fff"; btn.style.color="var(--ink)"; btn.style.border="1px solid var(--rule)"; btn.style.borderRadius="7px";
-    btn.onclick=()=>runLocalSearchFromResult(res);
+  const box = $("suggestions");
+  box.innerHTML = "";
+
+  if(!results || !results.length){
+    box.textContent = "No matching place found. Try a nearby larger town or add the country name.";
+    return;
+  }
+
+  const title = document.createElement("div");
+  title.innerHTML = results.length === 1
+    ? "Place found. Click to search around it:"
+    : "Multiple places found. Select the correct one:";
+  title.style.marginBottom = "7px";
+  box.appendChild(title);
+
+  results.forEach(res => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = shortPlaceLabel(res);
+    btn.title = res.display_name || btn.textContent;
+    btn.style.margin = "4px 0";
+    btn.style.padding = "8px 9px";
+    btn.style.fontSize = "12px";
+    btn.style.textAlign = "left";
+    btn.style.background = "#fff";
+    btn.style.color = "var(--ink)";
+    btn.style.border = "1px solid var(--rule)";
+    btn.style.borderRadius = "7px";
+    btn.onclick = () => runLocalSearchFromResult(res);
     box.appendChild(btn);
   });
 }
@@ -388,8 +443,17 @@ async function localScan(){
   try{
     const results=await geocodePlace(q); setBusy(false);
     if(!results||!results.length){showPlaceSuggestions([]);return}
+
+    if(results.length === 1){
+      showPlaceSuggestions(results);
+      await runLocalSearchFromResult(results[0]);
+      return;
+    }
+
+    // Do not randomly choose the first Nominatim result when several places share a name.
+    // Example: San Cataldo in Sicily vs San Cataldo on the Adriatic coast near Lecce.
     showPlaceSuggestions(results);
-    await runLocalSearchFromResult(results[0]);
+    status(`Multiple places named "${q}" were found. Please select the correct one from the list.`);
   }catch(e){
     trackEvent("beachscout_geocode_failed", "local", {
       country: currentCountry,
@@ -549,6 +613,7 @@ function openPopup(b,num){
   closeActivePopup();
 
   const photoId = "photo_" + Date.now();
+  const parkingId = "parking_" + Date.now();
 
   activePopup = new maplibregl.Popup({offset:20})
     .setLngLat([b.lon,b.lat])
@@ -559,11 +624,18 @@ function openPopup(b,num){
         <div id="${photoId}">
           <div class="photo-note">Searching for photo...</div>
         </div>
+        <div id="${parkingId}" class="photo-note">Parking not checked yet.</div>
+        <button type="button" onclick="findParkingForCurrentBeach()" style="margin-top:8px;padding:8px 10px;font-size:13px;">Find nearest parking</button>
         ${b.wiki ? `<p><a href="${b.wiki}" target="_blank">Open Wikipedia article</a></p>` : ""}
       </div>
     `)
     .addTo(map);
 
+  // Reset any previous stuck parking search when a new beach popup opens.
+  parkingSearchRunning = false;
+
+  activeParkingBeach = b;
+  activeParkingInfoId = parkingId;
   setTimeout(()=>loadPopupPhoto(photoId,b),50);
 }
 
@@ -576,10 +648,131 @@ async function scan(){
   status("Large regional search is disabled in this version. Use the local 10 km search.");
 }
 
-function moveMapToSelectedRegion(){currentCountry=$('country').value;currentRegion=$('region').value;const r=regionData();map.flyTo({center:[r.view[0],r.view[1]],zoom:r.view[2]});status(`Selected ${currentCountry}. Type a place and use the local 10 km search.`);updateStats()}
+function moveMapToSelectedRegion(){
+  currentCountry = $('country').value;
+  currentRegion = countries[currentCountry].defaultRegion;
+  const r = regionData();
+  if(r && r.view){
+    map.flyTo({center:[r.view[0], r.view[1]], zoom:r.view[2]});
+  }
+  status(`Selected ${currentCountry}. Type a place and use the local 10 km search.`);
+  updateStats();
+}
 
-function parkingQuery(lon,lat){return`[out:json][timeout:120];(node["amenity"="parking"]["access"!~"private|no"](around:1200,${lat},${lon});way["amenity"="parking"]["access"!~"private|no"](around:1200,${lat},${lon}););out center tags;`}
-async function showParking(b){clearParking();try{const data=await fetchOverpass(parkingQuery(b.lon,b.lat)),parks=[];for(const el of data.elements||[]){const t=el.tags||{},lat=el.lat??el.center?.lat,lon=el.lon??el.center?.lon;if(lat==null||lon==null)continue;parks.push({name:t.name||t.operator||'Public parking',lat:Number(lat),lon:Number(lon),dist:distanceKm(b.lat,b.lon,Number(lat),Number(lon))})}parks.sort((a,b)=>a.dist-b.dist);parks.slice(0,8).forEach((p,i)=>{const el=document.createElement('div');el.className='parking-marker';el.textContent='P';el.title=`${p.name} · ${p.dist.toFixed(2)} km`;const marker=new maplibregl.Marker({element:el}).setLngLat([p.lon,p.lat]).setPopup(new maplibregl.Popup({offset:18}).setHTML(`<div class="popup"><h3>Parking ${i+1}</h3><p><b>${escapeHtml(p.name)}</b></p><p>${p.dist.toFixed(2)} km from selected place</p><p class="photo-note">Straight-line estimate.</p></div>`)).addTo(map);parkingMarkers.push(marker)});if(parks.length)status(`Nearest public parking found: ${parks[0].dist.toFixed(2)} km from selected place.`)}catch(e){console.warn(e)}}
+function parkingQuery(lon, lat, radius){
+  return `[out:json][timeout:45];
+(
+  node["amenity"="parking"]["access"!~"private|no"](around:${radius},${lat},${lon});
+  way["amenity"="parking"]["access"!~"private|no"](around:${radius},${lat},${lon});
+);
+out center tags;`;
+}
+
+function parkingText(km){
+  if(km < 1) return `${Math.round(km*1000)} m`;
+  return `${km.toFixed(1)} km`;
+}
+
+async function fetchParkingAtRadius(beach, radius){
+  const data = await fetchOverpass(parkingQuery(beach.lon, beach.lat, radius));
+  const parks = [];
+
+  for(const el of data.elements || []){
+    const t = el.tags || {};
+    const lat = el.lat ?? el.center?.lat;
+    const lon = el.lon ?? el.center?.lon;
+    if(lat == null || lon == null) continue;
+
+    parks.push({
+      name: t.name || t.operator || 'Public parking',
+      lat: Number(lat),
+      lon: Number(lon),
+      dist: distanceKm(beach.lat, beach.lon, Number(lat), Number(lon))
+    });
+  }
+
+  parks.sort((a,b) => a.dist - b.dist);
+  return parks;
+}
+
+
+async function findParkingForCurrentBeach(){
+  if(!activeParkingBeach) return;
+  if(parkingSearchRunning){
+    const info = activeParkingInfoId ? document.getElementById(activeParkingInfoId) : null;
+    if(info) info.textContent = "Parking search already running. Please wait.";
+    return;
+  }
+  await showParking(activeParkingBeach, activeParkingInfoId);
+}
+
+async function showParking(b, infoId=null){
+  parkingSearchRunning = true;
+  clearParking();
+  const info = infoId ? document.getElementById(infoId) : null;
+  const radii = [500, 1000];
+
+  if(info) info.textContent = "Nearest parking: checking 500 m...";
+
+  try{
+    let parks = [];
+    let usedRadius = null;
+    let lastError = null;
+
+    for(const radius of radii){
+      if(info) info.textContent = `Nearest parking: checking within ${radius < 1000 ? radius + ' m' : (radius/1000) + ' km'}...`;
+      try{
+        parks = await fetchParkingAtRadius(b, radius);
+        if(parks.length){
+          usedRadius = radius;
+          break;
+        }
+      }catch(e){
+        lastError = e;
+        console.warn('parking radius failed', radius, e);
+      }
+    }
+
+    if(!parks.length){
+      if(lastError) console.warn(lastError);
+      if(info) info.textContent = "Nearest parking: none found within 1 km.";
+      status(`No public parking found within 1 km of ${b.name}.`);
+      return;
+    }
+
+    parks.slice(0,5).forEach((p,i)=>{
+      const el = document.createElement('div');
+      el.className = 'parking-marker';
+      el.textContent = 'P';
+      el.title = `${p.name} · ${parkingText(p.dist)}`;
+
+      const marker = new maplibregl.Marker({element:el})
+        .setLngLat([p.lon,p.lat])
+        .setPopup(new maplibregl.Popup({offset:18}).setHTML(`
+          <div class="popup">
+            <h3>Parking ${i+1}</h3>
+            <p><b>${escapeHtml(p.name)}</b></p>
+            <p>${parkingText(p.dist)} from selected beach</p>
+            <p class="photo-note">Straight-line estimate. Search radius used: ${usedRadius < 1000 ? usedRadius + ' m' : (usedRadius/1000) + ' km'}.</p>
+          </div>
+        `))
+        .addTo(map);
+
+      parkingMarkers.push(marker);
+    });
+
+    const msg = `Nearest parking: ${parkingText(parks[0].dist)} away`;
+    if(info) info.textContent = msg;
+    status(`${msg} from ${b.name}. Shown as P markers on the map.`);
+
+  }catch(e){
+    if(info) info.textContent = "Nearest parking: search failed.";
+    status(`Parking search failed: ${e.message}`);
+    console.warn(e);
+  }finally{
+    parkingSearchRunning = false;
+  }
+}
 function distanceKm(a,b,c,d){const R=6371,dl=(c-a)*Math.PI/180,dn=(d-b)*Math.PI/180,x=Math.sin(dl/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dn/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
 
 function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMapStyle=s;closeActivePopup();clearParking();markers.forEach(m=>m.remove());markers=[];document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));map.setStyle(MAP_STYLES[s]);const redraw=()=>{if(!map.isStyleLoaded()){setTimeout(redraw,100);return}render(false)};map.once('style.load',redraw);map.once('idle',redraw);setTimeout(redraw,700)}
