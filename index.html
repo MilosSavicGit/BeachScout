@@ -624,7 +624,10 @@ function openPopup(b,num){
         <div id="${photoId}">
           <div class="photo-note">Searching for photo...</div>
         </div>
-        <div id="${parkingId}" class="photo-note">Parking not checked yet.</div>
+        <p><b>Beach coordinates:</b><br>${coordText(b.lat,b.lon)}</p>
+        <p><a href="${googleMapsPointLink(b.lat,b.lon)}" target="_blank">Open beach in Google Maps</a></p>
+        <button type="button" onclick="copyTextToClipboard('${coordText(b.lat,b.lon)}')" style="margin-top:6px;padding:8px 10px;font-size:13px;">Copy beach coordinates</button>
+        <div id="${parkingId}" class="photo-note" style="margin-top:8px;">Parking not checked yet.</div>
         <button type="button" onclick="findParkingForCurrentBeach()" style="margin-top:8px;padding:8px 10px;font-size:13px;">Find nearest parking</button>
         ${b.wiki ? `<p><a href="${b.wiki}" target="_blank">Open Wikipedia article</a></p>` : ""}
       </div>
@@ -671,6 +674,24 @@ out center tags;`;
 function parkingText(km){
   if(km < 1) return `${Math.round(km*1000)} m`;
   return `${km.toFixed(1)} km`;
+}
+
+function coordText(lat, lon){
+  return `${Number(lat).toFixed(6)}, ${Number(lon).toFixed(6)}`;
+}
+
+function googleMapsPointLink(lat, lon){
+  return `https://www.google.com/maps?q=${encodeURIComponent(lat + "," + lon)}`;
+}
+
+function googleMapsWalkingLink(fromLat, fromLon, toLat, toLon){
+  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(fromLat + "," + fromLon)}&destination=${encodeURIComponent(toLat + "," + toLon)}&travelmode=walking`;
+}
+
+function copyTextToClipboard(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).catch(()=>{});
+  }
 }
 
 async function fetchParkingAtRadius(beach, radius){
@@ -753,6 +774,9 @@ async function showParking(b, infoId=null){
             <h3>Parking ${i+1}</h3>
             <p><b>${escapeHtml(p.name)}</b></p>
             <p>${parkingText(p.dist)} from selected beach</p>
+            <p><b>Parking coordinates:</b><br>${coordText(p.lat,p.lon)}</p>
+            <p><a href="${googleMapsPointLink(p.lat,p.lon)}" target="_blank">Open parking in Google Maps</a></p>
+            <p><a href="${googleMapsWalkingLink(p.lat,p.lon,b.lat,b.lon)}" target="_blank">Walk from parking to beach</a></p>
             <p class="photo-note">Straight-line estimate. Search radius used: ${usedRadius < 1000 ? usedRadius + ' m' : (usedRadius/1000) + ' km'}.</p>
           </div>
         `))
@@ -761,8 +785,17 @@ async function showParking(b, infoId=null){
       parkingMarkers.push(marker);
     });
 
-    const msg = `Nearest parking: ${parkingText(parks[0].dist)} away`;
-    if(info) info.textContent = msg;
+    const nearest = parks[0];
+    const msg = `Nearest parking: ${parkingText(nearest.dist)} away`;
+    if(info){
+      info.innerHTML = `
+        <b>${msg}</b><br>
+        Parking: ${coordText(nearest.lat,nearest.lon)}<br>
+        Beach: ${coordText(b.lat,b.lon)}<br>
+        <a href="${googleMapsPointLink(nearest.lat,nearest.lon)}" target="_blank">Open parking in Google Maps</a><br>
+        <a href="${googleMapsWalkingLink(nearest.lat,nearest.lon,b.lat,b.lon)}" target="_blank">Walk from parking to beach</a>
+      `;
+    }
     status(`${msg} from ${b.name}. Shown as P markers on the map.`);
 
   }catch(e){
