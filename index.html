@@ -81,6 +81,7 @@
       <input id="placeSearch" type="text" placeholder="Example: Genoa" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
       <button id="localScan">Search 10 km around place</button>
       <button id="nearMeScan" type="button" style="background:#2f6b4f;">Use my current location — 10 km</button>
+      <button id="newSearch" type="button" style="background:#6b7280;">New Search / Reset</button>
       <div id="suggestions" class="photo-note" style="margin-top:8px;"></div>
     </div>
 
@@ -333,10 +334,20 @@ function shortPlaceLabel(res){
   const main = a.city || a.town || a.village || a.hamlet || a.municipality || a.county || res.name || res.display_name || "Unknown place";
   const region = a.state || a.region || a.county || a.province || "";
   const country = a.country || "";
+
   const parts = [main];
   if(region && region !== main) parts.push(region);
   if(country) parts.push(country);
-  return parts.filter(Boolean).join(", ");
+
+  const base = parts.filter(Boolean).join(", ");
+
+  // Helps distinguish duplicate-looking Nominatim results.
+  // Example: Roma, Lazio, Italy • city vs Roma, Lazio, Italy • administrative
+  const type = res.addresstype || res.type || res.class || "";
+  const cls = res.class && res.class !== type ? res.class : "";
+
+  const details = [type, cls].filter(Boolean).join(" / ");
+  return details ? `${base} • ${details}` : base;
 }
 
 function showPlaceSuggestions(results){
@@ -530,6 +541,24 @@ async function nearMeScan(){
 function clearParking(){parkingMarkers.forEach(m=>m.remove());parkingMarkers=[]}
 function clearMarkers(){clearParking();markers.forEach(m=>m.remove());markers=[];if(hoverPopup)hoverPopup.remove();hoverPopup=null;closeActivePopup()}
 function closeActivePopup(){if(activePopup){activePopup.remove();activePopup=null}}
+
+function newSearchReset(){
+  parkingSearchRunning = false;
+  activeParkingBeach = null;
+  activeParkingInfoId = null;
+
+  setBusy(false);
+  clearMarkers();
+  clearParking();
+
+  allBeaches = [];
+  $("list").innerHTML = "";
+  $("suggestions").innerHTML = "";
+  $("placeSearch").value = "";
+  $("stats").textContent = "No beaches loaded yet.";
+
+  status("New search ready. Choose a country or Worldwide, type a place, then search within 10 km.");
+}
 
 function isNaturistTagged(tags){const nudism=tags.nudism||tags.naturism||'';const txt=((tags.name||'')+' '+(tags.operator||'')+' '+(tags.description||'')).toLowerCase();return ['designated','official','yes','customary','permissive'].includes(nudism)||/naturist|naturista|naturiste|nudist|nudista|nudiste|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička|fkkt|fkk/.test(txt)}
 function colourFor(tags){const nudism=tags.nudism||tags.naturism||'';if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'#be185d';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'#0f766e';if(nudism==='designated'||nudism==='official')return'#2f6b4f';if(['yes','customary','permissive'].includes(nudism))return'#d97706';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'#7c3aed';return'#2563eb'}
@@ -912,6 +941,7 @@ function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMap
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
 $('localScan').addEventListener('click',localScan);
 $('nearMeScan').addEventListener('click',nearMeScan);
+$('newSearch').addEventListener('click',newSearchReset);
 $('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter')localScan();});
 $('country').addEventListener('change',()=>{currentCountry=$('country').value;populateRegions();allBeaches=[];$('list').innerHTML='';$('stats').textContent='No beaches loaded yet.'});
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
