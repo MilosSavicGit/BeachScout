@@ -30,6 +30,10 @@
   .popup h3{margin:0 0 6px;font-size:16px}.popup p{margin:0 0 5px;font-size:13px}
   .popup img{width:260px;height:165px;object-fit:cover;border-radius:8px;margin:8px 0;display:block;background:#eee}
   .photo-note{color:var(--muted);font-size:12px;font-style:italic;margin-top:4px}.no-photo{text-align:center;padding:12px 6px;background:#f8f3ea;border:1px dashed var(--rule);border-radius:8px;margin:8px 0}
+  .upload-box{margin-top:10px;padding:9px;border:1px dashed var(--rule);border-radius:8px;background:#fffaf1}
+  .upload-box input,.upload-box textarea{width:100%;margin-top:6px;padding:8px;border:1px solid var(--rule);border-radius:7px;font:inherit;font-size:13px}
+  .upload-box textarea{min-height:62px;resize:vertical}
+  .upload-box button{margin-top:8px;padding:8px 10px;font-size:13px}
 
   #busyOverlay{
     position:absolute;
@@ -155,6 +159,7 @@ countryNames.forEach(name => {
 
 let markers=[],parkingMarkers=[],allBeaches=[],hoverPopup=null,activePopup=null,currentCountry="Worldwide",currentRegion="Whole country";
 let activeParkingBeach=null, activeParkingInfoId=null, parkingSearchRunning=false;
+let activeUploadBeach=null, activeUploadStatusId=null;
 
 /* =====================================================================
    SUPABASE ANALYTICS
@@ -178,6 +183,8 @@ function getUserToken(){
 
 const USER_TOKEN = getUserToken();
 const APP_VERSION = 'beachscout_global10_nearme_photos_taiwan_china_v1';
+const BEACH_PHOTO_BUCKET = 'beach-photos';
+const BEACH_PHOTO_TABLE = 'beach_photos';
 
 function trackEvent(eventType, mode = 'local', details = {}){
   try{
@@ -679,7 +686,54 @@ async function commonsNameSearchPhoto(beach){
   return null;
 }
 
+
+async function getApprovedUserPhoto(beach){
+  try{
+    if(!supaReady || !supa) return null;
+
+    const lat = Number(beach.lat);
+    const lon = Number(beach.lon);
+
+    // Match by coordinates rather than name because many beaches share names.
+    // Tolerance ~11 meters at equator. Good enough for OSM-derived beach markers.
+    const tol = 0.0001;
+
+    const { data, error } = await supa
+      .from(BEACH_PHOTO_TABLE)
+      .select("image_url, description, created_at, beach_name")
+      .eq("status", "approved")
+      .gte("beach_lat", lat - tol)
+      .lte("beach_lat", lat + tol)
+      .gte("beach_lon", lon - tol)
+      .lte("beach_lon", lon + tol)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if(error){
+      console.log("approved user photo lookup failed", error);
+      return null;
+    }
+
+    if(data && data.length && data[0].image_url){
+      return {
+        url: data[0].image_url,
+        source: "BeachScout community photo",
+        description: data[0].description || ""
+      };
+    }
+  }catch(e){
+    console.log("approved user photo lookup failed", e);
+  }
+
+  return null;
+}
+
 async function getPhoto(b){
+  // Priority 1: approved user-submitted BeachScout photo.
+  const approvedUserPhoto = await getApprovedUserPhoto(b);
+  if(approvedUserPhoto) return approvedUserPhoto;
+
+  // Priority 2: existing OSM / Wikimedia / Wikipedia / Wikidata / Commons fallback.
   const t=b.tags;
 
   if(t.image&&/^https?:\/\//i.test(t.image))
@@ -719,7 +773,8 @@ async function loadPopupPhoto(photoId, beach){
     if(typeof getPhoto === 'function'){
       const photo = await getPhoto(beach);
       if(photo && photo.url){
-        target.innerHTML = `<img src="${photo.url}" alt="${escapeHtml(beach.name)}"><div class="photo-note">Source: ${escapeHtml(photo.source || "Wikipedia / Commons")}</div>`;
+        const desc = photo.description ? `<div class="photo-note">${escapeHtml(photo.description)}</div>` : "";
+        target.innerHTML = `<img src="${photo.url}" alt="${escapeHtml(beach.name)}">${desc}<div class="photo-note">Source: ${escapeHtml(photo.source || "Wikipedia / Commons")}</div>`;
         return;
       }
     }
@@ -758,6 +813,14 @@ function openPopup(b,num){
         <button type="button" onclick="copyTextToClipboard('${coordText(b.lat,b.lon)}')" style="margin-top:6px;padding:8px 10px;font-size:13px;">Copy beach coordinates</button>
         <div id="${parkingId}" class="photo-note" style="margin-top:8px;">Parking not checked yet.</div>
         <button type="button" onclick="findParkingForCurrentBeach()" style="margin-top:8px;padding:8px 10px;font-size:13px;">Find nearest parking</button>
+        <div class="upload-box">
+          <b>Add your photo</b>
+          <div class="photo-note">Optional description. Image is resized before upload.</div>
+          <input id="userPhotoInput" type="file" accept="image/*">
+          <textarea id="userPhotoDesc" maxlength="200" placeholder="Optional short description, max 200 characters"></textarea>
+          <button type="button" onclick="uploadPhotoForCurrentBeach()">Upload photo</button>
+          <div id="${'upload_' + parkingId}" class="photo-note">No upload yet.</div>
+        </div>
         ${b.wiki ? `<p><a href="${b.wiki}" target="_blank">Open Wikipedia article</a></p>` : ""}
       </div>
     `)
@@ -768,6 +831,8 @@ function openPopup(b,num){
 
   activeParkingBeach = b;
   activeParkingInfoId = parkingId;
+  activeUploadBeach = b;
+  activeUploadStatusId = 'upload_' + parkingId;
   setTimeout(()=>loadPopupPhoto(photoId,b),50);
 }
 
@@ -843,6 +908,154 @@ async function fetchParkingAtRadius(beach, radius){
 
   parks.sort((a,b) => a.dist - b.dist);
   return parks;
+}
+
+
+
+function setUploadStatus(msg){
+  const el = activeUploadStatusId ? document.getElementById(activeUploadStatusId) : null;
+  if(el) el.textContent = msg;
+}
+
+async function resizeImageFileToJpeg(file, maxSize=1200, quality=0.75){
+  const dataUrl = await new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+  const img = await new Promise((resolve, reject)=>{
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = dataUrl;
+  });
+
+  let w = img.width;
+  let h = img.height;
+
+  if(w > h && w > maxSize){
+    h = Math.round(h * maxSize / w);
+    w = maxSize;
+  }else if(h >= w && h > maxSize){
+    w = Math.round(w * maxSize / h);
+    h = maxSize;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0, w, h);
+
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", quality));
+  if(!blob) throw new Error("Could not resize image");
+
+  return blob;
+}
+
+function safeFilePart(s){
+  return String(s || "beach").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0,60) || "beach";
+}
+
+async function uploadPhotoForCurrentBeach(){
+  if(!activeUploadBeach){
+    setUploadStatus("No selected beach.");
+    return;
+  }
+
+  if(!supaReady || !supa){
+    setUploadStatus("Supabase is not available.");
+    return;
+  }
+
+  const input = document.getElementById("userPhotoInput");
+  const descEl = document.getElementById("userPhotoDesc");
+  const file = input && input.files && input.files[0] ? input.files[0] : null;
+  const description = descEl ? descEl.value.trim().slice(0,200) : "";
+
+  if(!file && !description){
+    setUploadStatus("Choose a photo or write a short description first.");
+    return;
+  }
+
+  if(!file){
+    setUploadStatus("Description-only upload is not enabled yet. Please choose a photo.");
+    return;
+  }
+
+  try{
+    setUploadStatus("Resizing image...");
+
+    const smallBlob = await resizeImageFileToJpeg(file, 1200, 0.75);
+    const beach = activeUploadBeach;
+    const fileName =
+      `${safeFilePart(beach.name)}_${Number(beach.lat).toFixed(5)}_${Number(beach.lon).toFixed(5)}_${Date.now()}.jpg`;
+    const path = `${USER_TOKEN}/${fileName}`;
+
+    setUploadStatus("Uploading photo...");
+
+    const { error: uploadError } = await supa.storage
+      .from(BEACH_PHOTO_BUCKET)
+      .upload(path, smallBlob, {
+        contentType: "image/jpeg",
+        upsert: false
+      });
+
+    if(uploadError) throw uploadError;
+
+    const { data: publicData } = supa.storage
+      .from(BEACH_PHOTO_BUCKET)
+      .getPublicUrl(path);
+
+    const imageUrl = publicData?.publicUrl || "";
+
+    setUploadStatus("Saving details...");
+
+    const { error: dbError } = await supa
+      .from(BEACH_PHOTO_TABLE)
+      .insert({
+        beach_name: beach.name,
+        beach_lat: beach.lat,
+        beach_lon: beach.lon,
+        description: description,
+        image_url: imageUrl,
+        storage_path: path,
+        user_token: USER_TOKEN,
+        status: "pending",
+        app_version: APP_VERSION
+      });
+
+    if(dbError) throw dbError;
+
+    setUploadStatus("Photo uploaded. Waiting for approval.");
+    if(input) input.value = "";
+    if(descEl) descEl.value = "";
+
+    trackEvent("beachscout_user_photo_uploaded", "photo", {
+      beach_name: beach.name,
+      beach_lat: beach.lat,
+      beach_lon: beach.lon
+    });
+
+  }catch(e){
+    console.warn("photo upload failed", e);
+
+    let detail = "unknown error";
+    try{
+      if(e && typeof e === "object"){
+        detail = e.message || e.error_description || e.error || e.statusText || JSON.stringify(e);
+      }else if(e){
+        detail = String(e);
+      }
+    }catch(_){
+      detail = "unknown error";
+    }
+
+    setUploadStatus("Upload failed: " + detail);
+  }
 }
 
 
