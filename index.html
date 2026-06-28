@@ -73,181 +73,96 @@
 
   #styleSwitcher{position:absolute;top:12px;right:12px;z-index:20;display:flex;gap:4px;background:rgba(255,253,248,.92);padding:4px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.22)}
   .style-btn{font:inherit;font-size:12px;padding:6px 10px;border:none;border-radius:5px;background:transparent;color:var(--ink);cursor:pointer;width:auto;margin:0}.style-btn.active{background:var(--accent);color:#fff}
-  #mobileSearchFab{display:none}
-  .mobile-search-overlay{display:none}
-  .mobile-search-card{display:none}
+  #mobileSearchButton{display:none}
   @media(max-width:900px){
-    .app{grid-template-columns:1fr;grid-template-rows:430px 1fr}
-    .panel{order:2;border-right:none;border-top:1px solid var(--rule)}
-    #map{order:1}
+    .app{
+      display:block;
+      height:100vh;
+      height:100dvh;
+      position:relative;
+    }
 
-    /* Google Maps style: use floating search button on mobile */
-    #mobileSearchFab{
+    #map{
+      width:100%;
+      height:100vh;
+      height:100dvh;
+    }
+
+    .panel{
+      position:absolute;
+      left:10px;
+      right:10px;
+      bottom:10px;
+      max-height:78vh;
+      overflow-y:auto;
+      border:1px solid var(--rule);
+      border-radius:18px;
+      box-shadow:0 8px 28px rgba(0,0,0,.28);
+      padding:14px;
+      z-index:80;
+      display:none;
+    }
+
+    .panel.mobile-open{
+      display:block;
+    }
+
+    #mobileSearchButton{
       display:block;
       position:absolute;
-      z-index:60;
-      left:14px;
-      top:14px;
+      right:14px;
+      bottom:18px;
+      z-index:90;
       width:auto;
+      min-width:96px;
       margin:0;
-      padding:12px 18px;
+      padding:14px 18px;
       border-radius:999px;
-      background:#fff;
-      color:var(--ink);
-      border:1px solid var(--rule);
-      box-shadow:0 4px 16px rgba(0,0,0,.28);
+      background:var(--accent);
+      color:#fff;
+      border:none;
+      box-shadow:0 5px 18px rgba(0,0,0,.35);
       font:bold 16px system-ui,-apple-system,Segoe UI,sans-serif;
     }
 
-    #styleSwitcher{
-      top:66px;
-      right:10px;
-    }
-
-    .mobile-search-overlay{
+    .panel.mobile-open + #map,
+    .panel.mobile-open ~ #mobileSearchButton{
       display:none;
-      position:fixed;
-      inset:0;
-      z-index:200;
-      background:rgba(244,239,230,.98);
-      padding:12px;
-      overflow-y:auto;
-    }
-    .mobile-search-overlay.show{display:block}
-
-    .mobile-search-card{
-      display:block;
-      background:var(--panel);
-      border:1px solid var(--rule);
-      border-radius:18px;
-      padding:14px;
-      box-shadow:0 8px 28px rgba(0,0,0,.22);
-      max-width:620px;
-      margin:0 auto;
     }
 
-    .mobile-search-head{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-bottom:12px;
-      font:18px system-ui,-apple-system,Segoe UI,sans-serif;
-    }
-
-    #mobileSearchClose{
-      width:44px;
-      height:44px;
-      margin:0;
-      padding:0;
-      border-radius:50%;
-      background:#fff;
-      color:var(--ink);
-      border:1px solid var(--rule);
-      font-size:22px;
-      font-weight:bold;
-    }
-
-    .mobile-search-card label{
-      font:700 12px system-ui,-apple-system,Segoe UI,sans-serif;
-      text-transform:uppercase;
-      letter-spacing:.8px;
-      color:var(--muted);
-      margin:12px 0 6px;
-    }
-
-    #mobileCountrySearch,
-    #mobilePlaceSearch{
-      width:100%;
-      padding:15px;
-      border:1px solid var(--rule);
-      border-radius:13px;
-      font:16px system-ui,-apple-system,Segoe UI,sans-serif;
-      color:#1c1a17;
-      background:#fff;
-      -webkit-text-fill-color:#1c1a17;
-      caret-color:var(--accent);
-    }
-
-    .mobile-suggestions{margin-top:8px}
-    .mobile-suggestions button{
-      display:block;
-      width:100%;
-      margin:6px 0;
-      padding:13px;
-      border-radius:12px;
-      background:#fff;
-      color:var(--ink);
-      border:1px solid var(--rule);
-      text-align:left;
-      font:15px system-ui,-apple-system,Segoe UI,sans-serif;
-    }
-
-    #mobileRunSearch,
-    #mobileNearMe{
-      font:700 16px system-ui,-apple-system,Segoe UI,sans-serif;
-      padding:15px;
-      border-radius:13px;
-      margin-top:12px;
-    }
-
+    h1{font-size:24px}
+    .tag{font-size:12px;margin-bottom:10px}
     select,button,input,textarea{font-size:16px !important}
-  }
-
-  /* Mobile UI step 1: larger touch targets only. No layout or logic changes. */
-  @media(max-width:900px){
-    .panel{padding:16px}
-    h1{font-size:26px}
-    .tag{font-size:13px;margin-bottom:12px}
-    select,
-    button,
-    input,
-    textarea{
-      font-size:16px !important;
-    }
-    button{
-      padding:14px;
-      border-radius:11px;
-      margin-top:10px;
-    }
-    #placeSearch,
-    #countrySearch{
+    button{padding:13px;border-radius:11px}
+    #countrySearch,#placeSearch{
       padding:14px !important;
       border-radius:11px !important;
+      color:#1c1a17 !important;
+      background:#fff !important;
+      -webkit-text-fill-color:#1c1a17 !important;
     }
-    .box{
-      padding:12px;
-      margin:12px 0;
-      border-radius:11px;
-    }
-    .item{
-      padding:13px;
-      border-radius:11px;
-    }
-    .item h3{
-      font-size:16px;
-    }
-    .filters label{
-      font-size:14px;
-      padding:6px 0;
-    }
-    .suggestion-btn{
-      padding:11px 10px;
-      font-size:14px;
-      border-radius:9px;
+    .box{padding:11px;border-radius:12px;margin:10px 0}
+    .item{padding:12px;border-radius:12px}
+    .suggestion-btn{padding:11px 10px;font-size:14px;border-radius:10px}
+
+    #styleSwitcher{
+      top:10px;
+      right:10px;
+      z-index:70;
     }
   }
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="panel">
+  <div class="panel" id="searchPanel">
     <h1>BeachScout Global</h1>
     <div class="tag">Fast local 10 km search — choose the correct place first</div>
 
-    <label for="countrySearch">Country</label>
-    <input id="countrySearch" type="text" placeholder="Worldwide or start typing country, e.g. Italy" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
+    <label for="countrySearch">Country / Worldwide</label>
+    <input id="countrySearch" type="text" placeholder="Start typing country, e.g. Italy" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
     <div id="countrySuggestions" class="photo-note" style="margin-top:8px;"></div>
-    <select id="country" style="display:none;"></select>
+    <select id="country" style="margin-top:8px;"></select>
 <div class="box">
       <b>Default: local 10 km search</b>
       <div class="photo-note" style="margin:6px 0 8px;">Recommended. Type a place such as Genoa, Nice, Split or Ada Ciganlija. This version does not run large regional searches.</div>
@@ -291,28 +206,7 @@
       <div id="busyText">Searching...</div>
     </div>
   </div>
-  <button id="mobileSearchFab" type="button">🔍 Search</button>
-
-  <div id="mobileSearchOverlay" class="mobile-search-overlay">
-    <div class="mobile-search-card">
-      <div class="mobile-search-head">
-        <button id="mobileSearchClose" type="button">←</button>
-        <b>Search BeachScout</b>
-      </div>
-
-      <label for="mobileCountrySearch">Country</label>
-      <input id="mobileCountrySearch" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Worldwide or country name">
-      <div id="mobileCountrySuggestions" class="mobile-suggestions"></div>
-
-      <label for="mobilePlaceSearch">Place</label>
-      <input id="mobilePlaceSearch" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Type place, e.g. San Cataldo">
-      <div id="mobilePlaceSuggestions" class="mobile-suggestions"></div>
-
-      <button id="mobileRunSearch" type="button">Search 10 km around place</button>
-      <button id="mobileNearMe" type="button" style="background:#2f6b4f;">Use my current location</button>
-    </div>
-  </div>
-
+  <button id="mobileSearchButton" type="button">Search</button>
   <div id="styleSwitcher">
     <button class="style-btn active" data-style="streets">Public roads</button>
     <button class="style-btn" data-style="outdoor">Outdoor</button>
@@ -377,6 +271,7 @@ const USER_TOKEN = getUserToken();
 const APP_VERSION = 'beachscout_global10_nearme_photos_taiwan_china_v1';
 const BEACH_PHOTO_BUCKET = 'beach-photos';
 const BEACH_PHOTO_TABLE = 'beach_photos';
+const DEFAULT_SANTA_MONICA_BEACHES = [{"name": "Santa Monica State Beach", "originalName": "Santa Monica State Beach", "lat": 34.01, "lon": -118.496, "tags": {"name": "Santa Monica State Beach", "natural": "beach", "wikipedia": "en:Santa_Monica_State_Beach"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Santa_Monica_State_Beach"}, {"name": "Venice Beach", "originalName": "Venice Beach", "lat": 33.985, "lon": -118.4695, "tags": {"name": "Venice Beach", "natural": "beach", "wikipedia": "en:Venice,_Los_Angeles"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Venice,_Los_Angeles"}, {"name": "Muscle Beach Venice", "originalName": "Muscle Beach Venice", "lat": 33.9859, "lon": -118.472, "tags": {"name": "Muscle Beach Venice", "leisure": "beach", "wikipedia": "en:Muscle_Beach"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Muscle_Beach"}, {"name": "Will Rogers State Beach", "originalName": "Will Rogers State Beach", "lat": 34.039, "lon": -118.551, "tags": {"name": "Will Rogers State Beach", "natural": "beach", "wikipedia": "en:Will_Rogers_State_Beach"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Will_Rogers_State_Beach"}, {"name": "Playa del Rey Beach", "originalName": "Playa del Rey Beach", "lat": 33.9547, "lon": -118.4497, "tags": {"name": "Playa del Rey Beach", "natural": "beach"}, "status": "Beach", "wiki": ""}, {"name": "Dockweiler State Beach", "originalName": "Dockweiler State Beach", "lat": 33.93, "lon": -118.435, "tags": {"name": "Dockweiler State Beach", "natural": "beach", "wikipedia": "en:Dockweiler_State_Beach"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Dockweiler_State_Beach"}, {"name": "Marina Beach", "originalName": "Marina Beach", "lat": 33.9776, "lon": -118.4569, "tags": {"name": "Marina Beach", "natural": "beach"}, "status": "Beach", "wiki": ""}, {"name": "Topanga Beach", "originalName": "Topanga Beach", "lat": 34.0397, "lon": -118.5836, "tags": {"name": "Topanga Beach", "natural": "beach"}, "status": "Beach", "wiki": ""}];
 
 function trackEvent(eventType, mode = 'local', details = {}){
   try{
@@ -399,140 +294,40 @@ function trackEvent(eventType, mode = 'local', details = {}){
 
 
 
-let mobileCountryTimer=null, mobilePlaceTimer=null, mobilePlaceToken=0;
-
-function openMobileSearch(){
-  const overlay = $("mobileSearchOverlay");
-  if(!overlay) return;
-
-  $("mobileCountrySearch").value = currentCountry || "Worldwide";
-  $("mobilePlaceSearch").value = $("placeSearch").value || "";
-  $("mobileCountrySuggestions").innerHTML = "";
-  $("mobilePlaceSuggestions").innerHTML = "";
-
-  overlay.classList.add("show");
-
-  setTimeout(()=>{
-    const input = $("mobileCountrySearch");
-    if(input){
-      input.focus();
-      input.select();
-    }
-  },150);
+function openMobileSearchPanel(){
+  const panel = document.getElementById("searchPanel") || document.querySelector(".panel");
+  if(panel) panel.classList.add("mobile-open");
 }
 
-function closeMobileSearch(){
-  const overlay = $("mobileSearchOverlay");
-  if(overlay) overlay.classList.remove("show");
+function closeMobileSearchPanel(){
+  const panel = document.getElementById("searchPanel") || document.querySelector(".panel");
+  if(panel) panel.classList.remove("mobile-open");
 }
 
-function mobileShowCountrySuggestions(query){
-  const box = $("mobileCountrySuggestions");
-  if(!box) return;
+function runDefaultSantaMonicaSearch(){
+  try{
+    currentCountry = "United States";
+    if($("country")) $("country").value = "United States";
+    if($("countrySearch")) $("countrySearch").value = "United States";
+    if($("placeSearch")) $("placeSearch").value = "Santa Monica";
 
-  const q = String(query || "").trim().toLowerCase();
-  box.innerHTML = "";
+    allBeaches = DEFAULT_SANTA_MONICA_BEACHES.map(b => ({
+      name: b.name,
+      originalName: b.originalName,
+      lat: Number(b.lat),
+      lon: Number(b.lon),
+      tags: b.tags || {},
+      status: b.status || placeStatus(b.tags || {}),
+      wiki: b.wiki || wikilink(b.tags || {})
+    }));
 
-  if(!q){
-    currentCountry = "Worldwide";
-    $("country").value = "Worldwide";
-    $("countrySearch").value = "Worldwide";
-    populateRegions();
-    return;
+    map.flyTo({center:[-118.4912273,34.0194704],zoom:11});
+    render(true);
+    status("Default Santa Monica / LA beaches loaded instantly. Press Search to choose another place.");
+  }catch(e){
+    console.log("default Santa Monica load failed", e);
+    status("Default beach list could not be loaded. Press Search to choose a place.");
   }
-
-  const matches = countryNames
-    .filter(name => name.toLowerCase().includes(q))
-    .sort((a,b)=>{
-      const al=a.toLowerCase(), bl=b.toLowerCase();
-      const ap=al.startsWith(q), bp=bl.startsWith(q);
-      if(ap && !bp) return -1;
-      if(!ap && bp) return 1;
-      return a.localeCompare(b);
-    })
-    .slice(0,8);
-
-  matches.forEach(name=>{
-    const btn=document.createElement("button");
-    btn.type="button";
-    btn.textContent=name;
-    btn.onclick=()=>{
-      currentCountry=name;
-      $("country").value=name;
-      $("countrySearch").value=name;
-      $("mobileCountrySearch").value=name;
-      box.innerHTML="";
-      populateRegions();
-      $("mobilePlaceSearch").focus();
-    };
-    box.appendChild(btn);
-  });
-}
-
-function mobileScheduleCountrySuggestions(){
-  clearTimeout(mobileCountryTimer);
-  mobileCountryTimer=setTimeout(()=>mobileShowCountrySuggestions($("mobileCountrySearch").value),150);
-}
-
-function mobileShowPlaceSuggestions(results){
-  const box = $("mobilePlaceSuggestions");
-  box.innerHTML = "";
-
-  if(!results || !results.length){
-    box.textContent = "No matching place found.";
-    return;
-  }
-
-  results.forEach(res=>{
-    const btn=document.createElement("button");
-    btn.type="button";
-    btn.textContent=shortPlaceLabel(res);
-    btn.title=res.display_name || btn.textContent;
-    btn.onclick=()=>{
-      $("placeSearch").value = placeChoiceLabel(res).split(",")[0] || $("mobilePlaceSearch").value;
-      closeMobileSearch();
-      runLocalSearchFromResult(res);
-    };
-    box.appendChild(btn);
-  });
-}
-
-function mobileSchedulePlaceSuggestions(){
-  clearTimeout(mobilePlaceTimer);
-  const q = $("mobilePlaceSearch").value.trim();
-
-  $("placeSearch").value = q;
-
-  if(q.length < 3){
-    $("mobilePlaceSuggestions").innerHTML = "";
-    return;
-  }
-
-  const token = ++mobilePlaceToken;
-  mobilePlaceTimer = setTimeout(async ()=>{
-    try{
-      $("mobilePlaceSuggestions").textContent = "Finding places...";
-      const results = await geocodePlace(q);
-      if(token !== mobilePlaceToken) return;
-      mobileShowPlaceSuggestions(results || []);
-    }catch(e){
-      if(token !== mobilePlaceToken) return;
-      $("mobilePlaceSuggestions").textContent = "Could not load suggestions.";
-    }
-  },500);
-}
-
-async function mobileRunSearch(){
-  $("country").value = currentCountry || "Worldwide";
-  $("countrySearch").value = currentCountry || "Worldwide";
-  $("placeSearch").value = $("mobilePlaceSearch").value.trim();
-  closeMobileSearch();
-  await localScan();
-}
-
-async function mobileNearMe(){
-  closeMobileSearch();
-  await nearMeScan();
 }
 
 function $(id){return document.getElementById(id)}
@@ -556,7 +351,7 @@ function populateCountries(){
   Object.keys(countries).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;c.appendChild(o)});
   c.value=currentCountry;
   const cs=$('countrySearch');
-  if(cs) cs.value=currentCountry || "Worldwide";
+  if(cs) cs.value=currentCountry;
   populateRegions();
 }
 function populateRegions(){
@@ -786,18 +581,7 @@ function showCountrySuggestions(query){
 
 function scheduleCountrySuggestions(){
   clearTimeout(countrySuggestTimer);
-  const q = $("countrySearch").value.trim();
-
-  if(!q){
-    currentCountry = "Worldwide";
-    $("country").value = "Worldwide";
-    const box = $("countrySuggestions");
-    if(box) box.innerHTML = "";
-    populateRegions();
-    return;
-  }
-
-  countrySuggestTimer = setTimeout(()=>showCountrySuggestions(q),150);
+  countrySuggestTimer = setTimeout(()=>showCountrySuggestions($("countrySearch").value),150);
 }
 
 function schedulePlaceSuggestions(){
@@ -841,6 +625,7 @@ out center tags;`
 }
 async function runLocalSearchFromResult(result){
   autoCorrectCountryFromResult(result);
+  closeMobileSearchPanel();
   const lat=Number(result.lat),lon=Number(result.lon),label=result.display_name||"selected place",radius=localRadiusMeters();
   $("suggestions").innerHTML=`Selected: ${escapeHtml(label)}`;
   clearMarkers(); allBeaches=[]; $('list').innerHTML=''; $('stats').textContent='Loading local places...';
@@ -984,6 +769,7 @@ function clearMarkers(){clearParking();markers.forEach(m=>m.remove());markers=[]
 function closeActivePopup(){if(activePopup){activePopup.remove();activePopup=null}}
 
 function newSearchReset(){
+  openMobileSearchPanel();
   parkingSearchRunning = false;
   activeParkingBeach = null;
   activeParkingInfoId = null;
@@ -1688,14 +1474,7 @@ function distanceKm(a,b,c,d){const R=6371,dl=(c-a)*Math.PI/180,dn=(d-b)*Math.PI/
 
 function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMapStyle=s;closeActivePopup();clearParking();markers.forEach(m=>m.remove());markers=[];document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));map.setStyle(MAP_STYLES[s]);const redraw=()=>{if(!map.isStyleLoaded()){setTimeout(redraw,100);return}render(false)};map.once('style.load',redraw);map.once('idle',redraw);setTimeout(redraw,700)}
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
-$('mobileSearchFab').addEventListener('click',openMobileSearch);
-$('mobileSearchClose').addEventListener('click',closeMobileSearch);
-$('mobileCountrySearch').addEventListener('focus',()=>setTimeout(()=>$("mobileCountrySearch").select(),50));
-$('mobileCountrySearch').addEventListener('input',mobileScheduleCountrySuggestions);
-$('mobilePlaceSearch').addEventListener('input',mobileSchedulePlaceSuggestions);
-$('mobilePlaceSearch').addEventListener('keydown',e=>{if(e.key==="Enter")mobileRunSearch();});
-$('mobileRunSearch').addEventListener('click',mobileRunSearch);
-$('mobileNearMe').addEventListener('click',mobileNearMe);
+$('mobileSearchButton').addEventListener('click',openMobileSearchPanel);
 $('localScan').addEventListener('click',localScan);
 $('nearMeScan').addEventListener('click',nearMeScan);
 $('newSearch').addEventListener('click',newSearchReset);
@@ -1711,6 +1490,7 @@ map.on('load',()=>{
   trackEvent("beachscout_page_view", "page", {
     page: location.href
   });
+  setTimeout(runDefaultSantaMonicaSearch, 150);
 });
 </script>
 </body>
