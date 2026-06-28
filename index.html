@@ -13,7 +13,7 @@
   body{margin:0;font-family:Georgia,"Times New Roman",serif;color:var(--ink);background:var(--paper)}
   .app{display:grid;grid-template-columns:410px 1fr;height:100vh;height:100dvh}
   .panel{background:var(--panel);border-right:1px solid var(--rule);padding:22px;overflow-y:auto}
-  h1{margin:0 0 4px;font-size:30px}.tag{color:var(--muted);font-style:italic;margin-bottom:18px;font-size:14px}
+  h1{margin:0 0 4px;font-size:30px}.tag{color:var(--muted);font-style:italic;margin-bottom:56px;font-size:14px}
   label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:12px 0 6px}
   select,button{width:100%;padding:12px;font:inherit;border-radius:8px;border:1px solid var(--rule);background:#fff}
   button{margin-top:12px;background:var(--accent);color:#fff;border:none;font-weight:bold;cursor:pointer}
@@ -111,7 +111,7 @@
       display:block;
       position:absolute;
       right:14px;
-      bottom:18px;
+      bottom:56px;
       z-index:90;
       width:auto;
       min-width:96px;
@@ -159,10 +159,10 @@
     <h1>BeachScout Global</h1>
     <div class="tag">Fast local 10 km search — choose the correct place first</div>
 
-    <label for="countrySearch">Country / Worldwide</label>
+    <label for="countrySearch">Country</label>
     <input id="countrySearch" type="text" placeholder="Start typing country, e.g. Italy" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
     <div id="countrySuggestions" class="photo-note" style="margin-top:8px;"></div>
-    <select id="country" style="margin-top:8px;"></select>
+    <select id="country" style="display:none;"></select>
 <div class="box">
       <b>Default: local 10 km search</b>
       <div class="photo-note" style="margin:6px 0 8px;">Recommended. Type a place such as Genoa, Nice, Split or Ada Ciganlija. This version does not run large regional searches.</div>
@@ -1475,6 +1475,8 @@ function distanceKm(a,b,c,d){const R=6371,dl=(c-a)*Math.PI/180,dn=(d-b)*Math.PI/
 function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMapStyle=s;closeActivePopup();clearParking();markers.forEach(m=>m.remove());markers=[];document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));map.setStyle(MAP_STYLES[s]);const redraw=()=>{if(!map.isStyleLoaded()){setTimeout(redraw,100);return}render(false)};map.once('style.load',redraw);map.once('idle',redraw);setTimeout(redraw,700)}
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
 $('mobileSearchButton').addEventListener('click',openMobileSearchPanel);
+$('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch").select(),50));
+$('countrySearch').addEventListener('click',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('localScan').addEventListener('click',localScan);
 $('nearMeScan').addEventListener('click',nearMeScan);
 $('newSearch').addEventListener('click',newSearchReset);
