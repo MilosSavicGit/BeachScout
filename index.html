@@ -81,10 +81,11 @@
     .panel{order:2;border-right:none;border-top:1px solid var(--rule)}
     #map{order:1}
 
+    /* Google Maps style: use floating search button on mobile */
     #mobileSearchFab{
       display:block;
       position:absolute;
-      z-index:50;
+      z-index:60;
       left:14px;
       top:14px;
       width:auto;
@@ -107,15 +108,12 @@
       display:none;
       position:fixed;
       inset:0;
-      z-index:100;
+      z-index:200;
       background:rgba(244,239,230,.98);
       padding:12px;
       overflow-y:auto;
     }
-
-    .mobile-search-overlay.show{
-      display:block;
-    }
+    .mobile-search-overlay.show{display:block}
 
     .mobile-search-card{
       display:block;
@@ -170,10 +168,7 @@
       caret-color:var(--accent);
     }
 
-    .mobile-suggestions{
-      margin-top:8px;
-    }
-
+    .mobile-suggestions{margin-top:8px}
     .mobile-suggestions button{
       display:block;
       width:100%;
@@ -195,8 +190,50 @@
       margin-top:12px;
     }
 
-    select,button,input,textarea{
+    select,button,input,textarea{font-size:16px !important}
+  }
+
+  /* Mobile UI step 1: larger touch targets only. No layout or logic changes. */
+  @media(max-width:900px){
+    .panel{padding:16px}
+    h1{font-size:26px}
+    .tag{font-size:13px;margin-bottom:12px}
+    select,
+    button,
+    input,
+    textarea{
       font-size:16px !important;
+    }
+    button{
+      padding:14px;
+      border-radius:11px;
+      margin-top:10px;
+    }
+    #placeSearch,
+    #countrySearch{
+      padding:14px !important;
+      border-radius:11px !important;
+    }
+    .box{
+      padding:12px;
+      margin:12px 0;
+      border-radius:11px;
+    }
+    .item{
+      padding:13px;
+      border-radius:11px;
+    }
+    .item h3{
+      font-size:16px;
+    }
+    .filters label{
+      font-size:14px;
+      padding:6px 0;
+    }
+    .suggestion-btn{
+      padding:11px 10px;
+      font-size:14px;
+      border-radius:9px;
     }
   }
 </style>
@@ -207,10 +244,10 @@
     <h1>BeachScout Global</h1>
     <div class="tag">Fast local 10 km search — choose the correct place first</div>
 
-    <label for="countrySearch">Country / Worldwide</label>
-    <input id="countrySearch" type="text" placeholder="Start typing country, e.g. Italy" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
+    <label for="countrySearch">Country</label>
+    <input id="countrySearch" type="text" placeholder="Worldwide or start typing country, e.g. Italy" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
     <div id="countrySuggestions" class="photo-note" style="margin-top:8px;"></div>
-    <select id="country" style="margin-top:8px;"></select>
+    <select id="country" style="display:none;"></select>
 <div class="box">
       <b>Default: local 10 km search</b>
       <div class="photo-note" style="margin:6px 0 8px;">Recommended. Type a place such as Genoa, Nice, Split or Ada Ciganlija. This version does not run large regional searches.</div>
@@ -376,7 +413,7 @@ function openMobileSearch(){
   overlay.classList.add("show");
 
   setTimeout(()=>{
-    const input = $("mobilePlaceSearch");
+    const input = $("mobileCountrySearch");
     if(input){
       input.focus();
       input.select();
@@ -519,7 +556,7 @@ function populateCountries(){
   Object.keys(countries).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;c.appendChild(o)});
   c.value=currentCountry;
   const cs=$('countrySearch');
-  if(cs) cs.value=currentCountry;
+  if(cs) cs.value=currentCountry || "Worldwide";
   populateRegions();
 }
 function populateRegions(){
@@ -749,7 +786,18 @@ function showCountrySuggestions(query){
 
 function scheduleCountrySuggestions(){
   clearTimeout(countrySuggestTimer);
-  countrySuggestTimer = setTimeout(()=>showCountrySuggestions($("countrySearch").value),150);
+  const q = $("countrySearch").value.trim();
+
+  if(!q){
+    currentCountry = "Worldwide";
+    $("country").value = "Worldwide";
+    const box = $("countrySuggestions");
+    if(box) box.innerHTML = "";
+    populateRegions();
+    return;
+  }
+
+  countrySuggestTimer = setTimeout(()=>showCountrySuggestions(q),150);
 }
 
 function schedulePlaceSuggestions(){
