@@ -32,6 +32,9 @@
   .photo-note{color:var(--muted);font-size:12px;font-style:italic;margin-top:4px}.no-photo{text-align:center;padding:12px 6px;background:#f8f3ea;border:1px dashed var(--rule);border-radius:8px;margin:8px 0}
   .suggestion-btn{display:block;width:100%;margin:4px 0;padding:8px 9px;font-size:12px;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--rule);border-radius:7px;cursor:pointer}
   .suggestion-btn:hover{border-color:var(--accent);background:#fffaf1}
+  .panel-toggle{display:none}
+  input,textarea{color:var(--ink);background:#fff;caret-color:var(--accent)}
+  input::placeholder,textarea::placeholder{color:#9a907f;opacity:1}
   .upload-box{margin-top:10px;padding:9px;border:1px dashed var(--rule);border-radius:8px;background:#fffaf1}
   .upload-box input,.upload-box textarea{width:100%;margin-top:6px;padding:8px;border:1px solid var(--rule);border-radius:7px;font:inherit;font-size:13px}
   .upload-box textarea{min-height:86px;resize:vertical}
@@ -78,6 +81,39 @@
   /* Mobile UI step 1: larger touch targets only. No layout or logic changes. */
   @media(max-width:900px){
     .panel{padding:16px}
+    .panel-toggle{
+      display:block;
+      position:sticky;
+      top:0;
+      z-index:40;
+      background:#6b7280;
+      color:#fff;
+      margin:0 0 10px;
+      padding:12px;
+      border-radius:11px;
+      font-size:15px !important;
+    }
+    .app.panel-collapsed{
+      grid-template-rows:calc(100vh - 58px) 58px;
+      grid-template-rows:calc(100dvh - 58px) 58px;
+    }
+    .app.panel-collapsed .panel{
+      overflow:hidden;
+      padding:7px 12px;
+    }
+    .app.panel-collapsed .panel > *:not(.panel-toggle){
+      display:none !important;
+    }
+    .app.panel-collapsed #map{
+      height:auto;
+    }
+    #countrySearch,#placeSearch{
+      color:#1c1a17 !important;
+      background:#fff !important;
+      -webkit-text-fill-color:#1c1a17 !important;
+      min-height:48px;
+      line-height:22px;
+    }
     h1{font-size:26px}
     .tag{font-size:13px;margin-bottom:12px}
     select,
@@ -122,18 +158,19 @@
 </head>
 <body>
 <div class="app">
-  <div class="panel">
+  <div class="panel" id="searchPanel">
+    <button id="panelToggle" type="button" class="panel-toggle">⌄ Search / Results</button>
     <h1>BeachScout Global</h1>
     <div class="tag">Fast local 10 km search — choose the correct place first</div>
 
-    <label for="countrySearch">Country / Worldwide</label>
-    <input id="countrySearch" type="text" placeholder="Start typing country, e.g. Italy" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
+    <label for="countrySearch">Country</label>
+    <input id="countrySearch" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Worldwide or start typing country, e.g. Italy" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
     <div id="countrySuggestions" class="photo-note" style="margin-top:8px;"></div>
-    <select id="country" style="margin-top:8px;"></select>
+    <select id="country" style="display:none;"></select>
 <div class="box">
       <b>Default: local 10 km search</b>
       <div class="photo-note" style="margin:6px 0 8px;">Recommended. Type a place such as Genoa, Nice, Split or Ada Ciganlija. This version does not run large regional searches.</div>
-      <input id="placeSearch" type="text" placeholder="Example: Genoa" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
+      <input id="placeSearch" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Example: Genoa" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
       <button id="localScan">Search 10 km around place</button>
       <button id="nearMeScan" type="button" style="background:#2f6b4f;">Use my current location — 10 km</button>
       <button id="newSearch" type="button" style="background:#6b7280;">New Search / Reset</button>
@@ -258,6 +295,35 @@ function trackEvent(eventType, mode = 'local', details = {}){
 
 
 
+
+function isMobileView(){
+  return window.matchMedia && window.matchMedia("(max-width:900px)").matches;
+}
+
+function collapseSearchPanelOnMobile(){
+  if(!isMobileView()) return;
+  const app = document.querySelector(".app");
+  const btn = $("panelToggle");
+  if(app) app.classList.add("panel-collapsed");
+  if(btn) btn.textContent = "⌃ Search / Results";
+  setTimeout(()=>{ if(map && map.resize) map.resize(); }, 120);
+}
+
+function expandSearchPanel(){
+  const app = document.querySelector(".app");
+  const btn = $("panelToggle");
+  if(app) app.classList.remove("panel-collapsed");
+  if(btn) btn.textContent = "⌄ Search / Results";
+  setTimeout(()=>{ if(map && map.resize) map.resize(); }, 120);
+}
+
+function toggleSearchPanel(){
+  const app = document.querySelector(".app");
+  if(!app) return;
+  if(app.classList.contains("panel-collapsed")) expandSearchPanel();
+  else collapseSearchPanelOnMobile();
+}
+
 function $(id){return document.getElementById(id)}
 function status(msg){$('status').textContent=msg}
 function setBusy(isBusy, text="Searching..."){
@@ -279,7 +345,7 @@ function populateCountries(){
   Object.keys(countries).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;c.appendChild(o)});
   c.value=currentCountry;
   const cs=$('countrySearch');
-  if(cs) cs.value=currentCountry;
+  if(cs) cs.value=currentCountry || "Worldwide";
   populateRegions();
 }
 function populateRegions(){
@@ -509,7 +575,18 @@ function showCountrySuggestions(query){
 
 function scheduleCountrySuggestions(){
   clearTimeout(countrySuggestTimer);
-  countrySuggestTimer = setTimeout(()=>showCountrySuggestions($("countrySearch").value),150);
+  const q = $("countrySearch").value.trim();
+
+  if(!q){
+    currentCountry = "Worldwide";
+    $("country").value = "Worldwide";
+    const box = $("countrySuggestions");
+    if(box) box.innerHTML = "";
+    populateRegions();
+    return;
+  }
+
+  countrySuggestTimer = setTimeout(()=>showCountrySuggestions(q),150);
 }
 
 function schedulePlaceSuggestions(){
@@ -553,6 +630,7 @@ out center tags;`
 }
 async function runLocalSearchFromResult(result){
   autoCorrectCountryFromResult(result);
+  collapseSearchPanelOnMobile();
   const lat=Number(result.lat),lon=Number(result.lon),label=result.display_name||"selected place",radius=localRadiusMeters();
   $("suggestions").innerHTML=`Selected: ${escapeHtml(label)}`;
   clearMarkers(); allBeaches=[]; $('list').innerHTML=''; $('stats').textContent='Loading local places...';
@@ -696,6 +774,7 @@ function clearMarkers(){clearParking();markers.forEach(m=>m.remove());markers=[]
 function closeActivePopup(){if(activePopup){activePopup.remove();activePopup=null}}
 
 function newSearchReset(){
+  expandSearchPanel();
   parkingSearchRunning = false;
   activeParkingBeach = null;
   activeParkingInfoId = null;
@@ -1400,9 +1479,12 @@ function distanceKm(a,b,c,d){const R=6371,dl=(c-a)*Math.PI/180,dn=(d-b)*Math.PI/
 
 function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMapStyle=s;closeActivePopup();clearParking();markers.forEach(m=>m.remove());markers=[];document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));map.setStyle(MAP_STYLES[s]);const redraw=()=>{if(!map.isStyleLoaded()){setTimeout(redraw,100);return}render(false)};map.once('style.load',redraw);map.once('idle',redraw);setTimeout(redraw,700)}
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
+$('panelToggle').addEventListener('click',toggleSearchPanel);
 $('localScan').addEventListener('click',localScan);
 $('nearMeScan').addEventListener('click',nearMeScan);
 $('newSearch').addEventListener('click',newSearchReset);
+$('placeSearch').addEventListener('focus',expandSearchPanel);
+$('countrySearch').addEventListener('focus',expandSearchPanel);
 $('placeSearch').addEventListener('input',schedulePlaceSuggestions);
 $('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter')localScan();});
 $('countrySearch').addEventListener('input',scheduleCountrySuggestions);
