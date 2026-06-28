@@ -30,10 +30,15 @@
   .popup h3{margin:0 0 6px;font-size:16px}.popup p{margin:0 0 5px;font-size:13px}
   .popup img{width:260px;height:165px;object-fit:cover;border-radius:8px;margin:8px 0;display:block;background:#eee}
   .photo-note{color:var(--muted);font-size:12px;font-style:italic;margin-top:4px}.no-photo{text-align:center;padding:12px 6px;background:#f8f3ea;border:1px dashed var(--rule);border-radius:8px;margin:8px 0}
+  .suggestion-btn{display:block;width:100%;margin:4px 0;padding:8px 9px;font-size:12px;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--rule);border-radius:7px;cursor:pointer}
+  .suggestion-btn:hover{border-color:var(--accent);background:#fffaf1}
   .upload-box{margin-top:10px;padding:9px;border:1px dashed var(--rule);border-radius:8px;background:#fffaf1}
   .upload-box input,.upload-box textarea{width:100%;margin-top:6px;padding:8px;border:1px solid var(--rule);border-radius:7px;font:inherit;font-size:13px}
-  .upload-box textarea{min-height:62px;resize:vertical}
+  .upload-box textarea{min-height:86px;resize:vertical}
   .upload-box button{margin-top:8px;padding:8px 10px;font-size:13px}
+  .community-gallery{display:grid;grid-template-columns:1fr;gap:8px;margin:8px 0}
+  .community-gallery img{width:260px;height:165px;object-fit:cover;border-radius:8px;display:block;background:#eee;margin:0}
+  .word-count{font-size:12px;color:var(--muted);margin-top:4px}
 
   #busyOverlay{
     position:absolute;
@@ -77,8 +82,10 @@
     <h1>BeachScout Global</h1>
     <div class="tag">Fast local 10 km search — choose the correct place first</div>
 
-    <label for="country">Country / Worldwide</label>
-    <select id="country"></select>
+    <label for="countrySearch">Country / Worldwide</label>
+    <input id="countrySearch" type="text" placeholder="Start typing country, e.g. Italy" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
+    <div id="countrySuggestions" class="photo-note" style="margin-top:8px;"></div>
+    <select id="country" style="margin-top:8px;"></select>
 <div class="box">
       <b>Default: local 10 km search</b>
       <div class="photo-note" style="margin:6px 0 8px;">Recommended. Type a place such as Genoa, Nice, Split or Ada Ciganlija. This version does not run large regional searches.</div>
@@ -160,6 +167,7 @@ countryNames.forEach(name => {
 let markers=[],parkingMarkers=[],allBeaches=[],hoverPopup=null,activePopup=null,currentCountry="Worldwide",currentRegion="Whole country";
 let activeParkingBeach=null, activeParkingInfoId=null, parkingSearchRunning=false;
 let activeUploadBeach=null, activeUploadStatusId=null;
+let placeSuggestTimer=null, placeSuggestToken=0, countrySuggestTimer=null;
 
 /* =====================================================================
    SUPABASE ANALYTICS
@@ -221,7 +229,15 @@ function setBusy(isBusy, text="Searching..."){
   if(nearMeBtn) nearMeBtn.disabled = isBusy;
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-function populateCountries(){const c=$('country');c.innerHTML='';Object.keys(countries).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;c.appendChild(o)});c.value=currentCountry;populateRegions()}
+function populateCountries(){
+  const c=$('country');
+  c.innerHTML='';
+  Object.keys(countries).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;c.appendChild(o)});
+  c.value=currentCountry;
+  const cs=$('countrySearch');
+  if(cs) cs.value=currentCountry;
+  populateRegions();
+}
 function populateRegions(){
   const country=countries[currentCountry];
   currentRegion=country.defaultRegion;
@@ -230,20 +246,41 @@ function populateRegions(){
 function regionData(){return countries[currentCountry].regions[currentRegion]}
 
 function localRadiusMeters(){return 10000}
+function nominatimCountryCode(country){
+  const map = {
+    "Albania":"al","Australia":"au","Austria":"at","Belgium":"be","Brazil":"br",
+    "Bulgaria":"bg","Canada":"ca","China":"cn","Croatia":"hr","Cyprus":"cy",
+    "Denmark":"dk","France":"fr","Germany":"de","Greece":"gr","Italy":"it",
+    "Japan":"jp","Montenegro":"me","Netherlands":"nl","New Zealand":"nz",
+    "Portugal":"pt","Serbia":"rs","South Africa":"za","South Korea":"kr",
+    "Spain":"es","Thailand":"th","Turkey":"tr","United Kingdom":"gb",
+    "United States":"us","Taiwan, China":"tw"
+  };
+  return map[country] || "";
+}
+
 async function geocodePlace(query){
   const country=currentCountry||$('country').value||"Worldwide";
   const q=(country==="Worldwide") ? query : `${query}, ${country}`;
+  const countryCode = country==="Worldwide" ? "" : nominatimCountryCode(country);
 
-  let url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&addressdetails=1&q=${encodeURIComponent(q)}`;
+  let url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&addressdetails=1&q=${encodeURIComponent(q)}`;
+  if(countryCode) url += `&countrycodes=${encodeURIComponent(countryCode)}`;
+
   let r=await fetch(url,{headers:{"Accept":"application/json"}});
   if(!r.ok)throw new Error("Place search failed");
   let results=await r.json();
 
-  // Fallback: if country-specific lookup fails, try global lookup.
-  if((!results||!results.length) && country && country!=="Worldwide"){
-    url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&addressdetails=1&q=${encodeURIComponent(query)}`;
-    r=await fetch(url,{headers:{"Accept":"application/json"}});
-    if(r.ok)results=await r.json();
+  // Important:
+  // Do NOT fall back to worldwide suggestions when a country is selected.
+  // Otherwise San Cataldo / Roma / Sykia-style duplicates appear from the whole world.
+  if(country && country!=="Worldwide"){
+    const selected = country.toLowerCase().replace(", china","");
+    results = (results || []).filter(res => {
+      const c = (res.address?.country || "").toLowerCase();
+      if(country === "Taiwan, China") return c.includes("taiwan");
+      return c === selected || c.includes(selected);
+    });
   }
 
   return results;
@@ -297,6 +334,8 @@ function autoCorrectCountryFromResult(result){
   const current = $('country').value;
   if(current !== matchedCountry){
     $('country').value = matchedCountry;
+    const cs=$('countrySearch');
+    if(cs) cs.value = matchedCountry;
     currentCountry = matchedCountry;
     populateRegions();
 
@@ -368,28 +407,89 @@ function showPlaceSuggestions(results){
 
   const title = document.createElement("div");
   title.innerHTML = results.length === 1
-    ? "Place found. Click to search around it:"
-    : "Multiple places found. Select the correct one:";
+    ? "Suggested place. Click to search around it:"
+    : "Suggested places. Select the correct one:";
   title.style.marginBottom = "7px";
   box.appendChild(title);
 
   results.forEach(res => {
     const btn = document.createElement("button");
     btn.type = "button";
+    btn.className = "suggestion-btn";
     btn.textContent = shortPlaceLabel(res);
     btn.title = res.display_name || btn.textContent;
-    btn.style.margin = "4px 0";
-    btn.style.padding = "8px 9px";
-    btn.style.fontSize = "12px";
-    btn.style.textAlign = "left";
-    btn.style.background = "#fff";
-    btn.style.color = "var(--ink)";
-    btn.style.border = "1px solid var(--rule)";
-    btn.style.borderRadius = "7px";
-    btn.onclick = () => runLocalSearchFromResult(res);
+    btn.onclick = () => {
+      $("placeSearch").value = placeChoiceLabel(res).split(",")[0] || $("placeSearch").value;
+      runLocalSearchFromResult(res);
+    };
     box.appendChild(btn);
   });
 }
+
+function showCountrySuggestions(query){
+  const box = $("countrySuggestions");
+  if(!box) return;
+  const q = String(query || "").trim().toLowerCase();
+  box.innerHTML = "";
+  if(q.length < 1){ box.textContent = ""; return; }
+
+  const matches = countryNames
+    .filter(name => name.toLowerCase().includes(q))
+    .sort((a,b)=>{
+      const al=a.toLowerCase(), bl=b.toLowerCase();
+      const ap=al.startsWith(q), bp=bl.startsWith(q);
+      if(ap && !bp) return -1;
+      if(!ap && bp) return 1;
+      return a.localeCompare(b);
+    })
+    .slice(0,8);
+
+  if(!matches.length){ box.textContent = "No matching country."; return; }
+
+  matches.forEach(name=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="suggestion-btn";
+    btn.textContent=name;
+    btn.onclick=()=>{
+      currentCountry=name;
+      $("country").value=name;
+      $("countrySearch").value=name;
+      box.innerHTML="";
+      populateRegions();
+      status(`Selected ${name}. Now type a place.`);
+    };
+    box.appendChild(btn);
+  });
+}
+
+function scheduleCountrySuggestions(){
+  clearTimeout(countrySuggestTimer);
+  countrySuggestTimer = setTimeout(()=>showCountrySuggestions($("countrySearch").value),150);
+}
+
+function schedulePlaceSuggestions(){
+  clearTimeout(placeSuggestTimer);
+  const q = $("placeSearch").value.trim();
+  if(q.length < 3){
+    $("suggestions").textContent = "";
+    return;
+  }
+
+  const token = ++placeSuggestToken;
+  placeSuggestTimer = setTimeout(async ()=>{
+    try{
+      $("suggestions").textContent = "Finding matching places...";
+      const results = await geocodePlace(q);
+      if(token !== placeSuggestToken) return;
+      showPlaceSuggestions(results || []);
+    }catch(e){
+      if(token !== placeSuggestToken) return;
+      $("suggestions").textContent = "Could not load suggestions. You can still press Search.";
+    }
+  },500);
+}
+
 function buildLocalQuery(lat,lon,radius){
   return `
 [out:json][timeout:120];
@@ -448,6 +548,8 @@ async function runLocalSearchFromResult(result){
 }
 async function localScan(){
   currentCountry=$('country').value;
+  placeSuggestToken++;
+  clearTimeout(placeSuggestTimer);
   const q=$('placeSearch').value.trim();
   if(!q){status("Enter a place name first, for example Genoa.");return}
 
@@ -553,6 +655,8 @@ function newSearchReset(){
   parkingSearchRunning = false;
   activeParkingBeach = null;
   activeParkingInfoId = null;
+  activeUploadBeach = null;
+  activeUploadStatusId = null;
 
   setBusy(false);
   clearMarkers();
@@ -561,7 +665,14 @@ function newSearchReset(){
   allBeaches = [];
   $("list").innerHTML = "";
   $("suggestions").innerHTML = "";
+  const csug=$("countrySuggestions");
+  if(csug) csug.innerHTML = "";
   $("placeSearch").value = "";
+  const cs=$("countrySearch");
+  if(cs) cs.value = currentCountry;
+  clearTimeout(placeSuggestTimer);
+  clearTimeout(countrySuggestTimer);
+  placeSuggestToken++;
   $("stats").textContent = "No beaches loaded yet.";
 
   status("New search ready. Choose a country or Worldwide, type a place, then search within 10 km.");
@@ -687,16 +798,13 @@ async function commonsNameSearchPhoto(beach){
 }
 
 
-async function getApprovedUserPhoto(beach){
+async function getApprovedUserPhotos(beach, limit=5){
   try{
-    if(!supaReady || !supa) return null;
+    if(!supaReady || !supa) return [];
 
     const lat = Number(beach.lat);
     const lon = Number(beach.lon);
-
-    // Match by coordinates rather than name because many beaches share names.
-    // Tolerance ~11 meters at equator. Good enough for OSM-derived beach markers.
-    const tol = 0.0001;
+    const tol = 0.001; // about 100 m, helps with nearby duplicate OSM markers
 
     const { data, error } = await supa
       .from(BEACH_PHOTO_TABLE)
@@ -707,33 +815,25 @@ async function getApprovedUserPhoto(beach){
       .gte("beach_lon", lon - tol)
       .lte("beach_lon", lon + tol)
       .order("created_at", { ascending: false })
-      .limit(1);
+      .limit(limit);
 
     if(error){
       console.log("approved user photo lookup failed", error);
-      return null;
+      return [];
     }
 
-    if(data && data.length && data[0].image_url){
-      return {
-        url: data[0].image_url,
-        source: "BeachScout community photo",
-        description: data[0].description || ""
-      };
-    }
+    return (data || []).filter(row => row.image_url).map(row => ({
+      url: row.image_url,
+      source: "BeachScout community photo",
+      description: row.description || ""
+    }));
   }catch(e){
     console.log("approved user photo lookup failed", e);
+    return [];
   }
-
-  return null;
 }
 
 async function getPhoto(b){
-  // Priority 1: approved user-submitted BeachScout photo.
-  const approvedUserPhoto = await getApprovedUserPhoto(b);
-  if(approvedUserPhoto) return approvedUserPhoto;
-
-  // Priority 2: existing OSM / Wikimedia / Wikipedia / Wikidata / Commons fallback.
   const t=b.tags;
 
   if(t.image&&/^https?:\/\//i.test(t.image))
@@ -770,11 +870,21 @@ async function loadPopupPhoto(photoId, beach){
   if(!target) return;
 
   try{
+    const communityPhotos = await getApprovedUserPhotos(beach, 5);
+    if(communityPhotos.length){
+      const firstDesc = communityPhotos.find(p => p.description)?.description || "";
+      const descHtml = firstDesc ? `<div class="photo-note">${escapeHtml(firstDesc)}</div>` : "";
+      const imgs = communityPhotos.map((p,idx)=>
+        `<img src="${p.url}" alt="${escapeHtml(beach.name)} community photo ${idx+1}">`
+      ).join("");
+      target.innerHTML = `<div class="community-gallery">${imgs}</div>${descHtml}<div class="photo-note">Source: BeachScout community photos</div>`;
+      return;
+    }
+
     if(typeof getPhoto === 'function'){
       const photo = await getPhoto(beach);
       if(photo && photo.url){
-        const desc = photo.description ? `<div class="photo-note">${escapeHtml(photo.description)}</div>` : "";
-        target.innerHTML = `<img src="${photo.url}" alt="${escapeHtml(beach.name)}">${desc}<div class="photo-note">Source: ${escapeHtml(photo.source || "Wikipedia / Commons")}</div>`;
+        target.innerHTML = `<img src="${photo.url}" alt="${escapeHtml(beach.name)}"><div class="photo-note">Source: ${escapeHtml(photo.source || "Wikipedia / Commons")}</div>`;
         return;
       }
     }
@@ -814,11 +924,13 @@ function openPopup(b,num){
         <div id="${parkingId}" class="photo-note" style="margin-top:8px;">Parking not checked yet.</div>
         <button type="button" onclick="findParkingForCurrentBeach()" style="margin-top:8px;padding:8px 10px;font-size:13px;">Find nearest parking</button>
         <div class="upload-box">
-          <b>Add your photo</b>
-          <div class="photo-note">Optional description. Image is resized before upload.</div>
-          <input id="userPhotoInput" type="file" accept="image/*">
-          <textarea id="userPhotoDesc" maxlength="200" placeholder="Optional short description, max 200 characters"></textarea>
-          <button type="button" onclick="uploadPhotoForCurrentBeach()">Upload photo</button>
+          <b>Add your beach photos</b>
+          <div class="photo-note">Up to 5 photos. Optional description up to 300 words. Photos are resized before upload and wait for approval.</div>
+          <input id="userPhotoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+          <div id="userPhotoSelectedCount" class="word-count">No photos selected.</div>
+          <textarea id="userPhotoDesc" placeholder="Optional description, max 300 words"></textarea>
+          <div id="userPhotoWordCount" class="word-count">0 / 300 words</div>
+          <button type="button" onclick="uploadPhotosForCurrentBeach()">Upload photos / description</button>
           <div id="${'upload_' + parkingId}" class="photo-note">No upload yet.</div>
         </div>
         ${b.wiki ? `<p><a href="${b.wiki}" target="_blank">Open Wikipedia article</a></p>` : ""}
@@ -833,6 +945,26 @@ function openPopup(b,num){
   activeParkingInfoId = parkingId;
   activeUploadBeach = b;
   activeUploadStatusId = 'upload_' + parkingId;
+
+  setTimeout(()=>{
+    const desc = document.getElementById("userPhotoDesc");
+    const wc = document.getElementById("userPhotoWordCount");
+    if(desc && wc){
+      desc.addEventListener("input", ()=>{
+        const words = countWords(desc.value);
+        wc.textContent = `${words} / 300 words`;
+        if(words > 300) wc.style.color = "#b91c1c";
+        else wc.style.color = "var(--muted)";
+      });
+    }
+
+    const photoInput = document.getElementById("userPhotoInput");
+    if(photoInput){
+      photoInput.addEventListener("change", updateSelectedPhotoCount);
+      updateSelectedPhotoCount();
+    }
+  },50);
+
   setTimeout(()=>loadPopupPhoto(photoId,b),50);
 }
 
@@ -912,12 +1044,31 @@ async function fetchParkingAtRadius(beach, radius){
 
 
 
-function setUploadStatus(msg){
+function setUploadStatus(msg, success=false){
   const el = activeUploadStatusId ? document.getElementById(activeUploadStatusId) : null;
-  if(el) el.textContent = msg;
+  if(!el) return;
+
+  if(success){
+    el.innerHTML = `<div style="padding:8px;border-radius:7px;background:#ecfdf5;border:1px solid #86efac;color:#166534;font-weight:bold;">${escapeHtml(msg)}</div>`;
+  }else{
+    el.textContent = msg;
+  }
+}
+
+function countWords(text){
+  return String(text || "").trim().split(/\s+/).filter(Boolean).length;
+}
+
+function limitWords(text, maxWords=300){
+  const words = String(text || "").trim().split(/\s+/).filter(Boolean);
+  return words.slice(0, maxWords).join(" ");
 }
 
 async function resizeImageFileToJpeg(file, maxSize=1200, quality=0.75){
+  if(!/^image\/(jpeg|png|webp)$/i.test(file.type || "")){
+    throw new Error("Please use JPG, PNG or WEBP. HEIC is not supported yet.");
+  }
+
   const dataUrl = await new Promise((resolve, reject)=>{
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
@@ -928,7 +1079,7 @@ async function resizeImageFileToJpeg(file, maxSize=1200, quality=0.75){
   const img = await new Promise((resolve, reject)=>{
     const image = new Image();
     image.onload = () => resolve(image);
-    image.onerror = reject;
+    image.onerror = () => reject(new Error("Could not read image. Try JPG, PNG or WEBP."));
     image.src = dataUrl;
   });
 
@@ -946,7 +1097,6 @@ async function resizeImageFileToJpeg(file, maxSize=1200, quality=0.75){
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
-
   const ctx = canvas.getContext("2d");
   ctx.drawImage(img, 0, 0, w, h);
 
@@ -960,7 +1110,27 @@ function safeFilePart(s){
   return String(s || "beach").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0,60) || "beach";
 }
 
-async function uploadPhotoForCurrentBeach(){
+
+function updateSelectedPhotoCount(){
+  const input = document.getElementById("userPhotoInput");
+  const countEl = document.getElementById("userPhotoSelectedCount");
+  if(!input || !countEl) return;
+
+  const count = input.files ? input.files.length : 0;
+
+  if(count === 0){
+    countEl.textContent = "No photos selected.";
+    countEl.style.color = "var(--muted)";
+  }else if(count > 5){
+    countEl.textContent = `${count} photos selected. Maximum is 5. Please remove ${count - 5}.`;
+    countEl.style.color = "#b91c1c";
+  }else{
+    countEl.textContent = `${count} photo${count === 1 ? "" : "s"} selected. They will be uploaded together and wait for approval.`;
+    countEl.style.color = "var(--muted)";
+  }
+}
+
+async function uploadPhotosForCurrentBeach(){
   if(!activeUploadBeach){
     setUploadStatus("No selected beach.");
     return;
@@ -973,76 +1143,113 @@ async function uploadPhotoForCurrentBeach(){
 
   const input = document.getElementById("userPhotoInput");
   const descEl = document.getElementById("userPhotoDesc");
-  const file = input && input.files && input.files[0] ? input.files[0] : null;
-  const description = descEl ? descEl.value.trim().slice(0,200) : "";
+  const files = input && input.files ? Array.from(input.files) : [];
+  const rawDescription = descEl ? descEl.value.trim() : "";
+  const wordCount = countWords(rawDescription);
+  const description = limitWords(rawDescription, 300);
 
-  if(!file && !description){
-    setUploadStatus("Choose a photo or write a short description first.");
+  if(wordCount > 300){
+    setUploadStatus("Description is too long. Please keep it to 300 words.");
     return;
   }
 
-  if(!file){
-    setUploadStatus("Description-only upload is not enabled yet. Please choose a photo.");
+  if(files.length > 5){
+    setUploadStatus("Please choose no more than 5 photos.");
+    return;
+  }
+
+  if(!files.length && !description){
+    setUploadStatus("Choose up to 5 photos or write a description first.");
     return;
   }
 
   try{
-    setUploadStatus("Resizing image...");
-
-    const smallBlob = await resizeImageFileToJpeg(file, 1200, 0.75);
     const beach = activeUploadBeach;
-    const fileName =
-      `${safeFilePart(beach.name)}_${Number(beach.lat).toFixed(5)}_${Number(beach.lon).toFixed(5)}_${Date.now()}.jpg`;
-    const path = `${USER_TOKEN}/${fileName}`;
+    const insertedRows = [];
 
-    setUploadStatus("Uploading photo...");
+    if(files.length){
+      for(let i=0;i<files.length;i++){
+        const file = files[i];
+        setUploadStatus(`Resizing photo ${i+1} of ${files.length}...`);
 
-    const { error: uploadError } = await supa.storage
-      .from(BEACH_PHOTO_BUCKET)
-      .upload(path, smallBlob, {
-        contentType: "image/jpeg",
-        upsert: false
-      });
+        const smallBlob = await resizeImageFileToJpeg(file, 1200, 0.75);
+        const fileName =
+          `${safeFilePart(beach.name)}_${Number(beach.lat).toFixed(5)}_${Number(beach.lon).toFixed(5)}_${Date.now()}_${i+1}.jpg`;
+        const path = `${USER_TOKEN}/${fileName}`;
 
-    if(uploadError) throw uploadError;
+        setUploadStatus(`Uploading photo ${i+1} of ${files.length}. Please wait; all selected photos will wait for approval.`);
 
-    const { data: publicData } = supa.storage
-      .from(BEACH_PHOTO_BUCKET)
-      .getPublicUrl(path);
+        const { error: uploadError } = await supa.storage
+          .from(BEACH_PHOTO_BUCKET)
+          .upload(path, smallBlob, {
+            contentType: "image/jpeg",
+            upsert: false
+          });
 
-    const imageUrl = publicData?.publicUrl || "";
+        if(uploadError) throw uploadError;
 
-    setUploadStatus("Saving details...");
+        const { data: publicData } = supa.storage
+          .from(BEACH_PHOTO_BUCKET)
+          .getPublicUrl(path);
 
-    const { error: dbError } = await supa
-      .from(BEACH_PHOTO_TABLE)
-      .insert({
+        insertedRows.push({
+          beach_name: beach.name,
+          beach_lat: beach.lat,
+          beach_lon: beach.lon,
+          description: description,
+          image_url: publicData?.publicUrl || "",
+          storage_path: path,
+          user_token: USER_TOKEN,
+          status: "pending",
+          app_version: APP_VERSION
+        });
+      }
+    }else{
+      // Description-only contribution.
+      insertedRows.push({
         beach_name: beach.name,
         beach_lat: beach.lat,
         beach_lon: beach.lon,
         description: description,
-        image_url: imageUrl,
-        storage_path: path,
+        image_url: "",
+        storage_path: "",
         user_token: USER_TOKEN,
         status: "pending",
         app_version: APP_VERSION
       });
+    }
+
+    setUploadStatus("Saving upload details...");
+
+    const { error: dbError } = await supa
+      .from(BEACH_PHOTO_TABLE)
+      .insert(insertedRows);
 
     if(dbError) throw dbError;
 
-    setUploadStatus("Photo uploaded. Waiting for approval.");
+    setUploadStatus(
+      files.length
+        ? `${files.length} new user photo${files.length === 1 ? "" : "s"} uploaded. They are waiting for approval.`
+        : "New user description uploaded. It is waiting for approval.",
+      true
+    );
+
     if(input) input.value = "";
     if(descEl) descEl.value = "";
+    const wc = document.getElementById("userPhotoWordCount");
+    if(wc) wc.textContent = "0 / 300 words";
+    updateSelectedPhotoCount();
 
     trackEvent("beachscout_user_photo_uploaded", "photo", {
       beach_name: beach.name,
       beach_lat: beach.lat,
-      beach_lon: beach.lon
+      beach_lon: beach.lon,
+      photo_count: files.length,
+      has_description: !!description
     });
 
   }catch(e){
     console.warn("photo upload failed", e);
-
     let detail = "unknown error";
     try{
       if(e && typeof e === "object"){
@@ -1050,10 +1257,7 @@ async function uploadPhotoForCurrentBeach(){
       }else if(e){
         detail = String(e);
       }
-    }catch(_){
-      detail = "unknown error";
-    }
-
+    }catch(_){}
     setUploadStatus("Upload failed: " + detail);
   }
 }
@@ -1155,8 +1359,11 @@ document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()
 $('localScan').addEventListener('click',localScan);
 $('nearMeScan').addEventListener('click',nearMeScan);
 $('newSearch').addEventListener('click',newSearchReset);
+$('placeSearch').addEventListener('input',schedulePlaceSuggestions);
 $('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter')localScan();});
-$('country').addEventListener('change',()=>{currentCountry=$('country').value;populateRegions();allBeaches=[];$('list').innerHTML='';$('stats').textContent='No beaches loaded yet.'});
+$('countrySearch').addEventListener('input',scheduleCountrySuggestions);
+$('countrySearch').addEventListener('keydown',e=>{if(e.key==='Enter'){const first=$("countrySuggestions").querySelector("button");if(first)first.click();}});
+$('country').addEventListener('change',()=>{currentCountry=$('country').value;$('countrySearch').value=currentCountry;populateRegions();allBeaches=[];$('list').innerHTML='';$('stats').textContent='No beaches loaded yet.'});
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
 map.on('click',()=>closeActivePopup());
 map.on('load',()=>{
