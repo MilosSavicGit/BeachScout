@@ -74,6 +74,50 @@
   #styleSwitcher{position:absolute;top:12px;right:12px;z-index:20;display:flex;gap:4px;background:rgba(255,253,248,.92);padding:4px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.22)}
   .style-btn{font:inherit;font-size:12px;padding:6px 10px;border:none;border-radius:5px;background:transparent;color:var(--ink);cursor:pointer;width:auto;margin:0}.style-btn.active{background:var(--accent);color:#fff}
   @media(max-width:900px){.app{grid-template-columns:1fr;grid-template-rows:430px 1fr}.panel{order:2;border-right:none;border-top:1px solid var(--rule)}#map{order:1}}
+
+  /* Mobile UI step 1: larger touch targets only. No layout or logic changes. */
+  @media(max-width:900px){
+    .panel{padding:16px}
+    h1{font-size:26px}
+    .tag{font-size:13px;margin-bottom:12px}
+    select,
+    button,
+    input,
+    textarea{
+      font-size:16px !important;
+    }
+    button{
+      padding:14px;
+      border-radius:11px;
+      margin-top:10px;
+    }
+    #placeSearch,
+    #countrySearch{
+      padding:14px !important;
+      border-radius:11px !important;
+    }
+    .box{
+      padding:12px;
+      margin:12px 0;
+      border-radius:11px;
+    }
+    .item{
+      padding:13px;
+      border-radius:11px;
+    }
+    .item h3{
+      font-size:16px;
+    }
+    .filters label{
+      font-size:14px;
+      padding:6px 0;
+    }
+    .suggestion-btn{
+      padding:11px 10px;
+      font-size:14px;
+      border-radius:9px;
+    }
+  }
 </style>
 </head>
 <body>
