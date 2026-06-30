@@ -170,3 +170,6 @@ Belgrade, Serbia
 BeachScout is developed as part of **ScoutPlatform**, whose mission is
 to build lightweight, community-powered applications for discovering,
 documenting and preserving knowledge about places around the world.
+
+bymilossavic.com
+contact@bymilossavic.com
