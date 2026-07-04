@@ -208,61 +208,6 @@
     touch-action: manipulation;
   }
 
-
-  .place-suggestion-modal{
-    position:absolute;
-    inset:0;
-    z-index:120;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:18px;
-    background:rgba(0,0,0,.28);
-  }
-  .place-suggestion-modal.show{
-    display:flex;
-  }
-  .place-suggestion-card{
-    width:min(520px,96vw);
-    max-height:72vh;
-    overflow-y:auto;
-    background:var(--panel);
-    border:1px solid var(--rule);
-    border-radius:18px;
-    box-shadow:0 14px 42px rgba(0,0,0,.38);
-    padding:16px;
-    color:var(--ink);
-  }
-  .place-suggestion-card h3{
-    margin:0 0 10px;
-    font-size:20px;
-  }
-  .place-suggestion-card .suggestion-btn{
-    font-size:15px;
-    padding:13px 12px;
-    margin:7px 0;
-    border-radius:11px;
-  }
-
-  @media(max-width:900px){
-    .place-suggestion-modal{
-      align-items:flex-start;
-      padding:72px 12px 16px;
-      z-index:130;
-    }
-    .place-suggestion-card{
-      width:100%;
-      max-height:68vh;
-      padding:14px;
-      border-radius:18px;
-    }
-    .place-suggestion-card .suggestion-btn{
-      min-height:50px;
-      font-size:16px;
-      padding:14px 12px;
-    }
-  }
-
 </style>
 </head>
 <body>
@@ -314,13 +259,6 @@
     <ul class="list" id="list"></ul>
   </div>
   <div id="map"></div>
-  <div id="placeSuggestionModal" class="place-suggestion-modal" aria-hidden="true">
-    <div class="place-suggestion-card">
-      <button type="button" class="popup-top-close" onclick="closePlaceSuggestionModal()">Close</button>
-      <h3>Select place</h3>
-      <div id="placeSuggestionModalBody"></div>
-    </div>
-  </div>
   <div id="busyOverlay">
     <div class="spinnerBox">
       <div class="spinner"></div>
@@ -650,144 +588,6 @@ function autoCorrectCountryFromResult(result){
   }
 }
 
-
-function isSettlementResult(res){
-  const a = res.address || {};
-  const addresstype = (res.addresstype || "").toLowerCase();
-  const type = (res.type || "").toLowerCase();
-
-  // Prefer real user-searchable places.
-  if(a.city || a.town || a.village || a.hamlet || a.municipality || a.suburb) return true;
-
-  return [
-    "city",
-    "town",
-    "village",
-    "hamlet",
-    "municipality",
-    "suburb",
-    "locality",
-    "neighbourhood",
-    "quarter"
-  ].includes(addresstype) || [
-    "city",
-    "town",
-    "village",
-    "hamlet",
-    "municipality",
-    "suburb",
-    "locality",
-    "neighbourhood",
-    "quarter"
-  ].includes(type);
-}
-
-function isAdministrativeResult(res){
-  const addresstype = (res.addresstype || "").toLowerCase();
-  const cls = (res.class || "").toLowerCase();
-  const type = (res.type || "").toLowerCase();
-
-  return cls === "boundary" ||
-         type === "administrative" ||
-         addresstype === "administrative" ||
-         addresstype === "region" ||
-         addresstype === "state" ||
-         addresstype === "county" ||
-         addresstype === "province";
-}
-
-function mainPlaceName(res){
-  const a = res.address || {};
-  return (
-    a.city ||
-    a.town ||
-    a.village ||
-    a.hamlet ||
-    a.municipality ||
-    a.suburb ||
-    a.locality ||
-    a.neighbourhood ||
-    res.name ||
-    ""
-  ).trim();
-}
-
-function normalizePlaceKey(s){
-  return String(s || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^a-z0-9а-яёα-ωάέήίόύώϊϋΐΰ]+/gi," ")
-    .trim();
-}
-
-function cleanPlaceResults(results){
-  const arr = Array.isArray(results) ? results : [];
-  if(!arr.length) return [];
-
-  // First prefer actual settlements over administrative areas.
-  let settlements = arr.filter(isSettlementResult);
-  if(!settlements.length){
-    settlements = arr.filter(r => !isAdministrativeResult(r));
-  }
-  if(!settlements.length){
-    settlements = arr;
-  }
-
-  // Remove administrative duplicates when a city/town/village with the same main name exists.
-  const settlementNames = new Set(
-    settlements
-      .filter(isSettlementResult)
-      .map(r => normalizePlaceKey(mainPlaceName(r)))
-      .filter(Boolean)
-  );
-
-  settlements = settlements.filter(r => {
-    if(!isAdministrativeResult(r)) return true;
-    const key = normalizePlaceKey(mainPlaceName(r) || r.name || "");
-    return !settlementNames.has(key);
-  });
-
-  // Deduplicate repeated Nominatim variants by main name + region/country.
-  const seen = new Set();
-  const cleaned = [];
-  for(const r of settlements){
-    const a = r.address || {};
-    const name = normalizePlaceKey(mainPlaceName(r) || r.name || r.display_name);
-    const region = normalizePlaceKey(a.state || a.region || a.county || a.province || "");
-    const country = normalizePlaceKey(a.country || "");
-    const key = `${name}|${region}|${country}`;
-
-    if(!name) continue;
-    if(seen.has(key)) continue;
-    seen.add(key);
-    cleaned.push(r);
-  }
-
-  return cleaned.length ? cleaned : settlements.slice(0,1);
-}
-
-function bestSinglePlaceResult(results){
-  const cleaned = cleanPlaceResults(results);
-  if(!cleaned.length) return null;
-
-  const settlements = cleaned.filter(isSettlementResult);
-  if(settlements.length === 1) return settlements[0];
-
-  // If all remaining results have same main place and country, choose the first settlement.
-  const keys = new Set(cleaned.map(r => {
-    const a = r.address || {};
-    return normalizePlaceKey(mainPlaceName(r) || r.name) + "|" + normalizePlaceKey(a.country || "");
-  }).filter(Boolean));
-
-  if(keys.size === 1){
-    return settlements[0] || cleaned[0];
-  }
-
-  return null;
-}
-
-
 function placeChoiceLabel(res){
   const a = res.address || {};
   const main = a.city || a.town || a.village || a.hamlet || a.municipality || a.suburb || res.name || res.display_name || "Unknown place";
@@ -832,76 +632,9 @@ function shortPlaceLabel(res){
   return details ? `${base} • ${details}` : base;
 }
 
-
-function isMobileView(){
-  return window.matchMedia && window.matchMedia("(max-width:900px)").matches;
-}
-
-function closePlaceSuggestionModal(){
-  const modal = $("placeSuggestionModal");
-  const body = $("placeSuggestionModalBody");
-  if(modal){
-    modal.classList.remove("show");
-    modal.setAttribute("aria-hidden", "true");
-  }
-  if(body) body.innerHTML = "";
-}
-
-function openPlaceSuggestionModal(results){
-  const modal = $("placeSuggestionModal");
-  const body = $("placeSuggestionModalBody");
-  if(!modal || !body) return false;
-
-  results = cleanPlaceResults(results || []);
-  body.innerHTML = "";
-
-  if(!results || !results.length){
-    body.textContent = "No matching place found. Try a nearby larger town or add the country name.";
-  }else{
-    const title = document.createElement("div");
-    title.className = "photo-note";
-    title.style.marginBottom = "8px";
-    title.textContent = results.length === 1
-      ? "Suggested place. Tap to search around it:"
-      : "Multiple places found. Tap the correct one:";
-    body.appendChild(title);
-
-    results.forEach(res => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "suggestion-btn";
-      btn.textContent = shortPlaceLabel(res);
-      btn.title = res.display_name || btn.textContent;
-      btn.onclick = () => {
-        $("placeSearch").value = placeChoiceLabel(res).split(",")[0] || $("placeSearch").value;
-        closePlaceSuggestionModal();
-        runLocalSearchFromResult(res);
-      };
-      body.appendChild(btn);
-    });
-  }
-
-  modal.classList.add("show");
-  modal.setAttribute("aria-hidden", "false");
-  return true;
-}
-
 function showPlaceSuggestions(results){
   const box = $("suggestions");
   box.innerHTML = "";
-
-  results = cleanPlaceResults(results || []);
-
-  // On phones, or whenever there are multiple meaningful choices, show suggestions in front of the user.
-  if(isMobileView() || (results && results.length > 1)){
-    openPlaceSuggestionModal(results || []);
-    if(results && results.length){
-      box.textContent = `${results.length} matching place${results.length === 1 ? "" : "s"} found. Selection window opened.`;
-    }else{
-      box.textContent = "No matching place found.";
-    }
-    return;
-  }
 
   if(!results || !results.length){
     box.textContent = "No matching place found. Try a nearby larger town or add the country name.";
@@ -1013,7 +746,7 @@ function schedulePlaceSuggestions(){
       $("suggestions").textContent = "Finding matching places...";
       const results = await geocodePlace(q);
       if(token !== placeSuggestToken) return;
-      showPlaceSuggestions(cleanPlaceResults(results || []));
+      showPlaceSuggestions(results || []);
     }catch(e){
       if(token !== placeSuggestToken) return;
       $("suggestions").textContent = "Could not load suggestions. You can still press Search.";
@@ -1110,18 +843,17 @@ async function localScan(){
 
   $("suggestions").textContent="Finding place..."; setBusy(true,"Finding place...");
   try{
-    let results=await geocodePlace(q); setBusy(false);
-    results = cleanPlaceResults(results || []);
+    const results=await geocodePlace(q); setBusy(false);
     if(!results||!results.length){showPlaceSuggestions([]);return}
 
-    const best = bestSinglePlaceResult(results);
-    if(best){
-      $("suggestions").textContent = `Selected: ${shortPlaceLabel(best)}`;
-      await runLocalSearchFromResult(best);
+    if(results.length === 1){
+      showPlaceSuggestions(results);
+      await runLocalSearchFromResult(results[0]);
       return;
     }
 
-    // Offer choices only when there are genuinely multiple meaningful places.
+    // Do not randomly choose the first Nominatim result when several places share a name.
+    // Example: San Cataldo in Sicily vs San Cataldo on the Adriatic coast near Lecce.
     showPlaceSuggestions(results);
     status(`Multiple places named "${q}" were found. Please select the correct one from the list.`);
   }catch(e){
@@ -1540,7 +1272,6 @@ function newSearchReset(){
   activeUploadStatusId = null;
   setSuggestMode(false);
   clearSuggestPlacePopup();
-  closePlaceSuggestionModal();
 
   setBusy(false);
   clearMarkers();
@@ -2526,7 +2257,6 @@ function distanceKm(a,b,c,d){const R=6371,dl=(c-a)*Math.PI/180,dn=(d-b)*Math.PI/
 function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMapStyle=s;closeActivePopup();clearParking();markers.forEach(m=>m.remove());markers=[];document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));map.setStyle(MAP_STYLES[s]);const redraw=()=>{if(!map.isStyleLoaded()){setTimeout(redraw,100);return}render(false)};map.once('style.load',redraw);map.once('idle',redraw);setTimeout(redraw,700)}
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
 $('mobileSearchButton').addEventListener('click',openMobileSearchPanel);
-$('placeSuggestionModal').addEventListener('click',e=>{if(e.target && e.target.id==='placeSuggestionModal')closePlaceSuggestionModal();});
 $('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('countrySearch').addEventListener('click',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('localScan').addEventListener('click',localScan);
