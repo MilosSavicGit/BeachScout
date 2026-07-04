@@ -39,6 +39,14 @@
   .community-gallery{display:grid;grid-template-columns:1fr;gap:8px;margin:8px 0}
   .community-gallery img{width:260px;height:165px;object-fit:cover;border-radius:8px;display:block;background:#eee;margin:0}
   .word-count{font-size:12px;color:var(--muted);margin-top:4px}
+  .suggest-mode-note{margin-top:8px;padding:8px;border-radius:8px;background:#eff6ff;border:1px solid #93c5fd;color:#1e3a8a;font-size:13px;display:none}
+  .suggest-mode-note.show{display:block}
+  .suggest-form input,.suggest-form select,.suggest-form textarea{width:100%;margin-top:6px;margin-bottom:8px;padding:8px;border:1px solid var(--rule);border-radius:7px;font:inherit;font-size:13px;background:#fff;color:var(--ink)}
+  .suggest-form textarea{min-height:86px;resize:vertical}
+  .suggest-form .row-note{font-size:12px;color:var(--muted);margin-bottom:6px}
+  .suggest-form .suggest-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .suggest-form .cancel-btn,.popup-close-btn{background:#6b7280 !important}
+  .popup-top-close{float:right;width:auto;margin:0 0 6px 8px;padding:5px 8px;font-size:12px;background:#6b7280;color:#fff;border:none;border-radius:6px;cursor:pointer}
 
   #busyOverlay{
     position:absolute;
@@ -169,6 +177,8 @@
       <input id="placeSearch" type="text" placeholder="Example: Genoa" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
       <button id="localScan">Search 10 km around place</button>
       <button id="nearMeScan" type="button" style="background:#2f6b4f;">Use my current location — 10 km</button>
+      <button id="suggestPlaceBtn" type="button" style="background:#2563eb;">Suggest a new place</button>
+      <div id="suggestModeNote" class="suggest-mode-note">Suggest mode active. Tap the map where the place is located.</div>
       <button id="newSearch" type="button" style="background:#6b7280;">New Search / Reset</button>
       <div id="suggestions" class="photo-note" style="margin-top:8px;"></div>
     </div>
@@ -208,9 +218,9 @@
   </div>
   <button id="mobileSearchButton" type="button">Search</button>
   <div id="styleSwitcher">
-    <button class="style-btn active" data-style="streets">Public roads</button>
+    <button class="style-btn" data-style="streets">Public roads</button>
     <button class="style-btn" data-style="outdoor">Outdoor</button>
-    <button class="style-btn" data-style="satellite">Satellite</button>
+    <button class="style-btn active" data-style="satellite">Satellite</button>
   </div>
 </div>
 
@@ -221,11 +231,11 @@ const MAP_STYLES={
   outdoor:`https://api.maptiler.com/maps/outdoor-v2/style.json?key=${MAPTILER_KEY}`,
   satellite:`https://api.maptiler.com/maps/hybrid/style.json?key=${MAPTILER_KEY}`
 };
-let currentMapStyle='streets';
-const map=new maplibregl.Map({container:'map',style:MAP_STYLES.streets,center:[12.5,42.5],zoom:5});
+let currentMapStyle='satellite';
+const map=new maplibregl.Map({container:'map',style:MAP_STYLES.satellite,center:[12.5,42.5],zoom:5});
 map.addControl(new maplibregl.NavigationControl(),'top-right');
 
-const countryNames = ["Worldwide", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan, China", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe", "Aruba", "Bermuda", "British Virgin Islands", "Cayman Islands", "Cook Islands", "Curaçao", "French Guiana", "French Polynesia", "Gibraltar", "Greenland", "Guadeloupe", "Guam", "Hong Kong", "Jersey", "Martinique", "Montserrat", "New Caledonia", "Puerto Rico", "Réunion", "Saint Martin", "Sint Maarten", "Turks and Caicos Islands", "U.S. Virgin Islands"];
+const countryNames = ["Worldwide", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "North Korea", "Norway", "Oman", "Pakistan", "Palestine (disputed)", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan, China", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Western Sahara (disputed)", "Vietnam", "Yemen", "Zambia", "Zimbabwe", "Aruba", "Bermuda", "British Virgin Islands", "Cayman Islands", "Cook Islands", "Curaçao", "French Guiana", "French Polynesia", "Gibraltar", "Greenland", "Guadeloupe", "Guam", "Hong Kong", "Jersey", "Martinique", "Montserrat", "New Caledonia", "Puerto Rico", "Réunion", "Saint Martin", "Sint Maarten", "Turks and Caicos Islands", "U.S. Virgin Islands"];
 
 const countries = {};
 countryNames.forEach(name => {
@@ -247,6 +257,7 @@ let translateMode = "original";
 let activeParkingBeach=null, activeParkingInfoId=null, parkingSearchRunning=false;
 let activeUploadBeach=null, activeUploadStatusId=null;
 let placeSuggestTimer=null, placeSuggestToken=0, countrySuggestTimer=null;
+let suggestPlaceMode=false, suggestPlacePopup=null;
 
 /* =====================================================================
    SUPABASE ANALYTICS
@@ -382,10 +393,10 @@ function nominatimCountryCode(country){
     "Albania":"al","Australia":"au","Austria":"at","Belgium":"be","Brazil":"br",
     "Bulgaria":"bg","Canada":"ca","China":"cn","Croatia":"hr","Cyprus":"cy",
     "Denmark":"dk","France":"fr","Germany":"de","Greece":"gr","Italy":"it",
-    "Japan":"jp","Montenegro":"me","Netherlands":"nl","New Zealand":"nz",
-    "Portugal":"pt","Serbia":"rs","South Africa":"za","South Korea":"kr",
+    "Japan":"jp","Kosovo":"xk","Montenegro":"me","Netherlands":"nl","North Korea":"kp","New Zealand":"nz",
+    "Portugal":"pt","Russia":"ru","Serbia":"rs","South Africa":"za","South Korea":"kr",
     "Spain":"es","Thailand":"th","Turkey":"tr","United Kingdom":"gb",
-    "United States":"us","Taiwan, China":"tw"
+    "United States":"us","Western Sahara (disputed)":"eh","Taiwan, China":"tw"
   };
   return map[country] || "";
 }
@@ -406,10 +417,11 @@ async function geocodePlace(query){
   // Do NOT fall back to worldwide suggestions when a country is selected.
   // Otherwise San Cataldo / Roma / Sykia-style duplicates appear from the whole world.
   if(country && country!=="Worldwide"){
-    const selected = country.toLowerCase().replace(", china","");
+    const selected = country.toLowerCase().replace(", china","").replace(" (disputed)","");
     results = (results || []).filter(res => {
       const c = (res.address?.country || "").toLowerCase();
       if(country === "Taiwan, China") return c.includes("taiwan");
+      if(country === "Serbia") return c.includes("serbia") || c.includes("kosovo");
       return c === selected || c.includes(selected);
     });
   }
@@ -444,7 +456,13 @@ function findMatchingCountryOption(countryName){
     "taiwan": "Taiwan, China",
     "taiwan province": "Taiwan, China",
     "taiwan, province of china": "Taiwan, China",
-    "republic of china": "Taiwan, China"
+    "republic of china": "Taiwan, China",
+    "kosovo": "Serbia",
+    "republic of kosovo": "Serbia",
+    "palestine": "Palestine (disputed)",
+    "state of palestine": "Palestine (disputed)",
+    "western sahara": "Western Sahara (disputed)",
+    "sahrawi arab democratic republic": "Western Sahara (disputed)"
   };
 
   if(aliases[normalized]) return aliases[normalized];
@@ -558,6 +576,32 @@ function showPlaceSuggestions(results){
   });
 }
 
+
+function isDisputedNoticeCountry(country){
+  return ["Kosovo", "Palestine (disputed)", "Western Sahara (disputed)"].includes(country);
+}
+
+function disputedNoticeKey(country){
+  return "beachscout_disputed_notice_seen_" + String(country || "").toLowerCase().replace(/[^a-z0-9]+/g, "_");
+}
+
+function showDisputedNoticeIfNeeded(country){
+  if(!isDisputedNoticeCountry(country)) return true;
+
+  const key = disputedNoticeKey(country);
+  if(localStorage.getItem(key) === "yes") return true;
+
+  const msg =
+    "Geographic naming notice\n\n" +
+    "BeachScout includes this area to make searching easier. The naming of certain territories varies internationally. " +
+    "Their inclusion and naming are intended solely to help users find places and do not imply a political position by BeachScout or ScoutPlatform.\n\n" +
+    "Continue?";
+
+  const ok = window.confirm(msg);
+  if(ok) localStorage.setItem(key, "yes");
+  return ok;
+}
+
 function showCountrySuggestions(query){
   const box = $("countrySuggestions");
   if(!box) return;
@@ -584,6 +628,7 @@ function showCountrySuggestions(query){
     btn.className="suggestion-btn";
     btn.textContent=name;
     btn.onclick=()=>{
+      if(!showDisputedNoticeIfNeeded(name)) return;
       currentCountry=name;
       resetEnglishNamesIfCountryChanged();
       $("country").value=name;
@@ -661,6 +706,19 @@ async function runLocalSearchFromResult(result){
       if(seen.has(key))continue; seen.add(key);
       arr.push({name,originalName,lat:Number(elLat),lon:Number(elLon),tags,status:placeStatus(tags),wiki:wikilink(tags)});
     }
+    try{
+      const communitySuggested = await getApprovedSuggestedPlaces(lat, lon, Math.round(radius/1000));
+      for(const p of communitySuggested){
+        const key=`${p.name.toLowerCase()}_${Number(p.lat).toFixed(4)}_${Number(p.lon).toFixed(4)}`;
+        if(!seen.has(key)){
+          seen.add(key);
+          arr.push(p);
+        }
+      }
+    }catch(e){
+      console.log("community suggested places skipped", e);
+    }
+
     arr.sort((a,b)=>(a.originalName&&!b.originalName?-1:!a.originalName&&b.originalName?1:a.name.localeCompare(b.name)));
     allBeaches=arr;
     initializeOriginalMemoryForNewSearch();
@@ -785,6 +843,335 @@ async function nearMeScan(){
 }
 
 
+
+function closeAnyPopupById(){
+  if(activePopup){ activePopup.remove(); activePopup=null; }
+  if(suggestPlacePopup){ suggestPlacePopup.remove(); suggestPlacePopup=null; }
+}
+
+function placeTypeStatus(type){
+  const map = {
+    beach: "Beach",
+    naturist_beach: "Naturist beach",
+    official_naturist: "Official naturist beach",
+    beach_resort: "Beach resort / lido",
+    naturist_resort: "Naturist resort / village",
+    naturist_campsite: "Naturist campsite",
+    parking: "Public parking",
+    toilet: "Toilet",
+    entrance: "Beach entrance / access point",
+    other: "Other place"
+  };
+  return map[type] || "Suggested place";
+}
+
+function suggestedTagsForType(type){
+  if(type === "beach") return { natural:"beach", source:"beachscout_suggestion" };
+  if(type === "naturist_beach") return { natural:"beach", nudism:"yes", source:"beachscout_suggestion" };
+  if(type === "official_naturist") return { natural:"beach", nudism:"designated", source:"beachscout_suggestion" };
+  if(type === "beach_resort") return { tourism:"beach_resort", source:"beachscout_suggestion" };
+  if(type === "naturist_resort") return { tourism:"resort", nudism:"yes", source:"beachscout_suggestion" };
+  if(type === "naturist_campsite") return { tourism:"camp_site", nudism:"yes", source:"beachscout_suggestion" };
+  if(type === "parking") return { amenity:"parking", source:"beachscout_suggestion" };
+  if(type === "toilet") return { amenity:"toilets", source:"beachscout_suggestion" };
+  if(type === "entrance") return { entrance:"yes", source:"beachscout_suggestion" };
+  return { source:"beachscout_suggestion" };
+}
+
+async function getApprovedSuggestedPlaces(centerLat, centerLon, radiusKm=10){
+  try{
+    if(!supaReady || !supa) return [];
+    const lat = Number(centerLat), lon = Number(centerLon);
+    const tol = radiusKm / 111;
+
+    const { data, error } = await supa
+      .from(BEACH_PHOTO_TABLE)
+      .select("beach_name, beach_lat, beach_lon, description, storage_path, created_at")
+      .eq("status", "approved")
+      .like("storage_path", "suggested_place:%")
+      .gte("beach_lat", lat - tol)
+      .lte("beach_lat", lat + tol)
+      .gte("beach_lon", lon - tol)
+      .lte("beach_lon", lon + tol)
+      .order("created_at", { ascending:false })
+      .limit(100);
+
+    if(error){
+      console.log("approved suggested place lookup failed", error.message || error);
+      return [];
+    }
+
+    const seen = new Set();
+    const arr=[];
+    for(const row of data || []){
+      const plat = Number(row.beach_lat), plon = Number(row.beach_lon);
+      if(!Number.isFinite(plat) || !Number.isFinite(plon)) continue;
+      if(distanceKm(lat, lon, plat, plon) > radiusKm) continue;
+
+      const parts = String(row.storage_path || "").split(":");
+      const type = parts[1] || "other";
+      const name = row.beach_name || "Suggested place";
+      const key = `${name.toLowerCase()}_${plat.toFixed(5)}_${plon.toFixed(5)}_${type}`;
+      if(seen.has(key)) continue;
+      seen.add(key);
+
+      arr.push({
+        name,
+        originalName:name,
+        lat:plat,
+        lon:plon,
+        tags:suggestedTagsForType(type),
+        status:placeTypeStatus(type) + " (community approved)",
+        wiki:"",
+        communityDescription: row.description || ""
+      });
+    }
+    return arr;
+  }catch(e){
+    console.log("approved suggested place lookup failed", e);
+    return [];
+  }
+}
+
+function clearSuggestPlacePopup(){
+  if(suggestPlacePopup){
+    suggestPlacePopup.remove();
+    suggestPlacePopup = null;
+  }
+}
+
+function setSuggestMode(on){
+  suggestPlaceMode = !!on;
+  const note = $("suggestModeNote");
+  if(note) note.classList.toggle("show", suggestPlaceMode);
+  const btn = $("suggestPlaceBtn");
+  if(btn) btn.textContent = suggestPlaceMode ? "Cancel suggest mode" : "Suggest a new place";
+  if(map && map.getCanvas()) map.getCanvas().style.cursor = suggestPlaceMode ? "crosshair" : "";
+  if(suggestPlaceMode){
+    closeActivePopup();
+    clearSuggestPlacePopup();
+    status("Suggest mode active. Tap the map where the beach, toilet, parking or other place is located.");
+  }
+}
+
+function updateSuggestPhotoCount(inputId, countId){
+  const input = document.getElementById(inputId);
+  const countEl = document.getElementById(countId);
+  if(!input || !countEl) return;
+
+  const count = input.files ? input.files.length : 0;
+  if(count === 0){
+    countEl.textContent = "No photos selected.";
+    countEl.style.color = "var(--muted)";
+  }else if(count > 5){
+    countEl.textContent = `${count} photos selected. Maximum is 5.`;
+    countEl.style.color = "#b91c1c";
+  }else{
+    countEl.textContent = `${count} photo${count === 1 ? "" : "s"} selected. They will wait for approval.`;
+    countEl.style.color = "var(--muted)";
+  }
+}
+
+function openSuggestPlacePopup(lng, lat){
+  clearSuggestPlacePopup();
+  const formId = "suggestForm_" + Date.now();
+  const statusId = formId + "_status";
+  const photoInputId = formId + "_photos";
+  const photoCountId = formId + "_photoCount";
+  const descId = formId + "_desc";
+  const wcId = formId + "_wc";
+  const latNum = Number(lat);
+  const lngNum = Number(lng);
+
+  suggestPlacePopup = new maplibregl.Popup({offset:20, closeButton:true, closeOnClick:false})
+    .setLngLat([lngNum, latNum])
+    .setHTML(`
+      <div class="popup suggest-form">
+        <button type="button" class="popup-top-close" onclick="clearSuggestPlacePopup()">Close</button>
+        <h3>Suggest a new place</h3>
+        <div class="row-note">Coordinates: ${coordText(latNum,lngNum)}</div>
+
+        <label style="margin-top:6px;">Place type</label>
+        <select id="${formId}_type">
+          <option value="beach">Beach</option>
+          <option value="naturist_beach">Naturist beach</option>
+          <option value="official_naturist">Official naturist beach</option>
+          <option value="beach_resort">Beach resort / lido</option>
+          <option value="naturist_resort">Naturist resort / village</option>
+          <option value="naturist_campsite">Naturist campsite</option>
+          <option value="parking">Parking</option>
+          <option value="toilet">Toilet</option>
+          <option value="entrance">Beach entrance / access point</option>
+          <option value="other">Other</option>
+        </select>
+
+        <label>Name</label>
+        <input id="${formId}_name" type="text" placeholder="Place name">
+
+        <label>Photos</label>
+        <input id="${photoInputId}" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+        <div id="${photoCountId}" class="word-count">No photos selected.</div>
+
+        <label>Description</label>
+        <textarea id="${descId}" placeholder="Optional description, max 300 characters, any language"></textarea>
+        <div id="${wcId}" class="word-count">0 / 300 characters</div>
+
+        <div class="suggest-actions">
+          <button type="button" onclick="submitSuggestedPlace('${formId}','${statusId}',${latNum},${lngNum})">Submit</button>
+          <button type="button" class="cancel-btn" onclick="clearSuggestPlacePopup()">Cancel</button>
+        </div>
+
+        <div id="${statusId}" class="photo-note" style="margin-top:8px;">Suggestion will wait for approval before it is visible.</div>
+      </div>
+    `)
+    .addTo(map);
+
+  setSuggestMode(false);
+
+  setTimeout(()=>{
+    const desc = document.getElementById(descId);
+    const wc = document.getElementById(wcId);
+    if(desc && wc){
+      desc.addEventListener("input", ()=>{
+        const chars = countChars(desc.value);
+        wc.textContent = `${chars} / 300 characters`;
+        wc.style.color = chars > 300 ? "#b91c1c" : "var(--muted)";
+      });
+    }
+    const input = document.getElementById(photoInputId);
+    if(input){
+      input.addEventListener("change", ()=>updateSuggestPhotoCount(photoInputId, photoCountId));
+      updateSuggestPhotoCount(photoInputId, photoCountId);
+    }
+  },50);
+}
+
+function setSuggestStatus(statusId, msg, success=false){
+  const el = document.getElementById(statusId);
+  if(!el) return;
+  if(success){
+    el.innerHTML = `<div style="padding:8px;border-radius:7px;background:#ecfdf5;border:1px solid #86efac;color:#166534;font-weight:bold;">${escapeHtml(msg)}</div>`;
+  }else{
+    el.textContent = msg;
+  }
+}
+
+async function submitSuggestedPlace(formId, statusId, lat, lon){
+  if(!supaReady || !supa){
+    setSuggestStatus(statusId, "Supabase is not available.");
+    return;
+  }
+
+  const type = document.getElementById(formId + "_type")?.value || "other";
+  const name = document.getElementById(formId + "_name")?.value.trim() || "";
+  const descEl = document.getElementById(formId + "_desc");
+  const input = document.getElementById(formId + "_photos");
+  const rawDescription = descEl ? descEl.value.trim() : "";
+  const files = input && input.files ? Array.from(input.files) : [];
+  const description = limitChars(rawDescription, 300);
+
+  if(!name){
+    setSuggestStatus(statusId, "Please enter a name.");
+    return;
+  }
+  if(countChars(rawDescription) > 300){
+    setSuggestStatus(statusId, "Description is too long. Please keep it to 300 characters.");
+    return;
+  }
+  if(files.length > 5){
+    setSuggestStatus(statusId, "Please choose no more than 5 photos.");
+    return;
+  }
+
+  try{
+    const rows = [];
+    const baseStorageMarker = `suggested_place:${type}`;
+
+    if(files.length){
+      for(let i=0;i<files.length;i++){
+        setSuggestStatus(statusId, `Resizing photo ${i+1} of ${files.length}...`);
+        const smallBlob = await resizeImageFileToJpeg(files[i], 1200, 0.75);
+        const fileName =
+          `${safeFilePart(name)}_${Number(lat).toFixed(5)}_${Number(lon).toFixed(5)}_${Date.now()}_${i+1}.jpg`;
+        const path = `suggested_places/${USER_TOKEN}/${fileName}`;
+
+        setSuggestStatus(statusId, `Uploading photo ${i+1} of ${files.length}...`);
+        const { error: uploadError } = await supa.storage
+          .from(BEACH_PHOTO_BUCKET)
+          .upload(path, smallBlob, {
+            contentType: "image/jpeg",
+            upsert: false
+          });
+        if(uploadError) throw uploadError;
+
+        const { data: publicData } = supa.storage
+          .from(BEACH_PHOTO_BUCKET)
+          .getPublicUrl(path);
+
+        rows.push({
+          beach_name: name,
+          beach_lat: lat,
+          beach_lon: lon,
+          description: description,
+          image_url: publicData?.publicUrl || "",
+          storage_path: `${baseStorageMarker}:${path}`,
+          user_token: USER_TOKEN,
+          status: "pending",
+          app_version: APP_VERSION
+        });
+      }
+    }else{
+      rows.push({
+        beach_name: name,
+        beach_lat: lat,
+        beach_lon: lon,
+        description: description,
+        image_url: "",
+        storage_path: baseStorageMarker,
+        user_token: USER_TOKEN,
+        status: "pending",
+        app_version: APP_VERSION
+      });
+    }
+
+    setSuggestStatus(statusId, "Saving suggestion...");
+    const { error: dbError } = await supa
+      .from(BEACH_PHOTO_TABLE)
+      .insert(rows);
+    if(dbError) throw dbError;
+
+    setSuggestStatus(statusId,
+      files.length
+        ? `Suggestion and ${files.length} photo${files.length === 1 ? "" : "s"} uploaded. Waiting for approval.`
+        : "Suggestion uploaded. Waiting for approval.",
+      true
+    );
+
+    trackEvent("beachscout_place_suggested", "suggest", {
+      place_type: type,
+      place_name: name,
+      lat: lat,
+      lon: lon,
+      photo_count: files.length,
+      has_description: !!description
+    });
+
+    setTimeout(()=>clearSuggestPlacePopup(), 1800);
+  }catch(e){
+    console.warn("suggested place upload failed", e);
+    let detail = "unknown error";
+    try{
+      if(e && typeof e === "object"){
+        detail = e.message || e.error_description || e.error || e.statusText || JSON.stringify(e);
+      }else if(e){
+        detail = String(e);
+      }
+    }catch(_){}
+    setSuggestStatus(statusId, "Upload failed: " + detail);
+  }
+}
+
+
 function clearParking(){parkingMarkers.forEach(m=>m.remove());parkingMarkers=[]}
 function clearMarkers(){clearParking();markers.forEach(m=>m.remove());markers=[];if(hoverPopup)hoverPopup.remove();hoverPopup=null;closeActivePopup()}
 function closeActivePopup(){if(activePopup){activePopup.remove();activePopup=null}}
@@ -797,6 +1184,8 @@ function newSearchReset(){
   activeParkingInfoId = null;
   activeUploadBeach = null;
   activeUploadStatusId = null;
+  setSuggestMode(false);
+  clearSuggestPlacePopup();
 
   setBusy(false);
   clearMarkers();
@@ -1065,6 +1454,9 @@ function osmLocalLanguageCode(){
     "Croatia":"hr",
     "Montenegro":"sr",
     "Serbia":"sr",
+    "Kosovo":"sq",
+    "Palestine (disputed)":"ar",
+    "Western Sahara (disputed)":"ar",
     "Germany":"de",
     "Netherlands":"nl",
     "Belgium":"nl",
@@ -1074,7 +1466,8 @@ function osmLocalLanguageCode(){
     "China":"zh",
     "Taiwan, China":"zh",
     "Thailand":"th",
-    "Brazil":"pt"
+    "Brazil":"pt",
+    "Russia":"ru"
   };
   return map[currentCountry] || "";
 }
@@ -1319,10 +1712,11 @@ function openPopup(b,num){
   const photoId = "photo_" + Date.now();
   const parkingId = "parking_" + Date.now();
 
-  activePopup = new maplibregl.Popup({offset:20})
+  activePopup = new maplibregl.Popup({offset:20, closeButton:true})
     .setLngLat([b.lon,b.lat])
     .setHTML(`
       <div class="popup" data-beach-lat="${b.lat}" data-beach-lon="${b.lon}" data-num="${num}">
+        <button type="button" class="popup-top-close" onclick="closeActivePopup()">Close</button>
         <h3>${num}. ${escapeHtml(b.name)}</h3>
         <button type="button" class="translate-toggle-btn" onclick="toggleTranslate()" style="margin:6px 0 8px;padding:8px 10px;font-size:13px;background:#2563eb;">${translateButtonLabel()}</button>
         <p><b>${escapeHtml(b.status)}</b></p>
@@ -1736,6 +2130,7 @@ async function showParking(b, infoId=null){
         .setLngLat([p.lon,p.lat])
         .setPopup(new maplibregl.Popup({offset:18}).setHTML(`
           <div class="popup">
+            <button type="button" class="popup-top-close" onclick="this.closest('.maplibregl-popup')?.remove()">Close</button>
             <h3>Parking ${i+1}</h3>
             <p><b>${escapeHtml(p.name)}</b></p>
             <p>${parkingText(p.dist)} from selected beach</p>
@@ -1780,14 +2175,35 @@ $('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch"
 $('countrySearch').addEventListener('click',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('localScan').addEventListener('click',localScan);
 $('nearMeScan').addEventListener('click',nearMeScan);
+$('suggestPlaceBtn').addEventListener('click',()=>setSuggestMode(!suggestPlaceMode));
 $('newSearch').addEventListener('click',newSearchReset);
 $('placeSearch').addEventListener('input',schedulePlaceSuggestions);
 $('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter')localScan();});
 $('countrySearch').addEventListener('input',scheduleCountrySuggestions);
 $('countrySearch').addEventListener('keydown',e=>{if(e.key==='Enter'){const first=$("countrySuggestions").querySelector("button");if(first)first.click();}});
-$('country').addEventListener('change',()=>{currentCountry=$('country').value;resetEnglishNamesIfCountryChanged();$('countrySearch').value=currentCountry;populateRegions();allBeaches=[];$('list').innerHTML='';$('stats').textContent='No beaches loaded yet.'});
+$('country').addEventListener('change',()=>{
+  const chosen = $('country').value;
+  if(!showDisputedNoticeIfNeeded(chosen)){
+    $('country').value = currentCountry;
+    return;
+  }
+  currentCountry=chosen;
+  resetEnglishNamesIfCountryChanged();
+  $('countrySearch').value=currentCountry;
+  populateRegions();
+  allBeaches=[];
+  $('list').innerHTML='';
+  $('stats').textContent='No beaches loaded yet.';
+});
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
-map.on('click',()=>closeActivePopup());
+map.on('click',(e)=>{
+  if(suggestPlaceMode){
+    openSuggestPlacePopup(e.lngLat.lng, e.lngLat.lat);
+    return;
+  }
+  closeActivePopup();
+  clearSuggestPlacePopup();
+});
 map.on('load',()=>{
   trackEvent("beachscout_page_view", "page", {
     page: location.href
