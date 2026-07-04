@@ -159,6 +159,55 @@
       z-index:70;
     }
   }
+
+  /* Android tap reliability: larger invisible hit area, same visual size */
+  button,
+  .suggestion-btn,
+  .style-btn,
+  .marker,
+  .parking-marker,
+  .item,
+  label,
+  input,
+  select,
+  textarea,
+  a {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(181,71,31,.18);
+  }
+
+  button,
+  .suggestion-btn,
+  .style-btn,
+  .popup-top-close {
+    position: relative;
+  }
+
+  button::after,
+  .suggestion-btn::after,
+  .style-btn::after,
+  .popup-top-close::after {
+    content: "";
+    position: absolute;
+    left: -8px;
+    right: -8px;
+    top: -8px;
+    bottom: -8px;
+    z-index: 1;
+  }
+
+  button > *,
+  .suggestion-btn > *,
+  .style-btn > *,
+  .popup-top-close > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .maplibregl-popup-content {
+    touch-action: manipulation;
+  }
+
 </style>
 </head>
 <body>
@@ -371,6 +420,43 @@ function setBusy(isBusy, text="Searching..."){
   if(nearMeBtn) nearMeBtn.disabled = isBusy;
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+
+function installAndroidTapFix(){
+  const tappables = "button, .suggestion-btn, .style-btn, .item, a, input, select, textarea, label";
+
+  document.addEventListener("touchstart", function(e){
+    const t = e.target && e.target.closest ? e.target.closest(tappables) : null;
+    if(t){
+      e.stopPropagation();
+    }
+  }, {passive:true, capture:true});
+
+  document.addEventListener("touchend", function(e){
+    const t = e.target && e.target.closest ? e.target.closest(tappables) : null;
+    if(!t) return;
+
+    e.stopPropagation();
+
+    // Do not synthesize clicks for text fields, selects or file inputs.
+    const tag = (t.tagName || "").toLowerCase();
+    const type = (t.getAttribute && (t.getAttribute("type") || "").toLowerCase()) || "";
+    if(tag === "input" || tag === "textarea" || tag === "select" || type === "file") return;
+
+    // Android WebView sometimes loses normal onclick inside MapLibre popups.
+    // This fallback clicks the actual visible control.
+    if(typeof t.click === "function"){
+      setTimeout(()=>t.click(), 0);
+    }
+  }, {passive:true, capture:true});
+
+  document.addEventListener("click", function(e){
+    const popup = e.target && e.target.closest ? e.target.closest(".maplibregl-popup") : null;
+    if(popup){
+      e.stopPropagation();
+    }
+  }, true);
+}
+
 function populateCountries(){
   const c=$('country');
   c.innerHTML='';
@@ -2197,10 +2283,16 @@ $('country').addEventListener('change',()=>{
 });
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
 map.on('click',(e)=>{
+  const target = e && e.originalEvent ? e.originalEvent.target : null;
+  if(target && target.closest && target.closest(".maplibregl-popup")){
+    return;
+  }
+
   if(suggestPlaceMode){
     openSuggestPlacePopup(e.lngLat.lng, e.lngLat.lat);
     return;
   }
+
   closeActivePopup();
   clearSuggestPlacePopup();
 });
@@ -2212,6 +2304,7 @@ map.on('load',()=>{
 });
 
 window.addEventListener('load',()=>{
+  installAndroidTapFix();
   setTimeout(startDefaultSantaMonicaOnce, 500);
 });
 </script>
