@@ -160,52 +160,100 @@
     }
   }
 
-  /* Android tap reliability: larger invisible hit area, same visual size */
-  button,
-  .suggestion-btn,
-  .style-btn,
-  .marker,
-  .parking-marker,
-  .item,
-  label,
-  input,
-  select,
-  textarea,
-  a {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: rgba(181,71,31,.18);
-  }
+  .mobile-beach-page{display:none}
 
-  button,
-  .suggestion-btn,
-  .style-btn,
-  .popup-top-close {
-    position: relative;
-  }
-
-  button::after,
-  .suggestion-btn::after,
-  .style-btn::after,
-  .popup-top-close::after {
-    content: "";
-    position: absolute;
-    left: -8px;
-    right: -8px;
-    top: -8px;
-    bottom: -8px;
-    z-index: 1;
-  }
-
-  button > *,
-  .suggestion-btn > *,
-  .style-btn > *,
-  .popup-top-close > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  .maplibregl-popup-content {
-    touch-action: manipulation;
+  @media(max-width:900px){
+    .mobile-beach-page{
+      position:absolute;
+      inset:0;
+      z-index:150;
+      background:var(--panel);
+      color:var(--ink);
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      display:none;
+    }
+    .mobile-beach-page.show{display:block}
+    .mobile-beach-header{
+      position:sticky;
+      top:0;
+      z-index:5;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px 14px;
+      background:var(--panel);
+      border-bottom:1px solid var(--rule);
+      box-shadow:0 2px 10px rgba(0,0,0,.08);
+    }
+    .mobile-back-btn{
+      width:52px !important;
+      min-width:52px !important;
+      height:52px !important;
+      min-height:52px !important;
+      margin:0 !important;
+      padding:0 !important;
+      border-radius:999px !important;
+      font-size:30px !important;
+      line-height:1 !important;
+      background:#6b7280 !important;
+      color:#fff !important;
+      display:grid !important;
+      place-items:center !important;
+    }
+    .mobile-beach-title{font-size:18px;font-weight:bold;line-height:1.2}
+    .mobile-beach-subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+    .mobile-beach-content{padding:14px;padding-bottom:32px}
+    .mobile-beach-content h2{margin:0 0 8px;font-size:24px;line-height:1.15}
+    .mobile-beach-content .mobile-status{
+      display:inline-block;
+      margin:0 0 12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff4e8;
+      border:1px solid var(--rule);
+      font-size:13px;
+      font-weight:bold;
+    }
+    .mobile-beach-content img{
+      width:100%;
+      max-height:260px;
+      object-fit:cover;
+      border-radius:14px;
+      background:#eee;
+      display:block;
+      margin:8px 0;
+    }
+    .mobile-beach-section{
+      background:#fff;
+      border:1px solid var(--rule);
+      border-radius:14px;
+      padding:12px;
+      margin:12px 0;
+    }
+    .mobile-beach-section h3{margin:0 0 8px;font-size:17px}
+    .mobile-beach-content button{
+      min-height:50px;
+      font-size:16px !important;
+      border-radius:12px !important;
+      padding:13px 14px !important;
+    }
+    .mobile-beach-content textarea,
+    .mobile-beach-content input{
+      font-size:16px !important;
+      border-radius:11px !important;
+      padding:12px !important;
+    }
+    .mobile-beach-content .upload-box{border-radius:14px;padding:12px}
+    .mobile-beach-content .community-gallery{display:grid;gap:10px}
+    .mobile-beach-content .community-gallery img{
+      width:100%;
+      height:auto;
+      max-height:260px;
+      object-fit:cover;
+      border-radius:14px;
+    }
+    body.mobile-detail-open{overflow:hidden}
   }
 
 </style>
@@ -259,6 +307,16 @@
     <ul class="list" id="list"></ul>
   </div>
   <div id="map"></div>
+  <div id="mobileBeachPage" class="mobile-beach-page">
+    <div class="mobile-beach-header">
+      <button type="button" id="mobileBeachBack" class="mobile-back-btn">←</button>
+      <div>
+        <div class="mobile-beach-title">Beach details</div>
+        <div class="mobile-beach-subtitle" id="mobileBeachSubtitle"></div>
+      </div>
+    </div>
+    <div id="mobileBeachContent" class="mobile-beach-content"></div>
+  </div>
   <div id="busyOverlay">
     <div class="spinnerBox">
       <div class="spinner"></div>
@@ -420,43 +478,6 @@ function setBusy(isBusy, text="Searching..."){
   if(nearMeBtn) nearMeBtn.disabled = isBusy;
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-
-function installAndroidTapFix(){
-  const tappables = "button, .suggestion-btn, .style-btn, .item, a, input, select, textarea, label";
-
-  document.addEventListener("touchstart", function(e){
-    const t = e.target && e.target.closest ? e.target.closest(tappables) : null;
-    if(t){
-      e.stopPropagation();
-    }
-  }, {passive:true, capture:true});
-
-  document.addEventListener("touchend", function(e){
-    const t = e.target && e.target.closest ? e.target.closest(tappables) : null;
-    if(!t) return;
-
-    e.stopPropagation();
-
-    // Do not synthesize clicks for text fields, selects or file inputs.
-    const tag = (t.tagName || "").toLowerCase();
-    const type = (t.getAttribute && (t.getAttribute("type") || "").toLowerCase()) || "";
-    if(tag === "input" || tag === "textarea" || tag === "select" || type === "file") return;
-
-    // Android WebView sometimes loses normal onclick inside MapLibre popups.
-    // This fallback clicks the actual visible control.
-    if(typeof t.click === "function"){
-      setTimeout(()=>t.click(), 0);
-    }
-  }, {passive:true, capture:true});
-
-  document.addEventListener("click", function(e){
-    const popup = e.target && e.target.closest ? e.target.closest(".maplibregl-popup") : null;
-    if(popup){
-      e.stopPropagation();
-    }
-  }, true);
-}
-
 function populateCountries(){
   const c=$('country');
   c.innerHTML='';
@@ -1272,6 +1293,7 @@ function newSearchReset(){
   activeUploadStatusId = null;
   setSuggestMode(false);
   clearSuggestPlacePopup();
+  closeMobileBeachPage();
 
   setBusy(false);
   clearMarkers();
@@ -1784,6 +1806,125 @@ async function toggleTranslate(){
 
 
 
+
+let mobileBeachReturnSource = "map";
+
+function isMobileView(){
+  return window.matchMedia && window.matchMedia("(max-width:900px)").matches;
+}
+
+function closeMobileBeachPage(){
+  const page = $("mobileBeachPage");
+  const content = $("mobileBeachContent");
+  if(page) page.classList.remove("show");
+  if(content) content.innerHTML = "";
+  document.body.classList.remove("mobile-detail-open");
+
+  if(mobileBeachReturnSource === "list"){
+    openMobileSearchPanel();
+  }
+}
+
+function openMobileBeachPage(b, num, source="map"){
+  mobileBeachReturnSource = source || "map";
+
+  closeActivePopup();
+  closeMobileSearchPanel();
+
+  const page = $("mobileBeachPage");
+  const content = $("mobileBeachContent");
+  const subtitle = $("mobileBeachSubtitle");
+  if(!page || !content) return;
+
+  const photoId = "mobile_photo_" + Date.now();
+  const uploadId = "mobile_upload_" + Date.now();
+  const parkingId = "mobile_parking_" + Date.now();
+
+  activeParkingBeach = b;
+  activeParkingInfoId = parkingId;
+  activeUploadBeach = b;
+  activeUploadStatusId = uploadId;
+  parkingSearchRunning = false;
+
+  if(subtitle) subtitle.textContent = coordText(b.lat,b.lon);
+
+  content.innerHTML = `
+    <h2>${num}. ${escapeHtml(b.name)}</h2>
+    <div class="mobile-status">${escapeHtml(b.status)}</div>
+
+    <button type="button" class="translate-toggle-btn" onclick="toggleTranslate()" style="background:#2563eb;">${translateButtonLabel()}</button>
+
+    <div class="mobile-beach-section">
+      <h3>Photos</h3>
+      <div id="${photoId}">
+        <div class="photo-note">Searching for photo...</div>
+      </div>
+    </div>
+
+    <div class="mobile-beach-section">
+      <h3>Location</h3>
+      <p><b>Beach coordinates:</b><br>${coordText(b.lat,b.lon)}</p>
+      <p><a href="${googleMapsPointLink(b.lat,b.lon)}" target="_blank">Open beach in Google Maps</a></p>
+      <button type="button" onclick="copyTextToClipboard('${coordText(b.lat,b.lon)}')">Copy beach coordinates</button>
+    </div>
+
+    <div class="mobile-beach-section">
+      <h3>Parking</h3>
+      <div id="${parkingId}" class="photo-note">Parking not checked yet.</div>
+      <button type="button" onclick="findParkingForCurrentBeach()">Find nearest parking</button>
+    </div>
+
+    <div class="mobile-beach-section">
+      <h3>Community contribution</h3>
+      <div class="upload-box">
+        <b>Add your beach photos</b>
+        <div class="photo-note">Up to 5 photos. Optional description up to 300 characters, in any language. Photos are resized before upload and wait for approval.</div>
+        <input id="userPhotoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+        <div id="userPhotoSelectedCount" class="word-count">No photos selected.</div>
+        <textarea id="userPhotoDesc" placeholder="Optional description, max 300 characters, any language"></textarea>
+        <div id="userPhotoWordCount" class="word-count">0 / 300 characters</div>
+        <button type="button" onclick="uploadPhotosForCurrentBeach()">Upload photos / description</button>
+        <div id="${uploadId}" class="photo-note">No upload yet.</div>
+      </div>
+    </div>
+
+    ${b.wiki ? `<div class="mobile-beach-section"><h3>Wikipedia</h3><p><a href="${b.wiki}" target="_blank">Open Wikipedia article</a></p></div>` : ""}
+  `;
+
+  page.classList.add("show");
+  document.body.classList.add("mobile-detail-open");
+
+  setTimeout(()=>{
+    const desc = document.getElementById("userPhotoDesc");
+    const wc = document.getElementById("userPhotoWordCount");
+    if(desc && wc){
+      desc.addEventListener("input", ()=>{
+        const chars = countChars(desc.value);
+        wc.textContent = `${chars} / 300 characters`;
+        wc.style.color = chars > 300 ? "#b91c1c" : "var(--muted)";
+      });
+    }
+
+    const photoInput = document.getElementById("userPhotoInput");
+    if(photoInput){
+      photoInput.addEventListener("change", updateSelectedPhotoCount);
+      updateSelectedPhotoCount();
+    }
+  },50);
+
+  setTimeout(()=>loadPopupPhoto(photoId,b),50);
+
+  trackEvent("beachscout_place_opened_mobile_page", "local", {
+    country: currentCountry,
+    place: b.name,
+    status: b.status,
+    lat: b.lat,
+    lon: b.lon,
+    source: source || "map"
+  });
+}
+
+
 function openPopup(b,num){
   trackEvent("beachscout_place_opened", "local", {
     country: currentCountry,
@@ -1862,7 +2003,7 @@ function openPopup(b,num){
 function showHover(b){if(hoverPopup)hoverPopup.remove();hoverPopup=new maplibregl.Popup({closeButton:false,closeOnClick:false,offset:18}).setLngLat([b.lon,b.lat]).setHTML(`<strong>${escapeHtml(b.name)}</strong>`).addTo(map)}
 function hideHover(){if(hoverPopup){hoverPopup.remove();hoverPopup=null}}
 
-function render(fit=false){clearMarkers();const visible=allBeaches.filter(shouldShow),list=$('list');list.innerHTML='';status(`Showing ${visible.length} of ${allBeaches.length} loaded places.`);updateStats(visible.length);visible.forEach((b,i)=>{const el=document.createElement('div');el.className='marker';el.style.background=colourFor(b.tags);el.textContent=i+1;el.title=b.name;const marker=new maplibregl.Marker({element:el}).setLngLat([b.lon,b.lat]).addTo(map);el.addEventListener('mouseenter',()=>showHover(b));el.addEventListener('mouseleave',hideHover);el.addEventListener('click',ev=>{ev.stopPropagation();hideHover();openPopup(b,i+1)});markers.push(marker);const li=document.createElement('li');li.className='item';li.innerHTML=`<h3>${i+1}. ${escapeHtml(b.name)}</h3><div class="meta">${escapeHtml(b.status)}</div>`;li.onclick=()=>{map.flyTo({center:[b.lon,b.lat],zoom:13});openPopup(b,i+1)};list.appendChild(li)});if(fit&&visible.length){const bounds=new maplibregl.LngLatBounds();visible.forEach(b=>bounds.extend([b.lon,b.lat]));map.fitBounds(bounds,{padding:60,maxZoom:10})}}
+function render(fit=false){clearMarkers();const visible=allBeaches.filter(shouldShow),list=$('list');list.innerHTML='';status(`Showing ${visible.length} of ${allBeaches.length} loaded places.`);updateStats(visible.length);visible.forEach((b,i)=>{const el=document.createElement('div');el.className='marker';el.style.background=colourFor(b.tags);el.textContent=i+1;el.title=b.name;const marker=new maplibregl.Marker({element:el}).setLngLat([b.lon,b.lat]).addTo(map);el.addEventListener('mouseenter',()=>showHover(b));el.addEventListener('mouseleave',hideHover);el.addEventListener('click',ev=>{ev.stopPropagation();hideHover();if(isMobileView())openMobileBeachPage(b,i+1,'map');else openPopup(b,i+1)});markers.push(marker);const li=document.createElement('li');li.className='item';li.innerHTML=`<h3>${i+1}. ${escapeHtml(b.name)}</h3><div class="meta">${escapeHtml(b.status)}</div>`;li.onclick=()=>{map.flyTo({center:[b.lon,b.lat],zoom:13});if(isMobileView())openMobileBeachPage(b,i+1,'list');else openPopup(b,i+1)};list.appendChild(li)});if(fit&&visible.length){const bounds=new maplibregl.LngLatBounds();visible.forEach(b=>bounds.extend([b.lon,b.lat]));map.fitBounds(bounds,{padding:60,maxZoom:10})}}
 
 async function scan(){
   status("Large regional search is disabled in this version. Use the local 10 km search.");
@@ -2257,6 +2398,7 @@ function distanceKm(a,b,c,d){const R=6371,dl=(c-a)*Math.PI/180,dn=(d-b)*Math.PI/
 function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMapStyle=s;closeActivePopup();clearParking();markers.forEach(m=>m.remove());markers=[];document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));map.setStyle(MAP_STYLES[s]);const redraw=()=>{if(!map.isStyleLoaded()){setTimeout(redraw,100);return}render(false)};map.once('style.load',redraw);map.once('idle',redraw);setTimeout(redraw,700)}
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
 $('mobileSearchButton').addEventListener('click',openMobileSearchPanel);
+$('mobileBeachBack').addEventListener('click',closeMobileBeachPage);
 $('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('countrySearch').addEventListener('click',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('localScan').addEventListener('click',localScan);
@@ -2283,16 +2425,10 @@ $('country').addEventListener('change',()=>{
 });
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
 map.on('click',(e)=>{
-  const target = e && e.originalEvent ? e.originalEvent.target : null;
-  if(target && target.closest && target.closest(".maplibregl-popup")){
-    return;
-  }
-
   if(suggestPlaceMode){
     openSuggestPlacePopup(e.lngLat.lng, e.lngLat.lat);
     return;
   }
-
   closeActivePopup();
   clearSuggestPlacePopup();
 });
@@ -2304,7 +2440,6 @@ map.on('load',()=>{
 });
 
 window.addEventListener('load',()=>{
-  installAndroidTapFix();
   setTimeout(startDefaultSantaMonicaOnce, 500);
 });
 </script>
