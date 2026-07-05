@@ -1513,8 +1513,7 @@ async function loadPopupPhoto(photoId, beach){
       ).join("");
       target.innerHTML = `<div class="community-gallery">${imgs}</div>${descHtml}<div class="photo-note">Source: BeachScout community photos</div>`;
       if(translateMode === "english"){
-        await applyDescriptionModeToOpenPopup();
-        await applyDescriptionModeToMobilePage();
+        await applyDescriptionModeToContainers();
       }
       return;
     }
@@ -1535,18 +1534,16 @@ async function loadPopupPhoto(photoId, beach){
 
 
 
+
 function isProbablyEnglish(text){
   const s = String(text || "").trim();
   if(!s) return true;
-  // Treat simple Latin text as already readable English/Latin.
-  // Greek, Cyrillic, Japanese, Chinese, etc. will be translated.
   return !/[^\u0000-\u024F\s.,;:!?'"()\-–—/&0-9]/.test(s);
 }
 
 function translateButtonLabel(){
   return translateMode === "english" ? "Show Original" : "Translate (English)";
 }
-
 
 function osmLocalLanguageCode(){
   const map = {
@@ -1589,18 +1586,47 @@ function localNameFromOsmTags(tags, fallback){
   );
 }
 
-function makeBeachMemory(beach){
+function originalNameForBeach(beach){
+  const t = beach.tags || {};
+  return (
+    beach._originalName ||
+    beach.originalName ||
+    localNameFromOsmTags(t, beach.name) ||
+    beach.name ||
+    "Unnamed beach"
+  );
+}
+
+function englishNameForBeach(beach){
+  const t = beach.tags || {};
+  return (
+    beach._englishName ||
+    t["name:en"] ||
+    t.name_en ||
+    t["official_name:en"] ||
+    t.official_name_en ||
+    t.int_name ||
+    t["name:latin"] ||
+    t.name_latin ||
+    originalNameForBeach(beach)
+  );
+}
+
+function ensureTranslationMemory(beach){
+  const t = beach.tags || {};
   if(!beach._originalName){
-    // Original must be the local OSM name for this country, not the last translated display name.
-    beach._originalName = localNameFromOsmTags(beach.tags || {}, beach.originalName || beach.name);
+    beach._originalName =
+      beach.originalName ||
+      localNameFromOsmTags(t, beach.name) ||
+      beach.name ||
+      "Unnamed beach";
   }
 
   if(!beach._originalStatus){
-    beach._originalStatus = beach.status || "";
+    beach._originalStatus = beach.status || placeStatus(t);
   }
 
   if(!beach._englishName){
-    const t = beach.tags || {};
     beach._englishName =
       t["name:en"] ||
       t.name_en ||
@@ -1617,12 +1643,6 @@ function makeBeachMemory(beach){
   }
 }
 
-function prepareTranslationMemoryForCurrentResults(){
-  for(const b of allBeaches){
-    makeBeachMemory(b);
-  }
-}
-
 function initializeOriginalMemoryForNewSearch(){
   translateMode = "original";
 
@@ -1632,10 +1652,15 @@ function initializeOriginalMemoryForNewSearch(){
     delete b._englishName;
     delete b._englishStatus;
 
-    b._originalName = localNameFromOsmTags(b.tags || {}, b.originalName || b.name);
-    b._originalStatus = b.status || "";
-
     const t = b.tags || {};
+    b._originalName =
+      b.originalName ||
+      localNameFromOsmTags(t, b.name) ||
+      b.name ||
+      "Unnamed beach";
+
+    b._originalStatus = b.status || placeStatus(t);
+
     b._englishName =
       t["name:en"] ||
       t.name_en ||
@@ -1653,10 +1678,15 @@ function initializeOriginalMemoryForNewSearch(){
   }
 }
 
-function applyTranslateModeToData(){
-  prepareTranslationMemoryForCurrentResults();
-
+function prepareTranslationMemoryForCurrentResults(){
   for(const b of allBeaches){
+    ensureTranslationMemory(b);
+  }
+}
+
+function applyTranslateModeToData(){
+  for(const b of allBeaches){
+    ensureTranslationMemory(b);
     if(translateMode === "english"){
       b.name = b._englishName;
       b.status = b._englishStatus;
@@ -1669,7 +1699,6 @@ function applyTranslateModeToData(){
 
 function resetTranslationForNewResults(){
   translateMode = "original";
-
   for(const b of allBeaches){
     delete b._originalName;
     delete b._originalStatus;
@@ -1704,61 +1733,32 @@ async function translateArbitraryTextToEnglish(text){
   return (j[0] || []).map(seg => seg && seg[0] ? seg[0] : "").join("") || clean;
 }
 
+async function applyDescriptionModeToContainers(){
+  const containers = document.querySelectorAll(".maplibregl-popup .popup, #mobileBeachPage.show");
 
-async function applyDescriptionModeToMobilePage(){
-  const page = $("mobileBeachPage");
-  if(!page || !page.classList.contains("show")) return;
+  for(const container of containers){
+    const descriptions = container.querySelectorAll(".community-description");
 
-  const descriptions = page.querySelectorAll(".community-description");
-
-  for(const el of descriptions){
-    if(!el.dataset.originalDescription){
-      el.dataset.originalDescription = el.textContent || "";
-    }
-
-    const original = el.dataset.originalDescription || "";
-
-    if(translateMode === "english"){
-      if(!el.dataset.englishDescription){
-        try{
-          el.dataset.englishDescription = await translateArbitraryTextToEnglish(original);
-        }catch(e){
-          console.log("mobile description translation failed", e);
-          el.dataset.englishDescription = original;
-        }
+    for(const el of descriptions){
+      if(!el.dataset.originalDescription){
+        el.dataset.originalDescription = el.textContent || "";
       }
-      el.textContent = el.dataset.englishDescription || original;
-    }else{
-      el.textContent = original;
-    }
-  }
-}
 
-async function applyDescriptionModeToOpenPopup(){
-  const popup = document.querySelector(".maplibregl-popup .popup");
-  if(!popup) return;
+      const original = el.dataset.originalDescription || "";
 
-  const descriptions = popup.querySelectorAll(".community-description");
-
-  for(const el of descriptions){
-    if(!el.dataset.originalDescription){
-      el.dataset.originalDescription = el.textContent || "";
-    }
-
-    const original = el.dataset.originalDescription || "";
-
-    if(translateMode === "english"){
-      if(!el.dataset.englishDescription){
-        try{
-          el.dataset.englishDescription = await translateArbitraryTextToEnglish(original);
-        }catch(e){
-          console.log("description translation failed", e);
-          el.dataset.englishDescription = original;
+      if(translateMode === "english"){
+        if(!el.dataset.englishDescription){
+          try{
+            el.dataset.englishDescription = await translateArbitraryTextToEnglish(original);
+          }catch(e){
+            console.log("description translation failed", e);
+            el.dataset.englishDescription = original;
+          }
         }
+        el.textContent = el.dataset.englishDescription || original;
+      }else{
+        el.textContent = original;
       }
-      el.textContent = el.dataset.englishDescription || original;
-    }else{
-      el.textContent = original;
     }
   }
 }
@@ -1775,7 +1775,6 @@ function openPopupBeach(){
     Math.abs(Number(b.lon) - lon) < 0.00001
   ) || null;
 }
-
 
 function updateMobileBeachPageWithoutRedraw(){
   const page = $("mobileBeachPage");
@@ -1839,7 +1838,6 @@ function updateCurrentDisplayWithoutRedraw(){
     if(btn) btn.textContent = translateButtonLabel();
   }
 
-
   updateMobileBeachPageWithoutRedraw();
 }
 
@@ -1849,16 +1847,9 @@ async function toggleTranslate(){
   prepareTranslationMemoryForCurrentResults();
   applyTranslateModeToData();
 
-  // Immediate update for list, markers, desktop popup and mobile detail page.
   updateCurrentDisplayWithoutRedraw();
-  updateMobileBeachPageWithoutRedraw();
-
-  // Description translation may be async; apply it after labels are already updated.
-  await applyDescriptionModeToOpenPopup();
-  await applyDescriptionModeToMobilePage();
-
+  await applyDescriptionModeToContainers();
   updateCurrentDisplayWithoutRedraw();
-  updateMobileBeachPageWithoutRedraw();
 
   status(translateMode === "english"
     ? "English shown where available. Press Show Original to restore original names and descriptions."
@@ -1866,125 +1857,6 @@ async function toggleTranslate(){
   );
 }
 
-
-
-
-let mobileBeachReturnSource = "map";
-
-function isMobileView(){
-  return window.matchMedia && window.matchMedia("(max-width:900px)").matches;
-}
-
-function closeMobileBeachPage(){
-  const page = $("mobileBeachPage");
-  const content = $("mobileBeachContent");
-  if(page) page.classList.remove("show");
-  if(content) content.innerHTML = "";
-  document.body.classList.remove("mobile-detail-open");
-
-  if(mobileBeachReturnSource === "list"){
-    openMobileSearchPanel();
-  }
-}
-
-function openMobileBeachPage(b, num, source="map"){
-  mobileBeachReturnSource = source || "map";
-
-  closeActivePopup();
-  closeMobileSearchPanel();
-
-  const page = $("mobileBeachPage");
-  const content = $("mobileBeachContent");
-  const subtitle = $("mobileBeachSubtitle");
-  if(!page || !content) return;
-
-  const photoId = "mobile_photo_" + Date.now();
-  const uploadId = "mobile_upload_" + Date.now();
-  const parkingId = "mobile_parking_" + Date.now();
-
-  activeParkingBeach = b;
-  activeParkingInfoId = parkingId;
-  activeUploadBeach = b;
-  activeUploadStatusId = uploadId;
-  parkingSearchRunning = false;
-
-  if(subtitle) subtitle.textContent = coordText(b.lat,b.lon);
-
-  content.innerHTML = `
-    <h2>${num}. ${escapeHtml(b.name)}</h2>
-    <div class="mobile-status">${escapeHtml(b.status)}</div>
-
-    <button type="button" class="translate-toggle-btn" onclick="toggleTranslate()" style="background:#2563eb;">${translateButtonLabel()}</button>
-
-    <div class="mobile-beach-section">
-      <h3>Photos</h3>
-      <div id="${photoId}">
-        <div class="photo-note">Searching for photo...</div>
-      </div>
-    </div>
-
-    <div class="mobile-beach-section">
-      <h3>Location</h3>
-      <p><b>Beach coordinates:</b><br>${coordText(b.lat,b.lon)}</p>
-      <p><a href="${googleMapsPointLink(b.lat,b.lon)}" target="_blank">Open beach in Google Maps</a></p>
-      <button type="button" onclick="copyTextToClipboard('${coordText(b.lat,b.lon)}')">Copy beach coordinates</button>
-    </div>
-
-    <div class="mobile-beach-section">
-      <h3>Parking</h3>
-      <div id="${parkingId}" class="photo-note">Parking not checked yet.</div>
-      <button type="button" onclick="findParkingForCurrentBeach()">Find nearest parking</button>
-    </div>
-
-    <div class="mobile-beach-section">
-      <h3>Community contribution</h3>
-      <div class="upload-box">
-        <b>Add your beach photos</b>
-        <div class="photo-note">Up to 5 photos. Optional description up to 300 characters, in any language. Photos are resized before upload and wait for approval.</div>
-        <input id="userPhotoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple>
-        <div id="userPhotoSelectedCount" class="word-count">No photos selected.</div>
-        <textarea id="userPhotoDesc" placeholder="Optional description, max 300 characters, any language"></textarea>
-        <div id="userPhotoWordCount" class="word-count">0 / 300 characters</div>
-        <button type="button" onclick="uploadPhotosForCurrentBeach()">Upload photos / description</button>
-        <div id="${uploadId}" class="photo-note">No upload yet.</div>
-      </div>
-    </div>
-
-    ${b.wiki ? `<div class="mobile-beach-section"><h3>Wikipedia</h3><p><a href="${b.wiki}" target="_blank">Open Wikipedia article</a></p></div>` : ""}
-  `;
-
-  page.classList.add("show");
-  document.body.classList.add("mobile-detail-open");
-
-  setTimeout(()=>{
-    const desc = document.getElementById("userPhotoDesc");
-    const wc = document.getElementById("userPhotoWordCount");
-    if(desc && wc){
-      desc.addEventListener("input", ()=>{
-        const chars = countChars(desc.value);
-        wc.textContent = `${chars} / 300 characters`;
-        wc.style.color = chars > 300 ? "#b91c1c" : "var(--muted)";
-      });
-    }
-
-    const photoInput = document.getElementById("userPhotoInput");
-    if(photoInput){
-      photoInput.addEventListener("change", updateSelectedPhotoCount);
-      updateSelectedPhotoCount();
-    }
-  },50);
-
-  setTimeout(()=>loadPopupPhoto(photoId,b),50);
-
-  trackEvent("beachscout_place_opened_mobile_page", "local", {
-    country: currentCountry,
-    place: b.name,
-    status: b.status,
-    lat: b.lat,
-    lon: b.lon,
-    source: source || "map"
-  });
-}
 
 
 function openPopup(b,num){
