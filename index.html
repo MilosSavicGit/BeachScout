@@ -317,6 +317,16 @@
     </div>
     <div id="mobileBeachContent" class="mobile-beach-content"></div>
   </div>
+  <div id="mobileSuggestPage" class="mobile-beach-page">
+    <div class="mobile-beach-header">
+      <button type="button" id="mobileSuggestBack" class="mobile-back-btn">←</button>
+      <div>
+        <div class="mobile-beach-title">Suggest a new place</div>
+        <div class="mobile-beach-subtitle" id="mobileSuggestSubtitle"></div>
+      </div>
+    </div>
+    <div id="mobileSuggestContent" class="mobile-beach-content"></div>
+  </div>
   <div id="busyOverlay">
     <div class="spinnerBox">
       <div class="spinner"></div>
@@ -364,7 +374,7 @@ let translateMode = "original";
 let activeParkingBeach=null, activeParkingInfoId=null, parkingSearchRunning=false;
 let activeUploadBeach=null, activeUploadStatusId=null;
 let placeSuggestTimer=null, placeSuggestToken=0, countrySuggestTimer=null;
-let suggestPlaceMode=false, suggestPlacePopup=null;
+let suggestPlaceMode=false, suggestPlacePopup=null, suggestConfirmPopup=null;
 
 /* =====================================================================
    SUPABASE ANALYTICS
@@ -1040,6 +1050,47 @@ async function getApprovedSuggestedPlaces(centerLat, centerLon, radiusKm=10){
   }
 }
 
+
+function clearSuggestConfirmPopup(){
+  if(suggestConfirmPopup){
+    suggestConfirmPopup.remove();
+    suggestConfirmPopup = null;
+  }
+}
+
+function openSuggestConfirmPopup(lng, lat){
+  clearSuggestConfirmPopup();
+  clearSuggestPlacePopup();
+  closeActivePopup();
+
+  const latNum = Number(lat);
+  const lngNum = Number(lng);
+
+  suggestConfirmPopup = new maplibregl.Popup({
+      offset:18,
+      closeButton:true,
+      closeOnClick:false
+    })
+    .setLngLat([lngNum, latNum])
+    .setHTML(`
+      <div class="popup">
+        <h3>Suggest this place?</h3>
+        <p class="photo-note">Coordinates:<br>${coordText(latNum,lngNum)}</p>
+        <button type="button" onclick="confirmSuggestedPlaceFromMap(${lngNum},${latNum})" style="background:#2563eb;">Suggest a new place</button>
+        <button type="button" onclick="clearSuggestConfirmPopup()" style="background:#6b7280;">Cancel</button>
+      </div>
+    `)
+    .addTo(map);
+}
+
+function confirmSuggestedPlaceFromMap(lng, lat){
+  clearSuggestConfirmPopup();
+  setSuggestMode(false);
+  if(isMobileView()) openMobileSuggestPage(lng, lat);
+  else openSuggestPlacePopup(lng, lat);
+}
+
+
 function clearSuggestPlacePopup(){
   if(suggestPlacePopup){
     suggestPlacePopup.remove();
@@ -1054,10 +1105,15 @@ function setSuggestMode(on){
   const btn = $("suggestPlaceBtn");
   if(btn) btn.textContent = suggestPlaceMode ? "Cancel suggest mode" : "Suggest a new place";
   if(map && map.getCanvas()) map.getCanvas().style.cursor = suggestPlaceMode ? "crosshair" : "";
+
+  clearSuggestConfirmPopup();
+
   if(suggestPlaceMode){
     closeActivePopup();
     clearSuggestPlacePopup();
     status("Suggest mode active. Tap the map where the beach, toilet, parking or other place is located.");
+  }else{
+    status("Suggest mode cancelled.");
   }
 }
 
@@ -1078,6 +1134,99 @@ function updateSuggestPhotoCount(inputId, countId){
     countEl.style.color = "var(--muted)";
   }
 }
+
+
+function closeMobileSuggestPage(){
+  const page = $("mobileSuggestPage");
+  const content = $("mobileSuggestContent");
+  if(page) page.classList.remove("show");
+  if(content) content.innerHTML = "";
+  document.body.classList.remove("mobile-detail-open");
+  openMobileSearchPanel();
+}
+
+function openMobileSuggestPage(lng, lat){
+  const page = $("mobileSuggestPage");
+  const content = $("mobileSuggestContent");
+  const subtitle = $("mobileSuggestSubtitle");
+  if(!page || !content) return;
+
+  const formId = "mobileSuggestForm_" + Date.now();
+  const statusId = formId + "_status";
+  const photoInputId = formId + "_photos";
+  const photoCountId = formId + "_photoCount";
+  const descId = formId + "_desc";
+  const wcId = formId + "_wc";
+  const latNum = Number(lat);
+  const lngNum = Number(lng);
+
+  if(subtitle) subtitle.textContent = coordText(latNum,lngNum);
+
+  content.innerHTML = `
+    <div class="mobile-beach-section">
+      <h3>Location</h3>
+      <p><b>Coordinates:</b><br>${coordText(latNum,lngNum)}</p>
+      <p class="photo-note">This suggestion will wait for approval before it becomes visible to other users.</p>
+    </div>
+
+    <div class="mobile-beach-section suggest-form">
+      <h3>Place details</h3>
+
+      <label>Place type</label>
+      <select id="${formId}_type">
+        <option value="beach">Beach</option>
+        <option value="naturist_beach">Naturist beach</option>
+        <option value="official_naturist">Official naturist beach</option>
+        <option value="beach_resort">Beach resort / lido</option>
+        <option value="naturist_resort">Naturist resort / village</option>
+        <option value="naturist_campsite">Naturist campsite</option>
+        <option value="parking">Parking</option>
+        <option value="toilet">Toilet</option>
+        <option value="entrance">Beach entrance / access point</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label>Name</label>
+      <input id="${formId}_name" type="text" placeholder="Place name">
+
+      <label>Photos</label>
+      <input id="${photoInputId}" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+      <div id="${photoCountId}" class="word-count">No photos selected.</div>
+
+      <label>Description</label>
+      <textarea id="${descId}" placeholder="Optional description, max 300 characters, any language"></textarea>
+      <div id="${wcId}" class="word-count">0 / 300 characters</div>
+
+      <button type="button" onclick="submitSuggestedPlace('${formId}','${statusId}',${latNum},${lngNum})">Submit for approval</button>
+      <button type="button" style="background:#6b7280;" onclick="closeMobileSuggestPage()">Cancel</button>
+
+      <div id="${statusId}" class="photo-note" style="margin-top:10px;">No submission yet.</div>
+    </div>
+  `;
+
+  closeMobileSearchPanel();
+  page.classList.add("show");
+  document.body.classList.add("mobile-detail-open");
+  setSuggestMode(false);
+
+  setTimeout(()=>{
+    const desc = document.getElementById(descId);
+    const wc = document.getElementById(wcId);
+    if(desc && wc){
+      desc.addEventListener("input", ()=>{
+        const chars = countChars(desc.value);
+        wc.textContent = `${chars} / 300 characters`;
+        wc.style.color = chars > 300 ? "#b91c1c" : "var(--muted)";
+      });
+    }
+    const input = document.getElementById(photoInputId);
+    if(input){
+      input.addEventListener("change", ()=>updateSuggestPhotoCount(photoInputId, photoCountId));
+      updateSuggestPhotoCount(photoInputId, photoCountId);
+    }
+  },50);
+}
+
 
 function openSuggestPlacePopup(lng, lat){
   clearSuggestPlacePopup();
@@ -1263,7 +1412,13 @@ async function submitSuggestedPlace(formId, statusId, lat, lon){
       has_description: !!description
     });
 
-    setTimeout(()=>clearSuggestPlacePopup(), 1800);
+    setTimeout(()=>{
+      clearSuggestPlacePopup();
+      const mobilePage = $("mobileSuggestPage");
+      if(mobilePage && mobilePage.classList.contains("show")){
+        closeMobileSuggestPage();
+      }
+    }, 1800);
   }catch(e){
     console.warn("suggested place upload failed", e);
     let detail = "unknown error";
@@ -1293,7 +1448,9 @@ function newSearchReset(){
   activeUploadStatusId = null;
   setSuggestMode(false);
   clearSuggestPlacePopup();
+  clearSuggestConfirmPopup();
   closeMobileBeachPage();
+  closeMobileSuggestPage();
 
   setBusy(false);
   clearMarkers();
@@ -2003,7 +2160,7 @@ function openPopup(b,num){
 function showHover(b){if(hoverPopup)hoverPopup.remove();hoverPopup=new maplibregl.Popup({closeButton:false,closeOnClick:false,offset:18}).setLngLat([b.lon,b.lat]).setHTML(`<strong>${escapeHtml(b.name)}</strong>`).addTo(map)}
 function hideHover(){if(hoverPopup){hoverPopup.remove();hoverPopup=null}}
 
-function render(fit=false){clearMarkers();const visible=allBeaches.filter(shouldShow),list=$('list');list.innerHTML='';status(`Showing ${visible.length} of ${allBeaches.length} loaded places.`);updateStats(visible.length);visible.forEach((b,i)=>{const el=document.createElement('div');el.className='marker';el.style.background=colourFor(b.tags);el.textContent=i+1;el.title=b.name;const marker=new maplibregl.Marker({element:el}).setLngLat([b.lon,b.lat]).addTo(map);el.addEventListener('mouseenter',()=>showHover(b));el.addEventListener('mouseleave',hideHover);el.addEventListener('click',ev=>{ev.stopPropagation();hideHover();if(isMobileView())openMobileBeachPage(b,i+1,'map');else openPopup(b,i+1)});markers.push(marker);const li=document.createElement('li');li.className='item';li.innerHTML=`<h3>${i+1}. ${escapeHtml(b.name)}</h3><div class="meta">${escapeHtml(b.status)}</div>`;li.onclick=()=>{map.flyTo({center:[b.lon,b.lat],zoom:13});if(isMobileView())openMobileBeachPage(b,i+1,'list');else openPopup(b,i+1)};list.appendChild(li)});if(fit&&visible.length){const bounds=new maplibregl.LngLatBounds();visible.forEach(b=>bounds.extend([b.lon,b.lat]));map.fitBounds(bounds,{padding:60,maxZoom:10})}}
+function render(fit=false){clearMarkers();const visible=allBeaches.filter(shouldShow),list=$('list');list.innerHTML='';status(`Showing ${visible.length} of ${allBeaches.length} loaded places.`);updateStats(visible.length);visible.forEach((b,i)=>{const el=document.createElement('div');el.className='marker';el.style.background=colourFor(b.tags);el.textContent=i+1;el.title=b.name;const marker=new maplibregl.Marker({element:el}).setLngLat([b.lon,b.lat]).addTo(map);el.addEventListener('mouseenter',()=>showHover(b));el.addEventListener('mouseleave',hideHover);el.addEventListener('click',ev=>{ev.stopPropagation();hideHover();clearSuggestConfirmPopup();if(isMobileView())openMobileBeachPage(b,i+1,'map');else openPopup(b,i+1)});markers.push(marker);const li=document.createElement('li');li.className='item';li.innerHTML=`<h3>${i+1}. ${escapeHtml(b.name)}</h3><div class="meta">${escapeHtml(b.status)}</div>`;li.onclick=()=>{map.flyTo({center:[b.lon,b.lat],zoom:13});clearSuggestConfirmPopup();if(isMobileView())openMobileBeachPage(b,i+1,'list');else openPopup(b,i+1)};list.appendChild(li)});if(fit&&visible.length){const bounds=new maplibregl.LngLatBounds();visible.forEach(b=>bounds.extend([b.lon,b.lat]));map.fitBounds(bounds,{padding:60,maxZoom:10})}}
 
 async function scan(){
   status("Large regional search is disabled in this version. Use the local 10 km search.");
@@ -2399,6 +2556,7 @@ function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMap
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
 $('mobileSearchButton').addEventListener('click',openMobileSearchPanel);
 $('mobileBeachBack').addEventListener('click',closeMobileBeachPage);
+$('mobileSuggestBack').addEventListener('click',closeMobileSuggestPage);
 $('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('countrySearch').addEventListener('click',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('localScan').addEventListener('click',localScan);
@@ -2425,13 +2583,33 @@ $('country').addEventListener('change',()=>{
 });
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
 map.on('click',(e)=>{
-  if(suggestPlaceMode){
-    openSuggestPlacePopup(e.lngLat.lng, e.lngLat.lat);
+  const target = e && e.originalEvent ? e.originalEvent.target : null;
+  if(target && target.closest && target.closest(".maplibregl-popup")){
     return;
   }
+
+  if(suggestPlaceMode){
+    openSuggestConfirmPopup(e.lngLat.lng, e.lngLat.lat);
+
+    // After the user has chosen a map point, leave suggest-pick mode.
+    // The confirmation popup remains, but further map taps are normal map taps.
+    suggestPlaceMode = false;
+    const note = $("suggestModeNote");
+    if(note) note.classList.remove("show");
+    const btn = $("suggestPlaceBtn");
+    if(btn) btn.textContent = "Suggest a new place";
+    if(map && map.getCanvas()) map.getCanvas().style.cursor = "";
+
+    return;
+  }
+
   closeActivePopup();
   clearSuggestPlacePopup();
+  clearSuggestConfirmPopup();
 });
+map.on('movestart',clearSuggestConfirmPopup);
+map.on('zoomstart',clearSuggestConfirmPopup);
+map.on('dragstart',clearSuggestConfirmPopup);
 map.on('load',()=>{
   trackEvent("beachscout_page_view", "page", {
     page: location.href
