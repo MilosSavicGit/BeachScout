@@ -1514,7 +1514,6 @@ async function loadPopupPhoto(photoId, beach){
       target.innerHTML = `<div class="community-gallery">${imgs}</div>${descHtml}<div class="photo-note">Source: BeachScout community photos</div>`;
       if(translateMode === "english"){
         await applyDescriptionModeToOpenPopup();
-        await applyDescriptionModeToMobilePage();
       }
       return;
     }
@@ -1704,36 +1703,6 @@ async function translateArbitraryTextToEnglish(text){
   return (j[0] || []).map(seg => seg && seg[0] ? seg[0] : "").join("") || clean;
 }
 
-
-async function applyDescriptionModeToMobilePage(){
-  const page = $("mobileBeachPage");
-  if(!page || !page.classList.contains("show")) return;
-
-  const descriptions = page.querySelectorAll(".community-description");
-
-  for(const el of descriptions){
-    if(!el.dataset.originalDescription){
-      el.dataset.originalDescription = el.textContent || "";
-    }
-
-    const original = el.dataset.originalDescription || "";
-
-    if(translateMode === "english"){
-      if(!el.dataset.englishDescription){
-        try{
-          el.dataset.englishDescription = await translateArbitraryTextToEnglish(original);
-        }catch(e){
-          console.log("mobile description translation failed", e);
-          el.dataset.englishDescription = original;
-        }
-      }
-      el.textContent = el.dataset.englishDescription || original;
-    }else{
-      el.textContent = original;
-    }
-  }
-}
-
 async function applyDescriptionModeToOpenPopup(){
   const popup = document.querySelector(".maplibregl-popup .popup");
   if(!popup) return;
@@ -1774,30 +1743,6 @@ function openPopupBeach(){
     Math.abs(Number(b.lat) - lat) < 0.00001 &&
     Math.abs(Number(b.lon) - lon) < 0.00001
   ) || null;
-}
-
-
-function updateMobileBeachPageWithoutRedraw(){
-  const page = $("mobileBeachPage");
-  const content = $("mobileBeachContent");
-  if(!page || !content || !page.classList.contains("show")) return;
-
-  const b = activeUploadBeach || activeParkingBeach || null;
-  if(!b) return;
-
-  const h2 = content.querySelector("h2");
-  const statusEl = content.querySelector(".mobile-status");
-  const btn = content.querySelector(".translate-toggle-btn");
-
-  if(h2){
-    const current = h2.textContent || "";
-    const m = current.match(/^(\d+)\./);
-    const num = m ? m[1] : "";
-    h2.textContent = num ? `${num}. ${b.name}` : b.name;
-  }
-
-  if(statusEl) statusEl.textContent = b.status || "";
-  if(btn) btn.textContent = translateButtonLabel();
 }
 
 function updateCurrentDisplayWithoutRedraw(){
@@ -1844,15 +1789,9 @@ async function toggleTranslate(){
   translateMode = translateMode === "english" ? "original" : "english";
 
   applyTranslateModeToData();
-
   updateCurrentDisplayWithoutRedraw();
-  updateMobileBeachPageWithoutRedraw();
-
   await applyDescriptionModeToOpenPopup();
-  await applyDescriptionModeToMobilePage();
-
   updateCurrentDisplayWithoutRedraw();
-  updateMobileBeachPageWithoutRedraw();
 
   status(translateMode === "english"
     ? "English shown where available. Press Show Original to restore original names and descriptions."
