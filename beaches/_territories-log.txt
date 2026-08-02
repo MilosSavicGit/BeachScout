@@ -1,0 +1,276 @@
+22:53:17  === Territories build. 10 queued. No admin_level constraint. ===
+22:53:17  AW : starting
+22:53:17      natural=beach : 62
+22:53:22      leisure=beach* : 15
+22:53:25      tourism=beach_resort : 0
+22:53:28      sport=swimming : 17
+22:53:32      nudism=* : 0
+22:53:35      naturism=* : 0
+22:53:39      clothing=optional : 0
+22:54:22      name~naturist/nudist : 0
+22:54:25  AW : DONE - 94 places, 0.01 MB, 8/8 chunks.
+22:54:45  CW : starting
+22:54:46      natural=beach : 64
+22:54:50      leisure=beach* : 3
+22:54:53      tourism=beach_resort : 0
+22:54:57      sport=swimming : 6
+22:55:00      nudism=* : 1
+22:55:04      naturism=* : 0
+22:55:07      clothing=optional : 0
+22:55:50      name~naturist/nudist : 0
+22:55:53  CW : DONE - 73 places, 0.01 MB, 8/8 chunks.
+22:56:13  SX : starting
+22:56:14      natural=beach : 20
+22:56:17      leisure=beach* : 1
+22:56:21      tourism=beach_resort : 0
+22:56:24      sport=swimming : 8
+22:56:28      nudism=* : 1
+22:56:31      naturism=* : 0
+22:56:34      clothing=optional : 0
+22:56:38      name~naturist/nudist : 0
+22:56:41  SX : DONE - 29 places, 0 MB, 8/8 chunks.
+22:57:01  BQ : starting
+22:57:01      natural=beach : 30
+22:57:06      leisure=beach* : 1
+22:57:10      tourism=beach_resort : 0
+22:57:13      sport=swimming : 1
+22:57:16      nudism=* : 0
+22:57:20      naturism=* : 0
+22:57:23      clothing=optional : 0
+22:58:08      name~naturist/nudist : 0
+22:58:11  BQ : DONE - 32 places, 0 MB, 8/8 chunks.
+22:58:31  HK : starting
+22:58:32      natural=beach : 373
+22:58:37      leisure=beach* : 5
+22:58:40      tourism=beach_resort : 0
+22:58:45      sport=swimming : 388
+22:58:48      nudism=* : 0
+22:58:52      naturism=* : 0
+22:58:55      clothing=optional : 0
+22:59:39      name~naturist/nudist : 0
+22:59:42  HK : DONE - 766 places, 0.13 MB, 8/8 chunks.
+23:00:02  MO : starting
+23:00:03      natural=beach : 4
+23:00:06      leisure=beach* : 0
+23:00:10      tourism=beach_resort : 0
+23:00:13      sport=swimming : 29
+23:00:17      nudism=* : 0
+23:00:20      naturism=* : 0
+23:00:24      clothing=optional : 0
+23:00:28      name~naturist/nudist : 0
+23:00:31  MO : DONE - 33 places, 0.01 MB, 8/8 chunks.
+23:00:51  AX : starting
+23:00:51      natural=beach : 97
+23:00:56      leisure=beach* : 14
+23:01:00      tourism=beach_resort : 0
+23:01:21      sport=swimming : 6
+23:01:45      nudism=* : 0
+23:01:49      naturism=* : 0
+23:01:52      clothing=optional : 0
+23:02:36      name~naturist/nudist : 0
+23:02:39  AX : DONE - 113 places, 0.01 MB, 8/8 chunks.
+23:02:59  CX : starting
+23:02:59      natural=beach : 5
+23:03:03      leisure=beach* : 0
+23:03:07      tourism=beach_resort : 0
+23:03:10      sport=swimming : 1
+23:03:13      nudism=* : 0
+23:03:17      naturism=* : 0
+23:03:20      clothing=optional : 0
+23:04:03      name~naturist/nudist : 0
+23:04:06  CX : DONE - 6 places, 0 MB, 8/8 chunks.
+23:04:26  CC : starting
+23:04:26      natural=beach : 21
+23:04:30      leisure=beach* : 0
+23:04:34      tourism=beach_resort : 0
+23:04:37      sport=swimming : 0
+23:04:41      nudism=* : 0
+23:04:44      naturism=* : 0
+23:04:47      clothing=optional : 0
+23:05:30      name~naturist/nudist : 0
+23:05:33  CC : DONE - 21 places, 0 MB, 8/8 chunks.
+23:05:53  NF : starting
+23:05:54      natural=beach : 7
+23:05:58      leisure=beach* : 0
+23:06:02      tourism=beach_resort : 0
+23:06:05      sport=swimming : 0
+23:06:09      nudism=* : 0
+23:06:12      naturism=* : 0
+23:06:16      clothing=optional : 0
+23:06:58      name~naturist/nudist : 0
+23:07:01  NF : DONE - 7 places, 0 MB, 8/8 chunks.
+23:07:21  === Finished. ===
+23:09:49  === Territories build. 17 queued. No admin_level constraint. ===
+23:09:49  PR : starting
+23:09:50      natural=beach : 269
+23:09:55      leisure=beach* : 24
+23:09:58      tourism=beach_resort : 0
+23:10:03      sport=swimming : 165
+23:10:07      nudism=* : 0
+23:10:10      naturism=* : 0
+23:10:14      clothing=optional : 0
+23:10:59      name~naturist/nudist : 1
+23:11:02  PR : DONE - 441 places, 0.07 MB, 8/8 chunks.
+23:11:22  VI : starting
+23:11:23      natural=beach : 221
+23:11:27      leisure=beach* : 2
+23:11:30      tourism=beach_resort : 0
+23:11:34      sport=swimming : 5
+23:11:37      nudism=* : 2
+23:11:40      naturism=* : 0
+23:11:44      clothing=optional : 0
+23:12:27      name~naturist/nudist : 0
+23:12:30  VI : DONE - 228 places, 0.03 MB, 8/8 chunks.
+23:12:50  GU : starting
+23:12:50      natural=beach : 121
+23:12:55      leisure=beach* : 3
+23:12:58      tourism=beach_resort : 0
+23:13:01      sport=swimming : 16
+23:13:09      nudism=* : 0
+23:13:12      naturism=* : 0
+23:13:16      clothing=optional : 0
+23:14:00      name~naturist/nudist : 0
+23:14:03  GU : DONE - 140 places, 0.02 MB, 8/8 chunks.
+23:14:23  MP : starting
+23:14:23      natural=beach : 69
+23:14:28      leisure=beach* : 0
+23:14:31      tourism=beach_resort : 0
+23:14:34      sport=swimming : 0
+23:14:38      nudism=* : 0
+23:14:41      naturism=* : 0
+23:14:45      clothing=optional : 0
+23:15:28      name~naturist/nudist : 0
+23:15:31  MP : DONE - 69 places, 0.01 MB, 8/8 chunks.
+23:15:51  AS : starting
+23:15:51      natural=beach : 21
+23:15:56      leisure=beach* : 0
+23:15:59      tourism=beach_resort : 0
+23:16:03      sport=swimming : 1
+23:16:06      nudism=* : 0
+23:16:11      naturism=* : 0
+23:16:14      clothing=optional : 0
+23:16:57      name~naturist/nudist : 0
+23:17:00  AS : DONE - 22 places, 0 MB, 8/8 chunks.
+23:17:20  GP : starting
+23:17:21      natural=beach : 211
+23:17:25      leisure=beach* : 48
+23:17:29      tourism=beach_resort : 0
+23:17:33      sport=swimming : 36
+23:17:36      nudism=* : 8
+23:17:40      naturism=* : 0
+23:17:43      clothing=optional : 0
+23:18:29      name~naturist/nudist : 0
+23:18:32  GP : DONE - 294 places, 0.05 MB, 8/8 chunks.
+23:18:52  MQ : starting
+23:18:53      natural=beach : 111
+23:18:57      leisure=beach* : 3
+23:19:01      tourism=beach_resort : 0
+23:19:04      sport=swimming : 28
+23:19:08      nudism=* : 0
+23:19:11      naturism=* : 0
+23:19:14      clothing=optional : 0
+23:19:59      name~naturist/nudist : 0
+23:20:02  MQ : DONE - 140 places, 0.02 MB, 8/8 chunks.
+23:20:22  RE : starting
+23:20:22      natural=beach : 38
+23:20:37      leisure=beach* : 6
+23:21:13        attempt 1/4 on maps.mail.ru failed: The remote server returned an error: (504) Gateway Timeout.
+23:21:24        attempt 2/4 on overpass-api.de failed: The remote server returned an error: (406) Not Acceptable.
+23:22:40      tourism=beach_resort : 0
+23:22:46      sport=swimming : 71
+23:22:50      nudism=* : 0
+23:22:53      naturism=* : 0
+23:22:57      clothing=optional : 0
+23:23:40      name~naturist/nudist : 0
+23:23:43  RE : DONE - 113 places, 0.02 MB, 8/8 chunks.
+23:24:03  YT : starting
+23:24:05      natural=beach : 344
+23:24:10      leisure=beach* : 0
+23:24:13      tourism=beach_resort : 0
+23:24:17      sport=swimming : 4
+23:24:21      nudism=* : 1
+23:24:25      naturism=* : 0
+23:24:28      clothing=optional : 0
+23:25:12      name~naturist/nudist : 0
+23:25:15  YT : DONE - 344 places, 0.05 MB, 8/8 chunks.
+23:25:35  MF : starting
+23:25:35      natural=beach : 41
+23:25:39      leisure=beach* : 1
+23:25:43      tourism=beach_resort : 0
+23:25:46      sport=swimming : 2
+23:25:50      nudism=* : 3
+23:25:53      naturism=* : 1
+23:25:56      clothing=optional : 0
+23:26:40      name~naturist/nudist : 0
+23:26:43  MF : DONE - 44 places, 0.01 MB, 8/8 chunks.
+23:27:03  NC : starting
+23:27:04      natural=beach : 623
+23:27:08      leisure=beach* : 8
+23:27:12      tourism=beach_resort : 0
+23:27:16      sport=swimming : 230
+23:27:19      nudism=* : 5
+23:27:22      naturism=* : 1
+23:27:26      clothing=optional : 0
+23:28:10      name~naturist/nudist : 1
+23:28:14  NC : DONE - 857 places, 0.11 MB, 8/8 chunks.
+23:28:34  PF : starting
+23:28:35      natural=beach : 694
+23:28:39      leisure=beach* : 36
+23:28:42      tourism=beach_resort : 0
+23:28:46      sport=swimming : 9
+23:28:50      nudism=* : 0
+23:28:54      naturism=* : 0
+23:29:01      clothing=optional : 0
+23:29:46      name~naturist/nudist : 0
+23:29:49  PF : DONE - 739 places, 0.08 MB, 8/8 chunks.
+23:30:09  PM : starting
+23:30:10      natural=beach : 37
+23:30:14      leisure=beach* : 0
+23:30:18      tourism=beach_resort : 0
+23:30:21      sport=swimming : 1
+23:30:25      nudism=* : 0
+23:30:28      naturism=* : 0
+23:30:31      clothing=optional : 0
+23:31:15      name~naturist/nudist : 0
+23:31:18  PM : DONE - 38 places, 0 MB, 8/8 chunks.
+23:31:38  WF : starting
+23:31:38      natural=beach : 82
+23:31:43      leisure=beach* : 0
+23:31:46      tourism=beach_resort : 0
+23:31:49      sport=swimming : 7
+23:31:53      nudism=* : 0
+23:31:56      naturism=* : 0
+23:31:59      clothing=optional : 0
+23:32:43      name~naturist/nudist : 0
+23:32:46  WF : DONE - 89 places, 0.01 MB, 8/8 chunks.
+23:33:06  SJ : starting
+23:33:07      natural=beach : 23
+23:33:11      leisure=beach* : 0
+23:33:15      tourism=beach_resort : 0
+23:33:19      sport=swimming : 2
+23:33:22      nudism=* : 0
+23:33:26      naturism=* : 0
+23:33:29      clothing=optional : 0
+23:34:13      name~naturist/nudist : 0
+23:34:16  SJ : DONE - 25 places, 0 MB, 8/8 chunks.
+23:34:36  EH : starting
+23:34:36      natural=beach : 66
+23:34:41      leisure=beach* : 0
+23:34:44      tourism=beach_resort : 0
+23:34:48      sport=swimming : 2
+23:34:51      nudism=* : 0
+23:34:55      naturism=* : 0
+23:34:58      clothing=optional : 0
+23:35:42      name~naturist/nudist : 0
+23:35:45  EH : DONE - 68 places, 0.01 MB, 8/8 chunks.
+23:36:05  PS : starting
+23:36:05      natural=beach : 19
+23:36:10      leisure=beach* : 4
+23:36:13      tourism=beach_resort : 0
+23:36:17      sport=swimming : 14
+23:36:21      nudism=* : 0
+23:36:24      naturism=* : 0
+23:36:27      clothing=optional : 0
+23:37:12      name~naturist/nudist : 1
+23:37:15  PS : DONE - 38 places, 0.01 MB, 8/8 chunks.
+23:37:35  === Finished. ===

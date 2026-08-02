@@ -32,6 +32,11 @@
   .photo-note{color:var(--muted);font-size:12px;font-style:italic;margin-top:4px}.no-photo{text-align:center;padding:12px 6px;background:#f8f3ea;border:1px dashed var(--rule);border-radius:8px;margin:8px 0}
   .suggestion-btn{display:block;width:100%;margin:4px 0;padding:8px 9px;font-size:12px;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--rule);border-radius:7px;cursor:pointer}
   .suggestion-btn:hover{border-color:var(--accent);background:#fffaf1}
+  .place-suggestion{display:flex;flex-direction:column;gap:2px;padding:8px 10px}
+  .place-suggestion .ps-name{font-size:14px;font-weight:bold;color:var(--ink)}
+  .place-suggestion .ps-context{font-size:11px;color:var(--muted);font-style:italic}
+  .place-suggestion.active{border-color:var(--accent);background:#fff1e2}
+  #suggestions{max-height:320px;overflow-y:auto}
   .upload-box{margin-top:10px;padding:9px;border:1px dashed var(--rule);border-radius:8px;background:#fffaf1}
   .upload-box input,.upload-box textarea{width:100%;margin-top:6px;padding:8px;border:1px solid var(--rule);border-radius:7px;font:inherit;font-size:13px}
   .upload-box textarea{min-height:86px;resize:vertical}
@@ -256,13 +261,131 @@
     body.mobile-detail-open{overflow:hidden}
   }
 
+  .conditions-page{
+    position:absolute;
+    inset:0;
+    z-index:170;
+    background:var(--panel);
+    color:var(--ink);
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    display:none;
+  }
+  .conditions-page.show{display:block}
+  .conditions-header{
+    position:sticky;
+    top:0;
+    z-index:5;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 14px;
+    background:var(--panel);
+    border-bottom:1px solid var(--rule);
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+  }
+  .conditions-nav-btn{
+    width:auto !important;
+    min-width:58px;
+    margin:0 !important;
+    padding:10px 14px !important;
+    border-radius:999px !important;
+    font-size:15px !important;
+    background:#6b7280 !important;
+    color:#fff !important;
+  }
+  .conditions-map-btn{background:#2f6b4f !important}
+  .conditions-title-wrap{flex:1;min-width:0}
+  .conditions-title{font-size:18px;font-weight:bold;line-height:1.2}
+  .conditions-subtitle{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:2px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .conditions-content{max-width:720px;margin:0 auto;padding:18px 14px 38px}
+  .recommendation-card{
+    background:#ecfdf5;
+    border:1px solid #86efac;
+    border-radius:18px;
+    padding:22px 16px;
+    text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    margin-bottom:16px;
+  }
+  .recommendation-kicker{font-size:14px;font-weight:bold;color:#166534;margin-bottom:7px}
+  .recommendation-main{font-size:30px;font-weight:bold;line-height:1.1;color:#14532d}
+  .recommendation-note{font-size:12px;color:#4b5563;margin-top:9px}
+  .conditions-card{
+    background:#fff;
+    border:1px solid var(--rule);
+    border-radius:16px;
+    padding:14px;
+    margin:12px 0;
+  }
+  .conditions-card h3{margin:0 0 10px;font-size:18px}
+  .condition-row{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:14px;
+    align-items:center;
+    padding:9px 0;
+    border-bottom:1px solid #eee7db;
+    font-size:13px;
+  }
+  .condition-row:last-child{border-bottom:none}
+  .condition-value{font-weight:bold;text-align:right}
+  .conditions-demo-note{
+    font-size:12px;
+    line-height:1.45;
+    color:var(--muted);
+    padding:10px 12px;
+    border:1px dashed var(--rule);
+    border-radius:12px;
+    background:#fffaf1;
+    margin-top:12px;
+  }
+  .mobile-map-btn{
+    width:auto !important;
+    min-width:72px !important;
+    min-height:52px !important;
+    margin:0 0 0 auto !important;
+    padding:0 14px !important;
+    border-radius:999px !important;
+    font-size:15px !important;
+    background:#2f6b4f !important;
+    color:#fff !important;
+  }
+
+  .stay-page{position:absolute;inset:0;z-index:175;background:var(--panel);color:var(--ink);overflow-y:auto;-webkit-overflow-scrolling:touch;display:none}
+  .stay-page.show{display:block}
+  .stay-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--panel);border-bottom:1px solid var(--rule);box-shadow:0 2px 10px rgba(0,0,0,.08)}
+  .stay-nav-btn{width:auto!important;min-width:58px;margin:0!important;padding:10px 14px!important;border-radius:999px!important;font-size:15px!important;background:#6b7280!important;color:#fff!important}
+  .stay-map-btn{background:#2f6b4f!important}
+  .stay-title-wrap{flex:1;min-width:0}
+  .stay-title{font-size:18px;font-weight:bold;line-height:1.2}
+  .stay-subtitle{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stay-content{max-width:760px;margin:0 auto;padding:16px 14px 38px}
+  .stay-intro{background:#fffaf1;border:1px solid var(--rule);border-radius:14px;padding:12px;font-size:13px;line-height:1.45;margin-bottom:12px}
+  .stay-status{background:#fff;border:1px solid var(--rule);border-radius:12px;padding:11px 12px;margin:10px 0 14px;font-size:13px;color:var(--muted);white-space:pre-line}
+  .stay-result{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:13px;margin:10px 0;box-shadow:0 3px 10px rgba(0,0,0,.05)}
+  .stay-result h3{margin:0 0 5px;font-size:17px}
+  .stay-meta{font-size:12px;color:var(--muted);line-height:1.45;margin:3px 0}
+  .stay-kind{display:inline-block;margin-top:5px;padding:3px 7px;border-radius:999px;border:1px solid #86b9a0;color:#2f6b4f;background:#f2fbf6;font-size:11px;font-weight:bold}
+  .stay-actions{display:grid;grid-template-columns:1fr;gap:7px;margin-top:10px}
+  .stay-link{display:block;text-align:center;padding:10px 11px;border-radius:9px;background:#2f6b4f;color:#fff!important;text-decoration:none;font-weight:bold;font-size:13px}
+  .stay-link.secondary{background:#fff;color:var(--accent)!important;border:1px solid var(--accent)}
+  .stay-empty{padding:18px 12px;text-align:center;color:var(--muted);border:1px dashed var(--rule);border-radius:12px;background:#fffaf1}
+
 </style>
 </head>
 <body>
 <div class="app">
   <div class="panel" id="searchPanel">
     <h1>BeachScout Global</h1>
-    <div class="tag">Fast local 10 km search — choose the correct place first</div>
+    <div class="tag">Fast local 10 km search — choose the correct place first<br><span id="versionTag" style="font-size:11px;opacity:.7"></span></div>
 
     <label for="countrySearch">Country</label>
     <input id="countrySearch" type="text" placeholder="Start typing country, e.g. Italy" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
@@ -272,10 +395,10 @@
       <b>Default: local 10 km search</b>
       <div class="photo-note" style="margin:6px 0 8px;">Recommended. Type a place such as Genoa, Nice, Split or Ada Ciganlija. This version does not run large regional searches.</div>
       <input id="placeSearch" type="text" placeholder="Example: Genoa" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
+      <div id="suggestions" class="photo-note" style="margin-top:8px;"></div>
       <button id="localScan">Search 10 km around place</button>
       <button id="nearMeScan" type="button" style="background:#2f6b4f;">Use my current location — 10 km</button>
       <button id="newSearch" type="button" style="background:#6b7280;">New Search / Reset</button>
-      <div id="suggestions" class="photo-note" style="margin-top:8px;"></div>
     </div>
 
     <div class="box legend">
@@ -283,6 +406,7 @@
       <div><span class="dot" style="background:#2f6b4f"></span>Official/designated naturist</div>
       <div><span class="dot" style="background:#d97706"></span>Customary/naturist beach</div>
       <div><span class="dot" style="background:#7c3aed"></span>Beach resort / lido</div>
+      <div><span class="dot" style="background:#0891b2"></span>Swimming pool</div>
       <div><span class="dot" style="background:#0f766e"></span>Naturist resort / village</div>
       <div><span class="dot" style="background:#be185d"></span>Naturist campsite</div>
       <div><span class="dot" style="background:#111827"></span>Public parking near selected beach</div>
@@ -298,6 +422,8 @@
       <label><input type="checkbox" class="filterToggle" value="naturist_resort" checked> Naturist resorts / villages</label>
       <label><input type="checkbox" class="filterToggle" value="naturist_campsite" checked> Naturist campsites</label>
       <label><input type="checkbox" class="filterToggle" value="unnamed"> Unnamed beaches</label>
+      <label><input type="checkbox" class="filterToggle" value="inland" checked> Lake / river beaches</label>
+      <label><input type="checkbox" class="filterToggle" value="pool" checked> Swimming pools</label>
     </div>
 
     <div class="box" id="stats">No beaches loaded yet.</div>
@@ -312,9 +438,98 @@
         <div class="mobile-beach-title">Beach details</div>
         <div class="mobile-beach-subtitle" id="mobileBeachSubtitle"></div>
       </div>
+      <button type="button" id="mobileBeachMap" class="mobile-map-btn">🗺 Map</button>
     </div>
     <div id="mobileBeachContent" class="mobile-beach-content"></div>
   </div>
+
+  <div id="conditionsPage" class="conditions-page">
+    <div class="conditions-header">
+      <button type="button" id="conditionsBack" class="conditions-nav-btn">← Back</button>
+      <div class="conditions-title-wrap">
+        <div class="conditions-title">🌊 Beach Conditions</div>
+        <div class="conditions-subtitle" id="conditionsBeachName"></div>
+      </div>
+      <button type="button" id="conditionsMap" class="conditions-nav-btn conditions-map-btn">🗺 Map</button>
+    </div>
+
+    <div class="conditions-content">
+      <div class="recommendation-card">
+        <div class="recommendation-kicker" id="recKicker">BeachScout Recommendation</div>
+        <div class="recommendation-main" id="recMain">Loading…</div>
+        <div class="recommendation-note" id="recNote">Fetching live conditions.</div>
+      </div>
+
+      <div class="conditions-card">
+        <h3>Essential conditions</h3>
+        <div class="condition-row"><span>☀ Air temperature</span><span class="condition-value" id="cAir">—</span></div>
+        <div class="condition-row"><span>🌊 Water temperature</span><span class="condition-value" id="cSea">—</span></div>
+        <div class="condition-row"><span>💨 Wind</span><span class="condition-value" id="cWind">—</span></div>
+        <div class="condition-row"><span>🌊 Waves</span><span class="condition-value" id="cWaves">—</span></div>
+        <div class="condition-row"><span>☀ UV index</span><span class="condition-value" id="cUV">—</span></div>
+        <div class="condition-row"><span>🌧 Rain chance</span><span class="condition-value" id="cRain">—</span></div>
+        <div class="condition-row"><span>🌅 Sunset</span><span class="condition-value" id="cSunset">—</span></div>
+      </div>
+
+      <!-- Reserved slot. This was a "Water quality" card, but it had nothing to
+           show: the EEA bathing-water dataset is keyed to monitoring points, not
+           to OSM beaches, so it needs a build-time matching step that does not
+           exist yet. A card reading "Not connected" just looks broken, so the
+           space is now held for local accommodation instead — which is a real
+           revenue line and genuinely useful next to a beach.
+           Populate #cPartnerSlot when that is built; it stays hidden until then. -->
+      <div class="conditions-card" id="cPartnerCard" style="display:none;">
+        <h3>🏨 Staying nearby</h3>
+        <div id="cPartnerSlot"></div>
+      </div>
+
+      <div class="conditions-card">
+        <h3>🚩 Safety</h3>
+        <div class="condition-row"><span>Current warnings</span><span class="condition-value" id="cSafety">—</span></div>
+        <!-- Jellyfish (medusa) are the most common summer hazard on Mediterranean
+             and Adriatic beaches, and numbers change day to day with wind and
+             current. We deliberately do NOT show a jellyfish photo or a presence
+             figure: a photo from last season next to a beach that is fine today
+             would be worse than saying nothing, and this is a safety matter.
+             Meduseo (meduseo.com) already does this properly — 90,000+ dated,
+             geotagged user reports — so the honest thing is to point there
+             rather than build a worse copy. Link goes live if/when there is an
+             agreement with them. -->
+        <div class="condition-row" style="align-items:flex-start;">
+          <span>🪼 Jellyfish (medusa)</span>
+          <span class="condition-value" id="cJellyfish" style="text-align:right;max-width:60%;">
+            Numbers change daily with wind and current — check local signs before swimming
+          </span>
+        </div>
+      </div>
+
+      <div class="conditions-demo-note" id="cAttribution">
+        Weather and marine data from Open-Meteo (CC BY 4.0). Sea temperature and waves
+        are modelled, not measured at this beach — treat them as a good guide, not a reading.
+      </div>
+    </div>
+  </div>
+
+
+  <div id="stayPage" class="stay-page">
+    <div class="stay-header">
+      <button type="button" id="stayBack" class="stay-nav-btn">← Back</button>
+      <div class="stay-title-wrap">
+        <div class="stay-title">🏨 Stay Nearby</div>
+        <div class="stay-subtitle" id="stayBeachName"></div>
+      </div>
+      <button type="button" id="stayMap" class="stay-nav-btn stay-map-btn">🗺 Map</button>
+    </div>
+    <div class="stay-content">
+      <div class="stay-intro">
+        HotelScout search: accommodation within a fixed 3 km circle around the selected beach.
+        Results come from OpenStreetMap and are sorted by distance.
+      </div>
+      <div id="stayStatus" class="stay-status">Choose a beach, then open Stay Nearby.</div>
+      <div id="stayResults"></div>
+    </div>
+  </div>
+
   <div id="busyOverlay">
     <div class="spinnerBox">
       <div class="spinner"></div>
@@ -330,6 +545,14 @@
 </div>
 
 <script>
+// Bump this EVERY time you regenerate the beaches/*.json files, or returning
+// users will keep serving the old country data from their browser cache forever
+// — silently, with no error, possibly for months. Use bump-data-version.ps1.
+// DATA_VERSION_LINE — do not rename this marker, the script looks for it.
+const BEACH_DATA_VERSION = "2026-07-13";
+
+const BUILD_VERSION = "v2.0 (2026-07-16) - world default, multilingual country search, auto country from location";
+console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 const MAPTILER_KEY='L0PMr6QA6YPkhSS8n4Sv';
 const MAP_STYLES={
   streets:`https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_KEY}`,
@@ -388,7 +611,6 @@ const USER_TOKEN = getUserToken();
 const APP_VERSION = 'beachscout_global10_nearme_photos_taiwan_china_v1';
 const BEACH_PHOTO_BUCKET = 'beach-photos';
 const BEACH_PHOTO_TABLE = 'beach_photos';
-const DEFAULT_SANTA_MONICA_BEACHES = [{"name": "Santa Monica State Beach", "originalName": "Santa Monica State Beach", "lat": 34.01, "lon": -118.496, "tags": {"name": "Santa Monica State Beach", "natural": "beach", "wikipedia": "en:Santa_Monica_State_Beach"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Santa_Monica_State_Beach"}, {"name": "Venice Beach", "originalName": "Venice Beach", "lat": 33.985, "lon": -118.4695, "tags": {"name": "Venice Beach", "natural": "beach", "wikipedia": "en:Venice,_Los_Angeles"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Venice,_Los_Angeles"}, {"name": "Muscle Beach Venice", "originalName": "Muscle Beach Venice", "lat": 33.9859, "lon": -118.472, "tags": {"name": "Muscle Beach Venice", "leisure": "beach", "wikipedia": "en:Muscle_Beach"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Muscle_Beach"}, {"name": "Will Rogers State Beach", "originalName": "Will Rogers State Beach", "lat": 34.039, "lon": -118.551, "tags": {"name": "Will Rogers State Beach", "natural": "beach", "wikipedia": "en:Will_Rogers_State_Beach"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Will_Rogers_State_Beach"}, {"name": "Playa del Rey Beach", "originalName": "Playa del Rey Beach", "lat": 33.9547, "lon": -118.4497, "tags": {"name": "Playa del Rey Beach", "natural": "beach"}, "status": "Beach", "wiki": ""}, {"name": "Dockweiler State Beach", "originalName": "Dockweiler State Beach", "lat": 33.93, "lon": -118.435, "tags": {"name": "Dockweiler State Beach", "natural": "beach", "wikipedia": "en:Dockweiler_State_Beach"}, "status": "Beach", "wiki": "https://en.wikipedia.org/wiki/Dockweiler_State_Beach"}, {"name": "Marina Beach", "originalName": "Marina Beach", "lat": 33.9776, "lon": -118.4569, "tags": {"name": "Marina Beach", "natural": "beach"}, "status": "Beach", "wiki": ""}, {"name": "Topanga Beach", "originalName": "Topanga Beach", "lat": 34.0397, "lon": -118.5836, "tags": {"name": "Topanga Beach", "natural": "beach"}, "status": "Beach", "wiki": ""}];
 
 function trackEvent(eventType, mode = 'local', details = {}){
   try{
@@ -422,42 +644,43 @@ function closeMobileSearchPanel(){
 }
 
 
-let defaultSantaMonicaStarted = false;
-function startDefaultSantaMonicaOnce(){
-  if(defaultSantaMonicaStarted) return;
-  defaultSantaMonicaStarted = true;
+let defaultViewStarted = false;
+function startDefaultViewOnce(){
+  if(defaultViewStarted) return;
+  defaultViewStarted = true;
   try{
     populateCountries();
-    runDefaultSantaMonicaSearch();
+    runDefaultWorldView();
   }catch(e){
     console.log("default startup failed", e);
   }
 }
 
-function runDefaultSantaMonicaSearch(){
+// Start on a world view with nothing selected, rather than dropping every user
+// into Santa Monica. The old default set the country to "United States" and
+// showed eight Californian beaches, which was arbitrary for a global app and
+// actively confusing: a user in Serbia who then pressed "use my location" was
+// searching us.json without realising the country had been chosen for them.
+// Better to show the world and let people say where they are.
+function runDefaultWorldView(){
   try{
-    currentCountry = "United States";
-    if($("country")) $("country").value = "United States";
-    if($("countrySearch")) $("countrySearch").value = "United States";
-    if($("placeSearch")) $("placeSearch").value = "Santa Monica";
+    currentCountry = "Worldwide";
+    if($("country")) $("country").value = "Worldwide";
+    if($("countrySearch")) $("countrySearch").value = "";
+    if($("placeSearch")) $("placeSearch").value = "";
 
-    allBeaches = DEFAULT_SANTA_MONICA_BEACHES.map(b => ({
-      name: b.name,
-      originalName: b.originalName,
-      lat: Number(b.lat),
-      lon: Number(b.lon),
-      tags: b.tags || {},
-      status: b.status || placeStatus(b.tags || {}),
-      wiki: b.wiki || wikilink(b.tags || {})
-    }));
-
+    allBeaches = [];
     initializeOriginalMemoryForNewSearch();
-    map.flyTo({center:[-118.4912273,34.0194704],zoom:11});
+
+    // Centred a little north of the equator and zoomed right out: shows most
+    // inhabited coastlines without favouring any one country.
+    map.flyTo({ center: [10, 25], zoom: 1.4 });
     render(true);
-    status("Default Santa Monica / LA beaches loaded instantly. Press Search to choose another place.");
+
+    status("Choose a country, or use your current location, to find beaches near you.");
   }catch(e){
-    console.log("default Santa Monica load failed", e);
-    status("Default beach list could not be loaded. Press Search to choose a place.");
+    console.log("default world view failed", e);
+    status("Choose a country and a place to search for beaches.");
   }
 }
 
@@ -494,29 +717,316 @@ function regionData(){return countries[currentCountry].regions[currentRegion]}
 
 function localRadiusMeters(){return 10000}
 function nominatimCountryCode(country){
-  const map = {
-    "Albania":"al","Australia":"au","Austria":"at","Belgium":"be","Brazil":"br",
-    "Bulgaria":"bg","Canada":"ca","China":"cn","Croatia":"hr","Cyprus":"cy",
-    "Denmark":"dk","France":"fr","Germany":"de","Greece":"gr","Italy":"it",
-    "Japan":"jp","Kosovo":"xk","Montenegro":"me","Netherlands":"nl","North Korea":"kp","New Zealand":"nz",
-    "Portugal":"pt","Russia":"ru","Serbia":"rs","South Africa":"za","South Korea":"kr",
-    "Spain":"es","Thailand":"th","Turkey":"tr","United Kingdom":"gb",
-    "United States":"us","Western Sahara (disputed)":"eh","Taiwan, China":"tw"
-  };
-  return map[country] || "";
+  return COUNTRY_CODES[country] || "";
+}
+
+// Every country in the dropdown, mapped to its ISO 3166-1 alpha-2 code.
+// This is NOT cosmetic: the code is the filename of the local beach data
+// (beaches/<cc>.json). The old map covered 33 countries out of 221, so for most
+// of the world the app could not work out which file to load, silently fell back
+// to Overpass, and looked "slow" rather than broken.
+const COUNTRY_CODES = {
+    "Afghanistan":"af","Albania":"al","Algeria":"dz","Andorra":"ad","Angola":"ao",
+    "Antigua and Barbuda":"ag","Argentina":"ar","Armenia":"am","Aruba":"aw",
+    "Australia":"au","Austria":"at","Azerbaijan":"az","Bahamas":"bs","Bahrain":"bh",
+    "Bangladesh":"bd","Barbados":"bb","Belarus":"by","Belgium":"be","Belize":"bz",
+    "Benin":"bj","Bermuda":"bm","Bhutan":"bt","Bolivia":"bo","Bosnia and Herzegovina":"ba",
+    "Botswana":"bw","Brazil":"br","British Virgin Islands":"vg","Brunei":"bn",
+    "Bulgaria":"bg","Burkina Faso":"bf","Burundi":"bi","Cabo Verde":"cv","Cambodia":"kh",
+    "Cameroon":"cm","Canada":"ca","Cayman Islands":"ky","Central African Republic":"cf",
+    "Chad":"td","Chile":"cl","China":"cn","Colombia":"co","Comoros":"km","Congo":"cg",
+    "Cook Islands":"ck","Costa Rica":"cr","Cote d'Ivoire":"ci","Croatia":"hr","Cuba":"cu",
+    "Curaçao":"cw","Cyprus":"cy","Czech Republic":"cz",
+    "Democratic Republic of the Congo":"cd","Denmark":"dk","Djibouti":"dj","Dominica":"dm",
+    "Dominican Republic":"do","Ecuador":"ec","Egypt":"eg","El Salvador":"sv",
+    "Equatorial Guinea":"gq","Eritrea":"er","Estonia":"ee","Eswatini":"sz","Ethiopia":"et",
+    "Fiji":"fj","Finland":"fi","France":"fr","French Guiana":"gf","French Polynesia":"pf",
+    "Gabon":"ga","Gambia":"gm","Georgia":"ge","Germany":"de","Ghana":"gh","Gibraltar":"gi",
+    "Greece":"gr","Greenland":"gl","Grenada":"gd","Guadeloupe":"gp","Guam":"gu",
+    "Guatemala":"gt","Guinea":"gn","Guinea-Bissau":"gw","Guyana":"gy","Haiti":"ht",
+    "Honduras":"hn","Hong Kong":"hk","Hungary":"hu","Iceland":"is","India":"in",
+    "Indonesia":"id","Iran":"ir","Iraq":"iq","Ireland":"ie","Israel":"il","Italy":"it",
+    "Jamaica":"jm","Japan":"jp","Jersey":"je","Jordan":"jo","Kazakhstan":"kz","Kenya":"ke",
+    "Kiribati":"ki","Kosovo":"xk","Kuwait":"kw","Kyrgyzstan":"kg","Laos":"la","Latvia":"lv",
+    "Lebanon":"lb","Lesotho":"ls","Liberia":"lr","Libya":"ly","Liechtenstein":"li",
+    "Lithuania":"lt","Luxembourg":"lu","Madagascar":"mg","Malawi":"mw","Malaysia":"my",
+    "Maldives":"mv","Mali":"ml","Malta":"mt","Marshall Islands":"mh","Martinique":"mq",
+    "Mauritania":"mr","Mauritius":"mu","Mexico":"mx","Micronesia":"fm","Moldova":"md",
+    "Monaco":"mc","Mongolia":"mn","Montenegro":"me","Montserrat":"ms","Morocco":"ma",
+    "Mozambique":"mz","Myanmar":"mm","Namibia":"na","Nauru":"nr","Nepal":"np",
+    "Netherlands":"nl","New Caledonia":"nc","New Zealand":"nz","Nicaragua":"ni",
+    "Niger":"ne","Nigeria":"ng","North Korea":"kp","North Macedonia":"mk","Norway":"no",
+    "Oman":"om","Pakistan":"pk","Palau":"pw","Palestine (disputed)":"ps","Panama":"pa",
+    "Papua New Guinea":"pg","Paraguay":"py","Peru":"pe","Philippines":"ph","Poland":"pl",
+    "Portugal":"pt","Puerto Rico":"pr","Qatar":"qa","Romania":"ro","Russia":"ru",
+    "Rwanda":"rw","Réunion":"re","Saint Kitts and Nevis":"kn","Saint Lucia":"lc",
+    "Saint Martin":"mf","Saint Vincent and the Grenadines":"vc","Samoa":"ws",
+    "San Marino":"sm","Sao Tome and Principe":"st","Saudi Arabia":"sa","Senegal":"sn",
+    "Serbia":"rs","Seychelles":"sc","Sierra Leone":"sl","Singapore":"sg",
+    "Sint Maarten":"sx","Slovakia":"sk","Slovenia":"si","Solomon Islands":"sb",
+    "Somalia":"so","South Africa":"za","South Korea":"kr","South Sudan":"ss","Spain":"es",
+    "Sri Lanka":"lk","Sudan":"sd","Suriname":"sr","Sweden":"se","Switzerland":"ch",
+    "Syria":"sy","Taiwan, China":"tw","Tajikistan":"tj","Tanzania":"tz","Thailand":"th",
+    "Timor-Leste":"tl","Togo":"tg","Tonga":"to","Trinidad and Tobago":"tt","Tunisia":"tn",
+    "Turkey":"tr","Turkmenistan":"tm","Turks and Caicos Islands":"tc","Tuvalu":"tv",
+    "U.S. Virgin Islands":"vi","Uganda":"ug","Ukraine":"ua","United Arab Emirates":"ae",
+    "United Kingdom":"gb","United States":"us","Uruguay":"uy","Uzbekistan":"uz",
+    "Vanuatu":"vu","Vatican City":"va","Venezuela":"ve","Vietnam":"vn",
+    "Western Sahara (disputed)":"eh","Yemen":"ye","Zambia":"zm","Zimbabwe":"zw"
+};
+
+// Territories whose beaches live inside the PARENT country's file. Reunion is
+// already inside fr.json (France's OSM relation includes the overseas
+// departements), so re.json was never built. If a territory has no file of its
+// own, fall back to its parent and let the bounding-box check validate the point.
+const TERRITORY_PARENT = {
+  "gp":"fr","mq":"fr","re":"fr","yt":"fr","gf":"fr","mf":"fr","pm":"fr",
+  "nc":"fr","pf":"fr","wf":"fr",
+  "pr":"us","vi":"us","gu":"us","mp":"us","as":"us"
+};
+// --- Place suggestion filtering -------------------------------------------
+// Only real inhabited places and islands are suggested. Municipalities,
+// regional units, prefectures and other administrative boundaries are dropped:
+// Nominatim returns "Sykia (municipality)" alongside "Sykia (village)" and only
+// the village is ever what the user means. Genuine duplicates (several distinct
+// villages actually called Sykia) are KEPT and disambiguated in the label.
+// Deny-list, not an allow-list. An allow-list silently drops any place type
+// nobody thought of; this only removes what we actually want gone.
+const ADMIN_REJECT_TYPES = new Set([
+  "administrative","municipality","county","state","region","province",
+  "district","city_district","political","census","postcode",
+  "continent","country"
+]);
+
+// Nominatim's jsonv2 format calls this field "category". The older json format
+// calls it "class". Read BOTH: assuming "class" meant every result was silently
+// discarded, because res.class was always undefined under jsonv2.
+function placeCategory(res){
+  return res.category || res.class || "";
+}
+
+// Settlement/island types, used as a fallback when the category field is absent
+// or unfamiliar. Never used to REJECT a result that is already category=place.
+const PLACE_FALLBACK_TYPES = new Set([
+  "city","town","village","hamlet","locality","isolated_dwelling",
+  "island","islet","archipelago",
+  "suburb","neighbourhood","quarter","borough","place"
+]);
+
+// Categories that are definitively NOT a place a user would search for.
+// Everything else is kept and RANKED — see placeScore.
+//
+// This list used to be an exclusion of administrative areas (municipality,
+// county, region, boundary...) and it caused three separate bugs, each of which
+// silently deleted a whole class of results:
+//   1. jsonv2 calls the field "category", not "class" -> everything deleted
+//   2. Seoul/Tokyo/Athens are boundary relations, not place nodes -> deleted
+//   3. Lefkada town IS the seat of the Lefkada municipality, so Nominatim
+//      returns addresstype=municipality -> deleted
+// Every fix was me trying to out-guess Nominatim about what counts as a place.
+// Nominatim already ranks the town above the municipality. So: keep almost
+// everything, let the scorer sort it, and let the user see the kind label and
+// choose. A municipality showing up BELOW the town costs nothing. A town being
+// silently deleted costs everything.
+const NON_PLACE_CATEGORIES = new Set([
+  "amenity","shop","highway","building","tourism","leisure","office","craft",
+  "man_made","landuse","waterway","railway","aeroway","historic","military",
+  "emergency","barrier","power","natural","healthcare","club"
+]);
+
+function isSuggestablePlace(res){
+  const cat = placeCategory(res);
+  if(!cat) return true;                       // unknown — keep it, ranking decides
+  return !NON_PLACE_CATEGORIES.has(cat);      // drop shops, roads, restaurants
+}
+
+// Accent- and case-insensitive, so "reunion" matches "Réunion".
+function normalizePrefix(s){
+  return String(s||"")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase().trim();
+}
+
+// Every name this result could reasonably be known by, most specific first.
+// res.name comes first deliberately: it is the name of the feature Nominatim
+// actually matched. Reading a.city first was a bug — San Cataldo is a frazione
+// of Lecce, so its address is {suburb:"San Cataldo", city:"Lecce"} and taking
+// a.city renamed the place "Lecce", which then failed every prefix test.
+function placeNameCandidates(res){
+  const a = res.address || {};
+  const firstOfDisplay = String(res.display_name||"").split(",")[0].trim();
+
+  // Every alternative name Nominatim knows: name, name:en, name:ko, int_name,
+  // official_name... This is what lets a user type "Seoul" OR "서울" and have
+  // either match, instead of only whichever script Nominatim happened to answer in.
+  const alt = res.namedetails ? Object.values(res.namedetails).filter(v => typeof v === "string") : [];
+
+  return [
+    res.name,
+    ...alt,
+    a.village, a.hamlet, a.island, a.islet, a.locality, a.isolated_dwelling,
+    a.suburb, a.neighbourhood, a.quarter,
+    a.town, a.city,
+    firstOfDisplay
+  ].filter(Boolean);
+}
+
+function primaryPlaceName(res){
+  // Prefer a name in the script the interface uses, falling back to whatever exists.
+  const nd = res.namedetails || {};
+  return nd["name:en"] || res.name || nd.name || placeNameCandidates(res)[0] || "";
+}
+
+// Levenshtein distance, capped. Short strings only, so the naive version is fine.
+function editDistance(a, b){
+  const m = a.length, n = b.length;
+  if(!m) return n;
+  if(!n) return m;
+  let prev = Array.from({length:n+1}, (_,j) => j);
+  for(let i=1; i<=m; i++){
+    const cur = [i];
+    for(let j=1; j<=n; j++){
+      cur[j] = Math.min(
+        prev[j] + 1,
+        cur[j-1] + 1,
+        prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1)
+      );
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+
+// How well does this place match what was typed? 0 = not at all.
+// RANKING, NOT REJECTING. The previous version demanded the name START with the
+// typed text and discarded everything else — which threw away Nominatim's own
+// (better) fuzzy matching, and broke every alternative romanisation:
+// Busan/Pusan, Gwangju/Kwangju, Jeju/Cheju are all correct spellings.
+function placeScore(res, q){
+  const nq = normalizePrefix(q);
+  if(!nq) return 1;
+
+  let best = 0;
+  for(const raw of placeNameCandidates(res)){
+    const name = normalizePrefix(raw);
+    if(!name) continue;
+
+    let s = 0;
+    if(name === nq)                             s = 100;   // exact
+    else if(name.startsWith(nq))                s = 90;    // "Seo" -> Seoul
+    else if(name.split(/[\s\-']+/).some(w => w.startsWith(nq)))
+                                                s = 75;    // "Cataldo" -> San Cataldo
+    else if(name.includes(nq))                  s = 55;    // substring anywhere
+    else {
+      // Typo tolerance. Compare against the leading slice of the name, so a
+      // half-typed word still scores: "Seul" vs "Seoul", "Barcelna" vs "Barcelona".
+      const allowed = nq.length <= 4 ? 1 : Math.floor(nq.length / 4) + 1;
+      let bestD = Infinity;
+      for(let k = Math.max(1, nq.length - 2); k <= Math.min(name.length, nq.length + 2); k++){
+        bestD = Math.min(bestD, editDistance(nq, name.slice(0, k)));
+      }
+      if(bestD <= allowed) s = Math.max(10, 45 - bestD * 10);
+    }
+    if(s > best) best = s;
+  }
+  return best;
+}
+
+function placeStartsWith(res, q){
+  return placeScore(res, q) > 0;
+}
+
+const placeQueryCache = new Map();
+
+// Photon (photon.komoot.io) is OSM data indexed specifically for SEARCH AS YOU
+// TYPE, with built-in typo tolerance. Nominatim is not: it matches whole words,
+// so "battica" returns literally nothing and no amount of client-side fuzzy
+// scoring can rescue it — there is nothing to score. That is why partial names
+// never worked. Photon returns Batticaloa from "battica".
+// Free, no API key. Komoot ask that usage stays reasonable; the 350ms debounce
+// and the per-query cache keep us well inside that.
+async function photonSearch(query, cc){
+  const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=40&lang=en`;
+  const r = await fetch(url);
+  if(!r.ok) throw new Error("Photon failed: " + r.status);
+  const data = await r.json();
+  const feats = data.features || [];
+
+  const out = [];
+  feats.forEach((f, i) => {
+    const p = f.properties || {};
+    const coords = (f.geometry || {}).coordinates || [];
+    if(coords.length < 2) return;
+
+    // Country filter by ISO code, not by name. Country NAMES vary between
+    // services ("South Korea" vs "Republic of Korea") and would drop valid hits.
+    const code = (p.countrycode || "").toLowerCase();
+    if(cc && code && code !== cc) return;
+
+    out.push({
+      name: p.name,
+      // Photon's osm_key/osm_value map onto the category/type shape the rest of
+      // the app already understands, so nothing downstream needs to change.
+      category: p.osm_key,
+      type: p.osm_value,
+      addresstype: p.osm_value,
+      // Photon already ranks its results well. Preserve that ordering as
+      // "importance" so our scorer uses it to break ties.
+      importance: 1 - (i / Math.max(1, feats.length)),
+      lat: coords[1],
+      lon: coords[0],
+      display_name: [p.name, p.city, p.county, p.state, p.country].filter(Boolean).join(", "),
+      address: {
+        city: p.city, county: p.county, state: p.state,
+        country: p.country, country_code: code
+      },
+      namedetails: { name: p.name }
+    });
+  });
+  return out;
 }
 
 async function geocodePlace(query){
   const country=currentCountry||$('country').value||"Worldwide";
-  const q=(country==="Worldwide") ? query : `${query}, ${country}`;
   const countryCode = country==="Worldwide" ? "" : nominatimCountryCode(country);
 
-  let url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=8&addressdetails=1&q=${encodeURIComponent(q)}`;
+  const cacheKey = `${country}|${normalizePrefix(query)}`;
+  if(placeQueryCache.has(cacheKey)) return placeQueryCache.get(cacheKey);
+
+  // Photon first — it is the only one of the two that can match a half-typed name.
+  let results = [];
+  try{
+    results = await photonSearch(query, countryCode);
+  }catch(e){
+    results = [];   // Photon down or throttled — fall through to Nominatim
+  }
+
+  if(results.length){
+    placeQueryCache.set(cacheKey, results);
+    return results;
+  }
+
+  // Nominatim fallback. Better at exact, fully-typed names, and a genuinely
+  // independent second source if Photon is unavailable.
+  return await nominatimSearch(query, country, countryCode, cacheKey);
+}
+
+async function nominatimSearch(query, country, countryCode, cacheKey){
+  // When we can constrain by country code, send the bare name. Appending the
+  // country to the text query pushes small villages out of the result set.
+  const q=(countryCode) ? query : (country==="Worldwide" ? query : `${query}, ${country}`);
+
+  // limit=40 is Nominatim's maximum. dedupe=0 is deliberate: it stops Nominatim
+  // collapsing several same-named villages into one entry.
+  // accept-language=en gets us "Seoul" rather than the local script, and
+  // namedetails=1 returns every name variant so either spelling matches.
+  let url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=40&dedupe=0&addressdetails=1&namedetails=1&accept-language=en&q=${encodeURIComponent(q)}`;
   if(countryCode) url += `&countrycodes=${encodeURIComponent(countryCode)}`;
 
   let r=await fetch(url,{headers:{"Accept":"application/json"}});
   if(!r.ok)throw new Error("Place search failed");
   let results=await r.json();
+
 
   // Important:
   // Do NOT fall back to worldwide suggestions when a country is selected.
@@ -531,6 +1041,7 @@ async function geocodePlace(query){
     });
   }
 
+  placeQueryCache.set(cacheKey, results);
   return results;
 }
 
@@ -538,6 +1049,69 @@ function countryFromGeocodeResult(result){
   if(!result || !result.address) return "";
   return result.address.country || "";
 }
+
+// --- Multilingual country search -------------------------------------------
+// A Serbian user types "Srbija", a German "Deutschland", a Greek "Ελλάδα" — none
+// of which matched, because COUNTRY_CODES is keyed to English names only. On a
+// phone whose system language is not English that made the country box useless.
+//
+// Rather than ship a translation dictionary (400KB+, and stale the moment a
+// country renames), we use Intl.DisplayNames: the browser ALREADY has this data,
+// in hundreds of languages, maintained by the browser vendor. Turkey -> Türkiye
+// came for free.
+//
+// We build one index: localised name -> English name -> ISO code -> beaches/<cc>.json
+const COUNTRY_SEARCH_LANGS = [
+  "en",
+  "sr", "sr-Latn",              // Serbian, both scripts
+  "hr", "bs", "sl", "mk", "bg", // rest of the Balkans
+  "de", "fr", "es", "it", "pt", "nl",
+  "pl", "cs", "sk", "hu", "ro", "uk", "ru", "el", "tr",
+  "sv", "da", "nb", "fi", "et", "lv", "lt", "is",
+  "zh", "ja", "ko", "th", "vi", "id", "ms",
+  "ar", "he", "fa", "hi", "bn", "ur"
+];
+
+// localisedName(normalised) -> English country name from our dropdown
+const COUNTRY_ALIAS_INDEX = (function buildCountryAliasIndex(){
+  const index = {};
+
+  // Nothing to build if the browser is too old — the English list still works.
+  if(typeof Intl === "undefined" || typeof Intl.DisplayNames !== "function") return index;
+
+  // english name -> iso code, so we can ask Intl for that code in every language
+  const englishToCode = {};
+  for(const [name, code] of Object.entries(COUNTRY_CODES)){
+    englishToCode[name] = code.toUpperCase();
+    index[normalizePrefix(name)] = name;      // the English name always matches
+  }
+
+  for(const lang of COUNTRY_SEARCH_LANGS){
+    let dn;
+    try{
+      dn = new Intl.DisplayNames([lang], { type: "region" });
+    }catch(e){
+      continue;   // browser doesn't know this locale — skip it, don't fail
+    }
+    for(const [englishName, code] of Object.entries(englishToCode)){
+      let localised;
+      try{
+        localised = dn.of(code);
+      }catch(e){
+        continue;
+      }
+      // Intl returns the code itself when it has no name for it. Ignore those.
+      if(!localised || localised === code) continue;
+
+      const key = normalizePrefix(localised);
+      // First writer wins, so English and earlier languages are never displaced
+      // by a later language that happens to collide (e.g. "Serbia" exists in
+      // several languages for different countries' spellings).
+      if(key && !index[key]) index[key] = englishName;
+    }
+  }
+  return index;
+})();
 
 function findMatchingCountryOption(countryName){
   if(!countryName) return null;
@@ -575,6 +1149,12 @@ function findMatchingCountryOption(countryName){
   for(const name of Object.keys(countries)){
     if(name.toLowerCase() === normalized) return name;
   }
+
+  // Last resort: the localised-name index. Covers the case where a geocoder
+  // returns a country name in the local language ("Србија", "Deutschland")
+  // rather than in English.
+  const viaAlias = COUNTRY_ALIAS_INDEX[normalizePrefix(countryName)];
+  if(viaAlias) return viaAlias;
 
   return null;
 }
@@ -651,34 +1231,80 @@ function shortPlaceLabel(res){
   return details ? `${base} • ${details}` : base;
 }
 
-function showPlaceSuggestions(results){
+// Two same-named villages must be told apart, so each row shows the
+// administrative context beneath the name: Sykia / Sithonia, Chalkidiki.
+function placeSuggestionContext(res){
+  const a = res.address || {};
+  const name = primaryPlaceName(res);
+  const seen = new Set([normalizePrefix(name)]);
+  const parts = [a.city, a.town, a.municipality, a.county, a.state || a.region, a.country]
+    .filter(Boolean)
+    .filter(p => {
+      const k = normalizePrefix(p);
+      if(seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  return parts.join(", ");
+}
+
+function placeKindLabel(res){
+  const t = res.addresstype || res.type || "";
+  return t ? String(t).replace(/_/g," ") : "";
+}
+
+function showPlaceSuggestions(results, note){
   const box = $("suggestions");
   box.innerHTML = "";
+  placeSuggestActive = -1;
 
   if(!results || !results.length){
-    box.textContent = "No matching place found. Try a nearby larger town or add the country name.";
+    box.textContent = note || "No town, village or island matches that. Try fewer letters.";
     return;
   }
 
   const title = document.createElement("div");
-  title.innerHTML = results.length === 1
+  title.textContent = note || (results.length === 1
     ? "Suggested place. Click to search around it:"
-    : "Suggested places. Select the correct one:";
+    : `${results.length} matching places. Select the correct one:`);
   title.style.marginBottom = "7px";
   box.appendChild(title);
 
   results.forEach(res => {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "suggestion-btn";
-    btn.textContent = shortPlaceLabel(res);
-    btn.title = res.display_name || btn.textContent;
+    btn.className = "suggestion-btn place-suggestion";
+    const context = placeSuggestionContext(res);
+    const kind = placeKindLabel(res);
+    btn.innerHTML =
+      `<span class="ps-name">${escapeHtml(primaryPlaceName(res) || "Unknown place")}</span>` +
+      (context || kind
+        ? `<span class="ps-context">${escapeHtml(context)}${context && kind ? " · " : ""}${escapeHtml(kind)}</span>`
+        : "");
+    btn.title = res.display_name || "";
     btn.onclick = () => {
-      $("placeSearch").value = placeChoiceLabel(res).split(",")[0] || $("placeSearch").value;
+      $("placeSearch").value = primaryPlaceName(res) || $("placeSearch").value;
+      box.innerHTML = "";
       runLocalSearchFromResult(res);
     };
     box.appendChild(btn);
   });
+}
+
+// Arrow-key navigation over the suggestion list.
+let placeSuggestActive = -1;
+
+function placeSuggestButtons(){
+  return Array.from($("suggestions").querySelectorAll("button.place-suggestion"));
+}
+
+function movePlaceSuggestion(step){
+  const btns = placeSuggestButtons();
+  if(!btns.length) return false;
+  placeSuggestActive = (placeSuggestActive + step + btns.length) % btns.length;
+  btns.forEach((b,i)=>b.classList.toggle("active", i === placeSuggestActive));
+  btns[placeSuggestActive].scrollIntoView({block:"nearest"});
+  return true;
 }
 
 
@@ -714,8 +1340,20 @@ function showCountrySuggestions(query){
   box.innerHTML = "";
   if(q.length < 1){ box.textContent = ""; return; }
 
+  const nq = normalizePrefix(q);
+
+  // Match against the LOCALISED name index as well as the English list, so
+  // "Srbija", "Србија", "Deutschland", "Ελλάδα" and "中国" all find their country.
+  // Without this, anyone whose phone is not in English had an unusable country box.
+  const viaAlias = new Set();
+  if(nq){
+    for(const [localised, englishName] of Object.entries(COUNTRY_ALIAS_INDEX)){
+      if(localised.includes(nq)) viaAlias.add(englishName);
+    }
+  }
+
   const matches = countryNames
-    .filter(name => name.toLowerCase().includes(q))
+    .filter(name => name.toLowerCase().includes(q) || viaAlias.has(name))
     .sort((a,b)=>{
       const al=a.toLowerCase(), bl=b.toLowerCase();
       const ap=al.startsWith(q), bp=bl.startsWith(q);
@@ -740,6 +1378,13 @@ function showCountrySuggestions(query){
       $("countrySearch").value=name;
       box.innerHTML="";
       populateRegions();
+      // Changing country almost always means changing place next, so hand the
+      // cursor straight over with the old place text selected and ready to
+      // be typed over. Cached suggestions are dropped: they were for the old country.
+      placeQueryCache.clear();
+      $("suggestions").innerHTML="";
+      const ps=$("placeSearch");
+      if(ps){ ps.focus(); ps.select(); }
       status(`Selected ${name}. Now type a place.`);
     };
     box.appendChild(btn);
@@ -751,45 +1396,198 @@ function scheduleCountrySuggestions(){
   countrySuggestTimer = setTimeout(()=>showCountrySuggestions($("countrySearch").value),150);
 }
 
+// When a town and its municipality share a name and score identically, the town
+// is what the user meant. Rank settlements first, admin areas last.
+const SETTLEMENT_TYPES = new Set([
+  "city","town","village","hamlet","locality","isolated_dwelling",
+  "island","islet","archipelago","suburb","neighbourhood","quarter","borough"
+]);
+const ADMIN_TYPES = new Set([
+  "municipality","county","state","region","province","district",
+  "city_district","administrative","political","census"
+]);
+
+function placeTypeRank(res){
+  const t = res.addresstype || res.type || "";
+  if(SETTLEMENT_TYPES.has(t)) return 2;   // a real settlement — preferred
+  if(ADMIN_TYPES.has(t))      return 0;   // an administrative area — shown, but last
+  return 1;
+}
+
+// Single filter used by BOTH the type-ahead and the Search button.
+// It RANKS rather than rejects: everything Nominatim found that could plausibly
+// be a place is kept, sorted by match quality, then settlement-over-admin, then
+// Nominatim's own importance.
+function filterPlaceResults(raw, q){
+  const places = (raw || []).filter(isSuggestablePlace);
+  if(!places.length) return { list: [], note: null };
+
+  const scored = places
+    .map(res => ({
+      res,
+      score: placeScore(res, q),
+      rank: placeTypeRank(res),
+      importance: Number(res.importance) || 0
+    }))
+    .filter(x => x.score > 0)
+    .sort((a, b) =>
+      (b.score - a.score) ||
+      (b.rank - a.rank) ||
+      (b.importance - a.importance)
+    );
+
+  if(!scored.length){
+    return { list: places.slice(0, 25), note: "No close match. Nearest things found:" };
+  }
+
+  const list = scored.slice(0, 25).map(x => x.res);
+  const fuzzyOnly = scored[0].score < 75;
+  return { list, note: fuzzyOnly ? "No exact match — did you mean one of these?" : null };
+}
+
+// Enter should PRODUCE THE LIST, not silently pick one. Bypasses the debounce
+// so the user gets the full set of same-named places immediately.
+async function showPlaceSuggestionsNow(){
+  clearTimeout(placeSuggestTimer);
+  const q = $("placeSearch").value.trim();
+  if(!q){ status("Enter a place name first, for example Genoa."); return; }
+
+  const token = ++placeSuggestToken;
+  $("suggestions").textContent = "Finding matching places...";
+  try{
+    const raw = await geocodePlace(q);
+    if(token !== placeSuggestToken) return;
+    const { list, note } = filterPlaceResults(raw, q);
+    showPlaceSuggestions(list, note);
+    if(list.length > 1){
+      status(`${list.length} places named "${q}". Pick the right one, or use the arrow keys.`);
+    }else if(list.length === 1){
+      status(`One match for "${q}". Click it to search, or press Search.`);
+    }
+  }catch(e){
+    if(token !== placeSuggestToken) return;
+    $("suggestions").textContent = "Could not load suggestions. You can still press Search.";
+  }
+}
+
 function schedulePlaceSuggestions(){
   clearTimeout(placeSuggestTimer);
   const q = $("placeSearch").value.trim();
-  if(q.length < 3){
+  if(q.length < 2){
     $("suggestions").textContent = "";
+    placeSuggestActive = -1;
     return;
   }
 
   const token = ++placeSuggestToken;
+  // 350ms keeps us inside Nominatim's 1 request/second usage policy while
+  // still feeling responsive as the user types.
   placeSuggestTimer = setTimeout(async ()=>{
     try{
       $("suggestions").textContent = "Finding matching places...";
-      const results = await geocodePlace(q);
+      const raw = await geocodePlace(q);
       if(token !== placeSuggestToken) return;
-      showPlaceSuggestions(results || []);
+
+      const { list, note } = filterPlaceResults(raw, q);
+      showPlaceSuggestions(list, note);
     }catch(e){
       if(token !== placeSuggestToken) return;
       $("suggestions").textContent = "Could not load suggestions. You can still press Search.";
     }
-  },500);
+  },350);
 }
 
 function buildLocalQuery(lat,lon,radius){
+  // Uses nwr (node+way+relation in one pass) instead of separate node/way
+  // clauses, and merges same-key filters with regex alternation.
+  // This cuts ~20 separate spatial "around" scans down to 8, which is the
+  // main thing that was making Overpass slow on every search.
   return `
 [out:json][timeout:120];
 (
-node["natural"="beach"](around:${radius},${lat},${lon});way["natural"="beach"](around:${radius},${lat},${lon});
-node["leisure"="beach"](around:${radius},${lat},${lon});way["leisure"="beach"](around:${radius},${lat},${lon});
-node["sport"="swimming"](around:${radius},${lat},${lon});way["sport"="swimming"](around:${radius},${lat},${lon});
-node["leisure"="swimming_area"](around:${radius},${lat},${lon});way["leisure"="swimming_area"](around:${radius},${lat},${lon});
-node["tourism"="beach_resort"](around:${radius},${lat},${lon});way["tourism"="beach_resort"](around:${radius},${lat},${lon});
-node["leisure"="beach_resort"](around:${radius},${lat},${lon});way["leisure"="beach_resort"](around:${radius},${lat},${lon});
-node["nudism"](around:${radius},${lat},${lon});way["nudism"](around:${radius},${lat},${lon});
-node["naturism"](around:${radius},${lat},${lon});way["naturism"](around:${radius},${lat},${lon});
-node["clothing"~"optional|none"](around:${radius},${lat},${lon});way["clothing"~"optional|none"](around:${radius},${lat},${lon});
-node["name"~"naturist|naturista|naturiste|nudist|nudista|nudiste|fkk|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička",i](around:${radius},${lat},${lon});
+  nwr["natural"="beach"](around:${radius},${lat},${lon});
+  nwr["leisure"~"^(beach|swimming_area|beach_resort)$"](around:${radius},${lat},${lon});
+  nwr["tourism"="beach_resort"](around:${radius},${lat},${lon});
+  nwr["sport"="swimming"](around:${radius},${lat},${lon});
+  nwr["nudism"](around:${radius},${lat},${lon});
+  nwr["naturism"](around:${radius},${lat},${lon});
+  nwr["clothing"~"optional|none"](around:${radius},${lat},${lon});
+  nwr["name"~"naturist|naturista|naturiste|nudist|nudista|nudiste|fkk|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička",i](around:${radius},${lat},${lon});
 );
 out center tags;`
 }
+// --- Local beach data ------------------------------------------------------
+// The same query, run ONCE per country and saved to beaches/<cc>.json. Overpass
+// returns exactly the shape this app already consumes, so the file is a drop-in
+// replacement for a live query — but it answers in milliseconds, from disk,
+// with no public server involved. Overpass stays as the fallback for countries
+// that have no file yet.
+const BEACH_FILE_CACHE = new Map();   // cc -> {elements, bbox} | null
+
+async function loadCountryBeachFile(cc){
+  if(!cc) return null;
+  if(BEACH_FILE_CACHE.has(cc)) return BEACH_FILE_CACHE.get(cc);
+
+  let result = null;
+  try{
+    // The ?v= is what breaks the cache. Without it the browser will happily
+    // serve a months-old fr.json and never tell anyone.
+    const r = await fetch(`beaches/${cc}.json?v=${BEACH_DATA_VERSION}`);
+    if(r.ok){
+      const data = await r.json();
+      const elements = (data.elements||[]).filter(el => (el.lat ?? el.center?.lat) != null);
+      if(elements.length){
+        let minLat=90, maxLat=-90, minLon=180, maxLon=-180;
+        for(const el of elements){
+          const la = el.lat ?? el.center.lat, lo = el.lon ?? el.center.lon;
+          if(la<minLat)minLat=la; if(la>maxLat)maxLat=la;
+          if(lo<minLon)minLon=lo; if(lo>maxLon)maxLon=lo;
+        }
+        result = { elements, bbox:[minLat,minLon,maxLat,maxLon] };
+      }
+    }
+  }catch(e){
+    result = null;   // missing file is not an error, just means "use Overpass"
+  }
+  BEACH_FILE_CACHE.set(cc, result);
+  return result;
+}
+
+// Guard against using France's file for a point in Brazil, e.g. if the country
+// selector is out of step with the clicked location. 0.5 deg of slack lets a
+// 10 km radius near a border still work.
+function bboxContains(bbox, lat, lon, margin=0.5){
+  if(!bbox) return false;
+  const [minLat,minLon,maxLat,maxLon] = bbox;
+  return lat >= minLat-margin && lat <= maxLat+margin
+      && lon >= minLon-margin && lon <= maxLon+margin;
+}
+
+// Drop-in replacement for fetchOverpass(buildLocalQuery(...)).
+async function fetchBeachesNear(lat, lon, radius){
+  const cc = nominatimCountryCode(currentCountry || $('country').value || "");
+  let local = await loadCountryBeachFile(cc);
+
+  // No file of its own? Try the parent. Reunion's beaches are inside fr.json,
+  // Puerto Rico's may be inside us.json — the bbox check below decides whether
+  // the parent's data actually covers this point.
+  if(!local && TERRITORY_PARENT[cc]){
+    local = await loadCountryBeachFile(TERRITORY_PARENT[cc]);
+  }
+
+  if(local && bboxContains(local.bbox, lat, lon)){
+    const km = radius/1000;
+    const elements = local.elements.filter(el => {
+      const la = el.lat ?? el.center.lat, lo = el.lon ?? el.center.lon;
+      return distanceKm(lat, lon, la, lo) <= km;
+    });
+    status(`Searched local data instantly — no Overpass server needed.`);
+    return { elements };
+  }
+
+  return await fetchOverpass(buildLocalQuery(lat, lon, radius));
+}
+
 async function runLocalSearchFromResult(result){
   autoCorrectCountryFromResult(result);
   translateMode = "original";
@@ -801,7 +1599,7 @@ async function runLocalSearchFromResult(result){
   map.flyTo({center:[lon,lat],zoom:11}); status(`Searching within ${Math.round(radius/1000)} km of ${label}...`);
   setBusy(true,"Local 10 km search...");
   try{
-    const data=await fetchOverpass(buildLocalQuery(lat,lon,radius)),seen=new Set(),arr=[];
+    const data=await fetchBeachesNear(lat,lon,radius),seen=new Set(),arr=[];
     for(const el of data.elements||[]){
       const tags=el.tags||{},originalName=localNameFromOsmTags(tags, tags.name||tags.official_name||tags['name:en']||''),name=originalName||'Unnamed beach',elLat=el.lat??el.center?.lat,elLon=el.lon??el.center?.lon;
       if(elLat==null||elLon==null)continue;
@@ -862,18 +1660,19 @@ async function localScan(){
 
   $("suggestions").textContent="Finding place..."; setBusy(true,"Finding place...");
   try{
-    const results=await geocodePlace(q); setBusy(false);
-    if(!results||!results.length){showPlaceSuggestions([]);return}
+    const raw=await geocodePlace(q); setBusy(false);
+    const { list:results, note } = filterPlaceResults(raw, q);
+    if(!results.length){showPlaceSuggestions([]);return}
 
     if(results.length === 1){
-      showPlaceSuggestions(results);
+      showPlaceSuggestions(results, note);
       await runLocalSearchFromResult(results[0]);
       return;
     }
 
     // Do not randomly choose the first Nominatim result when several places share a name.
     // Example: San Cataldo in Sicily vs San Cataldo on the Adriatic coast near Lecce.
-    showPlaceSuggestions(results);
+    showPlaceSuggestions(results, note);
     status(`Multiple places named "${q}" were found. Please select the correct one from the list.`);
   }catch(e){
     trackEvent("beachscout_geocode_failed", "local", {
@@ -884,6 +1683,28 @@ async function localScan(){
     setBusy(false);
     $("suggestions").textContent="Could not find that place. Try a nearby larger town.";
     status(`Place search failed: ${e.message}`);
+  }
+}
+
+// Work out which country a set of coordinates is in, so "use my location" can
+// load the RIGHT country file. Without this the app searched whichever country
+// happened to be selected before — so standing in Belgrade with "United States"
+// still selected searched us.json, found nothing, and reported "no beaches
+// found". That was the correct answer to the wrong question.
+async function countryFromCoords(lat, lon){
+  try{
+    // zoom=3 asks Nominatim for country-level detail only: a much smaller and
+    // faster response than a full address lookup, which is all we need.
+    const url = "https://nominatim.openstreetmap.org/reverse"
+      + "?format=jsonv2&zoom=3&accept-language=en"
+      + "&lat=" + encodeURIComponent(lat)
+      + "&lon=" + encodeURIComponent(lon);
+    const r = await fetch(url, { headers: { "Accept": "application/json" } });
+    if(!r.ok) return null;
+    const j = await r.json();
+    return (j && j.address && j.address.country) ? j.address.country : null;
+  }catch(e){
+    return null;   // offline or Nominatim down — keep the old behaviour rather than fail
   }
 }
 
@@ -910,6 +1731,24 @@ async function nearMeScan(){
 
       $("placeSearch").value = "Current location";
       $("suggestions").textContent = `Using your current location. Accuracy about ${Math.round(accuracy)} m.`;
+
+      // Work out which country we are ACTUALLY in and switch to it, so we load
+      // the right beaches/<cc>.json. Otherwise we search whatever country was
+      // selected before, which for a traveller is almost never where they are.
+      setBusy(true, "Working out which country you are in...");
+      const detected = await countryFromCoords(lat, lon);
+      if(detected){
+        const match = findMatchingCountryOption(detected);
+        if(match && match !== currentCountry){
+          currentCountry = match;
+          const sel = $('country');
+          if(sel) sel.value = match;
+          const box = $('countrySearch');
+          if(box) box.value = match;
+          $("suggestions").textContent =
+            `Using your current location in ${match}. Accuracy about ${Math.round(accuracy)} m.`;
+        }
+      }
 
       trackEvent("beachscout_near_me_location_allowed", "near_me", {
         country: currentCountry,
@@ -1289,6 +2128,8 @@ function newSearchReset(){
   activeUploadStatusId = null;
   setSuggestMode(false);
   closeMobileBeachPage();
+  closeConditionsPage(false);
+  closeStayNearbyPage(false);
 
   setBusy(false);
   clearMarkers();
@@ -1311,8 +2152,8 @@ function newSearchReset(){
 }
 
 function isNaturistTagged(tags){const nudism=tags.nudism||tags.naturism||'';const txt=((tags.name||'')+' '+(tags.operator||'')+' '+(tags.description||'')).toLowerCase();return ['designated','official','yes','customary','permissive'].includes(nudism)||/naturist|naturista|naturiste|nudist|nudista|nudiste|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička|fkkt|fkk/.test(txt)}
-function colourFor(tags){const nudism=tags.nudism||tags.naturism||'';if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'#be185d';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'#0f766e';if(nudism==='designated'||nudism==='official')return'#2f6b4f';if(['yes','customary','permissive'].includes(nudism))return'#d97706';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'#7c3aed';return'#2563eb'}
-function placeStatus(tags){const nudism=tags.nudism||tags.naturism||'';if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'Naturist campsite';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'Naturist resort / village';if(nudism==='designated'||nudism==='official')return'Official naturist beach';if(nudism==='customary')return'Customary naturist beach';if(['yes','permissive'].includes(nudism))return'Naturist beach';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'Beach resort / lido';return'Beach'}
+function colourFor(tags){const nudism=tags.nudism||tags.naturism||'';if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'#be185d';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'#0f766e';if(isSwimmingPool(tags))return'#0891b2';if(nudism==='designated'||nudism==='official')return'#2f6b4f';if(['yes','customary','permissive'].includes(nudism))return'#d97706';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'#7c3aed';return'#2563eb'}
+function placeStatus(tags){const nudism=tags.nudism||tags.naturism||'';if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'Naturist campsite';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'Naturist resort / village';if(isSwimmingPool(tags))return isNaturistTagged(tags)?'Naturist swimming pool':'Swimming pool';if(nudism==='designated'||nudism==='official')return'Official naturist beach';if(nudism==='customary')return'Customary naturist beach';if(['yes','permissive'].includes(nudism))return'Naturist beach';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'Beach resort / lido';return'Beach'}
 function wikilink(tags){if(!tags.wikipedia||!tags.wikipedia.includes(':'))return'';const i=tags.wikipedia.indexOf(':'),lang=tags.wikipedia.slice(0,i),title=tags.wikipedia.slice(i+1).replaceAll(' ','_');return`https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}`}
 
 function buildQuery(bbox){const box=`(${bbox[0]},${bbox[1]},${bbox[2]},${bbox[3]})`;return`
@@ -1347,86 +2188,351 @@ way["name"~"beach|plaža|plaza|strand|badesee|badeplatz|praia|spiaggia|plage|kup
 );
 out center tags;`}
 
-async function fetchOverpass(query){const endpoints=["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter","https://overpass.openstreetmap.ru/api/interpreter"];let last=null;for(const ep of endpoints){try{status("Trying Overpass server:\\n"+ep);let r=await fetch(ep+"?data="+encodeURIComponent(query));if(!r.ok)r=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:"data="+encodeURIComponent(query)});if(!r.ok)throw new Error(ep+" returned "+r.status);return await r.json()}catch(e){last=e}}throw last||new Error("All Overpass servers failed")}
+// Ordered by observed reliability, NOT by fame. The FOSSGIS main instance
+// (overpass-api.de) is demoted: it is the one currently returning 504s and 406s
+// from its anti-scraper defences, and asking it first burns a 10s hedge window
+// before anything healthy is even tried.
+// Consecutive entries are always different operators, so one operator's outage
+// can never take out two attempts in a row.
+//   1. private.coffee   Austrian non-profit, no rate limit, 4x20 cores
+//   2. maps.mail.ru     VK Maps, no stated request limits, 2x56 cores
+//   3. overpass-api.de  FOSSGIS main — flaky lately, kept as a real fallback
+//   4. kumi.systems     legacy hostname for private.coffee (DNS-level fallback)
+//   5. openstreetmap.ru unofficial, not on the OSM wiki list; last resort
+const OVERPASS_ENDPOINTS = [
+  "https://overpass.private.coffee/api/interpreter",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://overpass.openstreetmap.ru/api/interpreter"
+];
 
-function classify(b){const t=b.tags,n=t.nudism||t.naturism||'',hasWiki=!!(t.wikipedia||t.wikidata),isResort=t.tourism==='beach_resort'||t.leisure==='beach_resort',isOfficial=n==='designated'||n==='official',isNaturist=isOfficial||['yes','customary','permissive'].includes(n),isNaturistCampsite=isNaturistTagged(t)&&(t.tourism==='camp_site'||t.tourism==='caravan_site'),isNaturistResort=isNaturistTagged(t)&&!isNaturistCampsite&&['resort','hotel','guest_house','chalet','apartment'].includes(t.tourism),isUnnamed=!b.originalName;return{hasWiki,isResort,isOfficial,isNaturist,isNaturistCampsite,isNaturistResort,isUnnamed}}
+// Any fixed order is a guess about which host is healthy TODAY. So remember the
+// one that actually answered last time and try it first — the order above is
+// only the starting assumption, and real results override it.
+const OVERPASS_LAST_GOOD_KEY = "beachscout_overpass_last_good";
+
+function rememberGoodOverpass(ep){
+  try{ localStorage.setItem(OVERPASS_LAST_GOOD_KEY, ep); }catch(e){}
+}
+
+function orderedOverpassEndpoints(){
+  let last = null;
+  try{ last = localStorage.getItem(OVERPASS_LAST_GOOD_KEY); }catch(e){}
+  if(!last || !OVERPASS_ENDPOINTS.includes(last)) return OVERPASS_ENDPOINTS.slice();
+  return [last, ...OVERPASS_ENDPOINTS.filter(ep => ep !== last)];
+}
+
+// Hedged requests. Rather than waiting for one server to fail before trying the
+// next (which cost up to 60s when several were down), we start the first server
+// and, if it hasn't answered within HEDGE_MS, start the next one ALONGSIDE it.
+// First usable response wins and the rest are aborted. A slow host can no longer
+// hold the whole search hostage, and a dead host costs ~5s instead of ~20s.
+const OVERPASS_HEDGE_MS   = 10000;  // how long to wait before enlisting the next mirror
+const OVERPASS_TIMEOUT_MS = 25000;  // ceiling for any single server
+// Note: with 5 endpoints and a 10s hedge, the last mirror only STARTS at 40s,
+// so a 60s deadline gives it 20s of its 25s budget rather than the full amount.
+// That is a deliberate trade: fail the whole round sooner and let the retry
+// loop start a fresh one, instead of waiting out a slow tail.
+const OVERPASS_TOTAL_MS   = 60000;
+
+function overpassHost(ep){
+  try{ return new URL(ep).host; }catch(e){ return ep; }
+}
+
+async function overpassAttempt(ep, query, masterSignal){
+  const controller = new AbortController();
+  const relayAbort = () => controller.abort();
+  if(masterSignal.aborted) controller.abort();
+  else masterSignal.addEventListener("abort", relayAbort, {once:true});
+
+  const timer = setTimeout(()=>controller.abort(), OVERPASS_TIMEOUT_MS);
+  try{
+    let r = await fetch(ep+"?data="+encodeURIComponent(query), {signal:controller.signal});
+    if(!r.ok){
+      r = await fetch(ep, {
+        method:"POST",
+        headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
+        body:"data="+encodeURIComponent(query),
+        signal:controller.signal
+      });
+    }
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return await r.json();
+  }finally{
+    clearTimeout(timer);
+    masterSignal.removeEventListener("abort", relayAbort);
+  }
+}
+
+function overpassRound(query){
+  return new Promise((resolve, reject) => {
+    const endpoints = orderedOverpassEndpoints();  // last-known-good first
+    const master   = new AbortController();
+    const errors   = [];
+    const inFlight = new Set();
+    let launched = 0, settled = false, hedgeTimer = null, totalTimer = null;
+
+    const cleanup = () => { clearTimeout(hedgeTimer); clearTimeout(totalTimer); };
+
+    const succeed = (data) => {
+      if(settled) return;
+      settled = true;
+      cleanup();
+      master.abort();               // cancel the mirrors that lost the race
+      resolve(data);
+    };
+
+    const failAll = () => {
+      if(settled) return;
+      settled = true;
+      cleanup();
+      master.abort();
+      reject(new Error("Every Overpass server failed:\n" + errors.join("\n")));
+    };
+
+    const describe = (err) => {
+      if(err && err.name === "AbortError") return "timed out";
+      return (err && err.message) ? err.message : String(err);
+    };
+
+    const launchNext = () => {
+      if(settled || launched >= endpoints.length) return;
+      const ep = endpoints[launched++];
+      inFlight.add(ep);
+      status("Querying Overpass...\n" + Array.from(inFlight).map(overpassHost).join("\n"));
+
+      overpassAttempt(ep, query, master.signal)
+        .then(data => {
+          inFlight.delete(ep);
+          rememberGoodOverpass(ep);   // this host works — try it first next time
+          succeed(data);
+        })
+        .catch(err => {
+          inFlight.delete(ep);
+          if(settled) return;       // another mirror already won; its abort is expected
+          errors.push(overpassHost(ep) + ": " + describe(err));
+          launchNext();             // a failure promotes the next mirror immediately
+          // Only give up once nothing is running AND nothing is left to try.
+          if(inFlight.size === 0 && launched >= endpoints.length) failAll();
+        });
+
+      // Don't wait for this one to fail — if it is merely slow, bring in the next.
+      clearTimeout(hedgeTimer);
+      hedgeTimer = setTimeout(launchNext, OVERPASS_HEDGE_MS);
+    };
+
+    totalTimer = setTimeout(() => {
+      errors.push("overall deadline of " + (OVERPASS_TOTAL_MS/1000) + "s reached");
+      failAll();
+    }, OVERPASS_TOTAL_MS);
+
+    launchNext();
+  });
+}
+
+// If a whole round fails (every mirror down), wait and run a FRESH round rather
+// than giving up. Backoff is deliberate and not negotiable: Overpass instances
+// do automatic load shedding, so a tight retry loop makes a struggling server
+// *less* likely to answer and can get the client throttled outright. Waiting is
+// what actually gets you through an outage.
+const OVERPASS_BACKOFF_MS = [3000, 8000, 15000, 30000, 60000];
+let overpassRetryCancelled = false;
+
+function cancelOverpassRetries(){ overpassRetryCancelled = true; }
+
+// status() wipes the node, so retry UI needs its own renderer.
+function statusWithStop(msg){
+  const el = $("status");
+  el.textContent = msg + "\n";
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.textContent = "Stop retrying";
+  btn.style.cssText = "width:auto;margin-top:6px;padding:6px 10px;font-size:13px;background:#6b7280;color:#fff;border:none;border-radius:6px;cursor:pointer";
+  btn.onclick = cancelOverpassRetries;
+  el.appendChild(btn);
+}
+
+function overpassWait(ms, round){
+  return new Promise((resolve, reject) => {
+    let left = Math.ceil(ms/1000);
+    const tick = () => {
+      if(overpassRetryCancelled){
+        clearInterval(iv);
+        reject(new Error("Search cancelled. Press Search to try again."));
+        return;
+      }
+      if(left <= 0){
+        clearInterval(iv);
+        resolve();
+        return;
+      }
+      statusWithStop(`All Overpass servers are down or busy.\nRetrying (attempt ${round + 1}) in ${left}s...`);
+      left--;
+    };
+    const iv = setInterval(tick, 1000);
+    tick();
+  });
+}
+
+async function fetchOverpass(query){
+  overpassRetryCancelled = false;
+  let lastErr = null;
+
+  for(let round = 0; round <= OVERPASS_BACKOFF_MS.length; round++){
+    if(overpassRetryCancelled) throw new Error("Search cancelled.");
+
+    if(round > 0){
+      await overpassWait(OVERPASS_BACKOFF_MS[round - 1], round);
+      if(overpassRetryCancelled) throw new Error("Search cancelled.");
+    }
+
+    try{
+      return await overpassRound(query);
+    }catch(e){
+      lastErr = e;
+      if(overpassRetryCancelled) throw new Error("Search cancelled.");
+    }
+  }
+
+  // Every round exhausted. Don't spin forever: hand control back to the user.
+  throw new Error(
+    (lastErr && lastErr.message ? lastErr.message + "\n\n" : "") +
+    `Gave up after ${OVERPASS_BACKOFF_MS.length + 1} attempts over ~2 minutes. ` +
+    `Overpass may be having an outage — press Search to try again.`
+  );
+}
+
+// A swimming pool is not a beach. They arrive because the query asks for
+// sport=swimming, which pools carry. Detected reliably from tags.
+function isSwimmingPool(t){
+  if(t.leisure === 'swimming_pool' || t.amenity === 'swimming_pool') return true;
+  // sport=swimming on something that is not a beach or beach-like feature
+  if(t.sport === 'swimming'
+     && t.natural !== 'beach'
+     && t.leisure !== 'beach' && t.leisure !== 'swimming_area' && t.leisure !== 'beach_resort'
+     && t.tourism !== 'beach_resort') return true;
+  return false;
+}
+
+// Lake / river beaches. NOTE: this is a heuristic, not a fact. OSM tags a
+// lakeside beach the same way as a sea beach (natural=beach), so short of
+// testing each point against the coastline there is no reliable flag. We catch
+// the obvious cases via the water tag and the name. Expect some misses.
+const INLAND_NAME_RE = /\blac\b|\blake\b|étang|etang|rivière|riviere|\briver\b|jezero|badesee|badeplatz|reservoir|barrage|plan d'eau/i;
+function isInlandWater(b){
+  const t = b.tags || {};
+  if(['lake','river','pond','reservoir','canal'].includes(t.water)) return true;
+  return INLAND_NAME_RE.test(b.originalName || b.name || '');
+}
+
+function classify(b){const t=b.tags,n=t.nudism||t.naturism||'',hasWiki=!!(t.wikipedia||t.wikidata),isResort=t.tourism==='beach_resort'||t.leisure==='beach_resort',isOfficial=n==='designated'||n==='official',isNaturist=isOfficial||['yes','customary','permissive'].includes(n),isNaturistCampsite=isNaturistTagged(t)&&(t.tourism==='camp_site'||t.tourism==='caravan_site'),isNaturistResort=isNaturistTagged(t)&&!isNaturistCampsite&&['resort','hotel','guest_house','chalet','apartment'].includes(t.tourism),isUnnamed=!b.originalName,isPool=isSwimmingPool(t),isInland=isInlandWater(b);return{hasWiki,isResort,isOfficial,isNaturist,isNaturistCampsite,isNaturistResort,isUnnamed,isPool,isInland}}
 function filters(){const f={};document.querySelectorAll('.filterToggle').forEach(cb=>f[cb.value]=cb.checked);return f}
-function shouldShow(b){const f=filters(),c=classify(b);if(c.isUnnamed&&!f.unnamed)return false;if(c.isNaturistCampsite&&f.naturist_campsite)return true;if(c.isNaturistResort&&f.naturist_resort)return true;if(c.isOfficial&&f.official)return true;if(c.isNaturist&&f.naturist)return true;if(c.isResort&&f.resort)return true;if(c.hasWiki&&f.wiki)return true;if(!c.isOfficial&&!c.isNaturist&&!c.isResort&&!c.hasWiki&&!c.isNaturistResort&&!c.isNaturistCampsite&&f.normal)return true;return false}
+function shouldShow(b){const f=filters(),c=classify(b);if(c.isUnnamed&&!f.unnamed)return false;if(c.isPool)return !!f.pool;if(c.isInland&&!f.inland)return false;if(c.isNaturistCampsite&&f.naturist_campsite)return true;if(c.isNaturistResort&&f.naturist_resort)return true;if(c.isOfficial&&f.official)return true;if(c.isNaturist&&f.naturist)return true;if(c.isResort&&f.resort)return true;if(c.hasWiki&&f.wiki)return true;if(!c.isOfficial&&!c.isNaturist&&!c.isResort&&!c.hasWiki&&!c.isNaturistResort&&!c.isNaturistCampsite&&f.normal)return true;return false}
 
-function updateStats(v=null){let counts={wiki:0,naturist:0,official:0,customary:0,resort:0,nresort:0,ncamp:0,unnamed:0,normal:0};for(const b of allBeaches){const c=classify(b),n=b.tags.nudism||b.tags.naturism||'';if(c.hasWiki)counts.wiki++;if(c.isNaturist)counts.naturist++;if(c.isOfficial)counts.official++;if(n==='customary')counts.customary++;if(c.isResort)counts.resort++;if(c.isNaturistResort)counts.nresort++;if(c.isNaturistCampsite)counts.ncamp++;if(c.isUnnamed)counts.unnamed++;if(!c.hasWiki&&!c.isNaturist&&!c.isOfficial&&!c.isResort&&!c.isNaturistResort&&!c.isNaturistCampsite&&!c.isUnnamed)counts.normal++}
-$('stats').innerHTML=`${v===null?'':`<b>Currently shown:</b> ${v}<br>`}<b>Country:</b> ${escapeHtml(currentCountry)}<br><b>Total loaded:</b> ${allBeaches.length}<br>Normal: ${counts.normal} · Wiki/Wikidata: ${counts.wiki}<br>Naturist beaches: ${counts.naturist} · Official: ${counts.official} · Customary: ${counts.customary}<br>Naturist resorts/villages: ${counts.nresort} · Naturist campsites: ${counts.ncamp}<br>Beach resorts/lidos: ${counts.resort} · Unnamed: ${counts.unnamed}`}
+function updateStats(v=null){let counts={wiki:0,naturist:0,official:0,customary:0,resort:0,nresort:0,ncamp:0,unnamed:0,normal:0,pool:0,inland:0};for(const b of allBeaches){const c=classify(b),n=b.tags.nudism||b.tags.naturism||'';if(c.isPool)counts.pool++;if(c.isInland)counts.inland++;if(c.hasWiki)counts.wiki++;if(c.isNaturist)counts.naturist++;if(c.isOfficial)counts.official++;if(n==='customary')counts.customary++;if(c.isResort)counts.resort++;if(c.isNaturistResort)counts.nresort++;if(c.isNaturistCampsite)counts.ncamp++;if(c.isUnnamed)counts.unnamed++;if(!c.isPool&&!c.hasWiki&&!c.isNaturist&&!c.isOfficial&&!c.isResort&&!c.isNaturistResort&&!c.isNaturistCampsite&&!c.isUnnamed)counts.normal++}
+$('stats').innerHTML=`${v===null?'':`<b>Currently shown:</b> ${v}<br>`}<b>Country:</b> ${escapeHtml(currentCountry)}<br><b>Total loaded:</b> ${allBeaches.length}<br>Normal: ${counts.normal} · Wiki/Wikidata: ${counts.wiki}<br>Naturist beaches: ${counts.naturist} · Official: ${counts.official} · Customary: ${counts.customary}<br>Naturist resorts/villages: ${counts.nresort} · Naturist campsites: ${counts.ncamp}<br>Beach resorts/lidos: ${counts.resort} · Unnamed: ${counts.unnamed}<br>Lake/river: ${counts.inland} · Swimming pools: ${counts.pool}`}
 
 function commonsFileUrl(f,w=500){let clean=f.replace(/^File:/i,'').trim().replaceAll(' ','_');return`https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(clean)}?width=${w}`}
 async function wikiTitlePhoto(title,lang){try{const r=await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);if(!r.ok)return null;const j=await r.json();return j.thumbnail?.source?{url:j.thumbnail.source,source:`${lang}.wikipedia.org`}:null}catch{return null}}
-async function commonsNameSearchPhoto(beach){
-  try{
-    const rawName = (beach.originalName || beach.name || "").trim();
-    if(!rawName || /^Unnamed/i.test(rawName)) return null;
+// Positive evidence that the picture is actually OF the coast/beach. Checked
+// against Commons CATEGORIES (much more reliable than filenames) and the title.
+const COMMONS_BEACH_RE = /\b(beach|beaches|coast|coastal|coastline|shore|shoreline|seaside|sea|ocean|sand|dune|bay|cove|surf|waves|cliff|lagoon|lake|lakes|lakeside|badesee|reservoir|river|riverside|shingle|pier|promenade|plage|playa|praia|strand|spiaggia|plaza|paralia|strände)\b/i;
 
-    const tags = beach.tags || {};
-    const country = currentCountry && currentCountry !== "Worldwide" ? currentCountry : "";
-    const extra = [
-      tags["addr:city"],
-      tags["addr:town"],
-      tags["addr:village"],
-      tags["is_in"],
-      country
-    ].filter(Boolean).join(" ");
+// Things that are near a beach but are NOT a picture of it. The restaurant 84 m
+// from Topanga Beach is the case that prompted this: geographically correct,
+// completely useless. A photo can be perfectly geotagged and still be a picture
+// of a pub interior.
+const COMMONS_REJECT_RE = /\b(map|karte|carte|mappa|plan|logo|coat.of.arms|diagram|chart|graph|sign|schild|panneau|screenshot|icon|flag|restaurant|pub|bar|cafe|café|interior|indoor|inside|room|kitchen|museum|church|chapel|hotel.lobby|shop|store|market|supermarket|station|car.park|parking|portrait|people|person|memorial|statue|monument|building|house|apartment)\b/i;
 
-    const searchTerms = [
-      `${rawName} beach ${extra}`.trim(),
-      `${rawName} ${extra}`.trim(),
-      `${rawName} beach`.trim()
-    ];
+function haversineM(lat1, lon1, lat2, lon2){
+  const R = 6371000, rad = Math.PI/180;
+  const dLat = (lat2-lat1)*rad, dLon = (lon2-lon1)*rad;
+  const a = Math.sin(dLat/2)**2 +
+            Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
 
-    const tried = new Set();
+// Find a photo actually TAKEN AT this beach, AND actually OF the beach.
+//
+// Two separate problems, both real:
+//   1. WRONG PLACE. The original code did a full-text name search on Commons and
+//      took the first hit. "Sykia beach Greece" could return the other Sykia, or
+//      a map. Fixed by using geosearch: photos near THESE coordinates.
+//   2. WRONG SUBJECT. Geosearch alone gave us a photo of a pub interior 84 m from
+//      Topanga Beach. Correct location, useless picture.
+//
+// So we now require POSITIVE EVIDENCE that the photo is of the coast — from the
+// Commons categories ("Beaches in California") or the title — and reject anything
+// that looks like a building, interior, sign, map or portrait.
+// This deliberately shows FEWER photos. A wrong photo is worse than no photo: it
+// tells someone a beach looks like something it doesn't.
+async function commonsGeoPhoto(beach, radius = 500){
+  const lat = Number(beach.lat), lon = Number(beach.lon);
+  if(!isFinite(lat) || !isFinite(lon)) return null;
 
-    for(const term of searchTerms){
-      const cleanTerm = term.replace(/\s+/g, " ").trim();
-      if(!cleanTerm || tried.has(cleanTerm.toLowerCase())) continue;
-      tried.add(cleanTerm.toLowerCase());
+  const url =
+    "https://commons.wikimedia.org/w/api.php" +
+    "?action=query&format=json&origin=*" +
+    "&generator=geosearch" +
+    "&ggsnamespace=6" +               // namespace 6 = files
+    "&ggslimit=30" +
+    "&ggscoord=" + lat + "|" + lon +
+    "&ggsradius=" + Math.min(10000, Math.max(10, radius)) +
+    "&prop=imageinfo|coordinates|categories" +
+    "&cllimit=30" +
+    "&iiprop=url|mime" +
+    "&iiurlwidth=500";
 
-      const url =
-        "https://commons.wikimedia.org/w/api.php" +
-        "?action=query" +
-        "&format=json" +
-        "&origin=*" +
-        "&generator=search" +
-        "&gsrnamespace=6" +
-        "&gsrlimit=8" +
-        "&gsrsearch=" + encodeURIComponent(cleanTerm) +
-        "&prop=imageinfo" +
-        "&iiprop=url|mime" +
-        "&iiurlwidth=500";
+  const r = await fetch(url);
+  if(!r.ok) return null;
+  const j = await r.json();
+  const pages = Object.values((j.query && j.query.pages) || {});
+  if(!pages.length) return null;
 
-      const r = await fetch(url);
-      if(!r.ok) continue;
+  const beachName = normalizePrefix(beach.originalName || beach.name || "");
+  const candidates = [];
 
-      const j = await r.json();
-      const pages = Object.values(j.query?.pages || {});
+  for(const page of pages){
+    const info = (page.imageinfo || [])[0];
+    if(!info) continue;
 
-      for(const page of pages){
-        const info = page.imageinfo?.[0];
-        if(!info) continue;
+    const mime = info.mime || "";
+    const imageUrl = info.thumburl || info.url || "";
+    const title = (page.title || "").replace(/^File:/i, "");
+    const cats = (page.categories || []).map(c => (c.title || "").replace(/^Category:/i, ""));
+    const catText = cats.join(" ");
 
-        const mime = info.mime || "";
-        const imageUrl = info.thumburl || info.url || "";
+    if(!imageUrl) continue;
+    if(!/^image\//i.test(mime)) continue;       // no PDFs, no video
+    if(/\.svg(\?|$)/i.test(imageUrl)) continue; // no vector graphics
 
-        if(!imageUrl) continue;
-        if(!/^image\//i.test(mime)) continue;
-        if(/\.svg(\?|$)/i.test(imageUrl)) continue;
+    const looksLikeBeach = COMMONS_BEACH_RE.test(catText) || COMMONS_BEACH_RE.test(title);
+    const looksWrong     = COMMONS_REJECT_RE.test(catText) || COMMONS_REJECT_RE.test(title);
 
-        return {
-          url: imageUrl,
-          source: "Wikimedia Commons name search"
-        };
-      }
-    }
-  }catch(e){
-    console.log("Commons name search failed", e);
+    // Must be positively identifiable as a coastal photo. No evidence -> skip.
+    if(!looksLikeBeach) continue;
+    // A beach category does not excuse a picture of a restaurant interior.
+    if(looksWrong) continue;
+
+    const coord = (page.coordinates || [])[0];
+    const dist = coord ? haversineM(lat, lon, coord.lat, coord.lon) : radius;
+
+    let score = 1000 - dist;
+    if(COMMONS_BEACH_RE.test(catText)) score += 300;   // category beats filename
+    if(beachName && beachName.length > 3 && normalizePrefix(title).includes(beachName)) score += 400;
+
+    candidates.push({ url: imageUrl, dist, score, title });
   }
 
-  return null;
+  if(!candidates.length) return null;
+  candidates.sort((a, b) => b.score - a.score);
+  const best = candidates[0];
+
+  return {
+    url: best.url,
+    source: "Wikimedia Commons — photographed " + Math.round(best.dist) + " m from this beach"
+  };
 }
 
 
@@ -1491,9 +2597,21 @@ async function getPhoto(b){
     }catch{}
   }
 
-  // New fallback:
-  // If OSM has no photo/Wikipedia/Wikidata tag, search Wikimedia Commons by beach name.
-  return await commonsNameSearchPhoto(b);
+  // Fallback when OSM has no photo tag at all: find a photo actually TAKEN at
+  // this beach, via Commons geosearch. Start tight, widen once — but not far.
+  // A photo 1 km along the Cretan coast is a DIFFERENT beach, not this one, even
+  // if it is genuinely a photo of a beach. Beyond ~600 m we would be guessing.
+  // We do NOT fall back to a name search: that is what produced photos of the
+  // wrong place entirely.
+  try{
+    const near = await commonsGeoPhoto(b, 300);
+    if(near) return near;
+    const wider = await commonsGeoPhoto(b, 600);
+    if(wider) return wider;
+  }catch(e){
+    // Commons unavailable — no photo is the honest answer.
+  }
+  return null;
 }
 
 
@@ -1802,6 +2920,332 @@ async function toggleTranslate(){
 
 
 
+
+let activeConditionsBeach = null;
+
+let activeStayBeach = null;
+
+const STAY_CATEGORY_LABELS = {
+  hotel:"Hotel", motel:"Motel", guest_house:"Guest house", hostel:"Hostel",
+  apartment:"Apartment", chalet:"Chalet / lodge", resort:"Resort",
+  camp_site:"Campsite", caravan_site:"Caravan / RV site", alpine_hut:"Alpine hut"
+};
+
+function stayWebsite(tags){
+  let raw = tags?.website || tags?.["contact:website"] || tags?.url || "";
+  if(!raw) return "";
+  return /^https?:\/\//i.test(raw) ? raw : "https://" + raw;
+}
+function stayPhone(tags){ return tags?.phone || tags?.["contact:phone"] || ""; }
+function stayAddress(tags){
+  return [tags?.["addr:housenumber"],tags?.["addr:street"],tags?.["addr:suburb"],tags?.["addr:city"],tags?.["addr:postcode"],tags?.["addr:state"],tags?.["addr:country"]].filter(Boolean).join(", ");
+}
+function stayQuery(lat,lon,radius=3000){
+  const types=["hotel","motel","guest_house","hostel","apartment","chalet","resort","camp_site","caravan_site","alpine_hut"];
+  const lines=types.map(t=>`
+node["tourism"="${t}"](around:${radius},${lat},${lon});
+way["tourism"="${t}"](around:${radius},${lat},${lon});
+relation["tourism"="${t}"](around:${radius},${lat},${lon});`).join("");
+  return `[out:json][timeout:120];(${lines});out center tags;`;
+}
+function closeStayNearbyPage(returnToBeach=true){
+  const page=$("stayPage");
+  if(page) page.classList.remove("show");
+  if(returnToBeach && activeStayBeach){
+    const visible=allBeaches.filter(shouldShow);
+    const idx=visible.findIndex(b=>Math.abs(Number(b.lat)-Number(activeStayBeach.lat))<0.00001 && Math.abs(Number(b.lon)-Number(activeStayBeach.lon))<0.00001);
+    openMobileBeachPage(activeStayBeach, idx>=0?idx+1:"", "stay");
+  }else{
+    document.body.classList.remove("mobile-detail-open");
+  }
+}
+async function openStayNearbyPage(beach){
+  activeStayBeach=beach || activeUploadBeach || activeParkingBeach || null;
+  if(!activeStayBeach) return;
+
+  closeActivePopup();
+  closeMobileSearchPanel();
+  const beachPage=$("mobileBeachPage");
+  const conditionsPage=$("conditionsPage");
+  const stayPage=$("stayPage");
+  if(beachPage) beachPage.classList.remove("show");
+  if(conditionsPage) conditionsPage.classList.remove("show");
+  if(!stayPage) return;
+
+  $("stayBeachName").textContent=`${activeStayBeach.name} · 3 km`;
+  $("stayStatus").textContent="Searching HotelScout accommodation data within 3 km...";
+  $("stayResults").innerHTML="";
+  stayPage.classList.add("show");
+  document.body.classList.add("mobile-detail-open");
+
+  try{
+    const data=await fetchOverpass(stayQuery(activeStayBeach.lat,activeStayBeach.lon,3000));
+    const seen=new Set(), places=[];
+    for(const el of data.elements||[]){
+      const tags=el.tags||{};
+      const lat=el.lat??el.center?.lat, lon=el.lon??el.center?.lon;
+      const name=tags.name||tags["name:en"]||tags.int_name||tags.official_name;
+      if(lat==null||lon==null||!name) continue;
+      const dist=distanceKm(activeStayBeach.lat,activeStayBeach.lon,Number(lat),Number(lon));
+      if(dist>3.05) continue;
+      const category=tags.tourism||"accommodation";
+      const key=`${String(name).toLowerCase()}_${Number(lat).toFixed(4)}_${Number(lon).toFixed(4)}_${category}`;
+      if(seen.has(key)) continue;
+      seen.add(key);
+      places.push({
+        name,lat:Number(lat),lon:Number(lon),dist,category,tags,
+        address:stayAddress(tags),website:stayWebsite(tags),phone:stayPhone(tags)
+      });
+    }
+    places.sort((a,b)=>a.dist-b.dist);
+
+    $("stayStatus").textContent=places.length
+      ? `Found ${places.length} places to stay within 3 km.`
+      : "No named accommodation was found within 3 km.";
+
+    if(!places.length){
+      $("stayResults").innerHTML='<div class="stay-empty">No accommodation found in OpenStreetMap within this 3 km circle.</div>';
+      return;
+    }
+
+    $("stayResults").innerHTML=places.map((p,i)=>{
+      const maps=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name+" "+p.lat+","+p.lon)}`;
+      const directions=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(activeStayBeach.lat+","+activeStayBeach.lon)}&destination=${encodeURIComponent(p.lat+","+p.lon)}&travelmode=driving`;
+      const website=p.website?`<a class="stay-link" href="${escapeHtml(p.website)}" target="_blank" rel="noopener">🌐 Official website</a>`:"";
+      const phone=p.phone?`<div class="stay-meta">☎ ${escapeHtml(p.phone)}</div>`:"";
+      const address=p.address?`<div class="stay-meta">📍 ${escapeHtml(p.address)}</div>`:"";
+      return `<div class="stay-result">
+        <h3>${i+1}. ${escapeHtml(p.name)}</h3>
+        <div class="stay-meta">📏 ${p.dist.toFixed(1)} km from the selected beach</div>
+        ${address}${phone}
+        <span class="stay-kind">${escapeHtml(STAY_CATEGORY_LABELS[p.category]||p.category)}</span>
+        <div class="stay-actions">
+          ${website}
+          <a class="stay-link secondary" href="${escapeHtml(maps)}" target="_blank" rel="noopener">🗺 Open in Google Maps</a>
+          <a class="stay-link secondary" href="${escapeHtml(directions)}" target="_blank" rel="noopener">🚗 Directions from beach</a>
+        </div>
+      </div>`;
+    }).join("");
+
+  }catch(e){
+    $("stayStatus").textContent="Accommodation search failed: "+(e.message||e);
+    $("stayResults").innerHTML='<div class="stay-empty">Try again later or select another beach.</div>';
+  }
+}
+
+
+function returnToMap(){
+  closeActivePopup();
+  closeMobileSearchPanel();
+  const beachPage = $("mobileBeachPage");
+  const beachContent = $("mobileBeachContent");
+  const conditionsPage = $("conditionsPage");
+  const stayPage = $("stayPage");
+
+  if(beachPage) beachPage.classList.remove("show");
+  if(beachContent) beachContent.innerHTML = "";
+  if(conditionsPage) conditionsPage.classList.remove("show");
+  if(stayPage) stayPage.classList.remove("show");
+
+  document.body.classList.remove("mobile-detail-open");
+}
+
+// --- Beach conditions -------------------------------------------------------
+// Open-Meteo: free, no API key, CC BY 4.0. Two separate endpoints:
+//   forecast API -> air temp, wind, UV, rain, sunset
+//   marine API   -> sea surface temperature, wave height
+// IMPORTANT CAVEAT, stated in the UI too: these are MODEL outputs, not readings
+// from a buoy at this beach. Sea temperature in particular is interpolated.
+// Also: Open-Meteo's free tier is NON-COMMERCIAL. If BeachScout ever takes
+// affiliate or ad revenue, this needs their paid plan.
+const conditionsCache = new Map();   // "lat,lon" -> data
+
+function degToCompass(deg){
+  const dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+  return dirs[Math.round(((deg % 360) / 22.5)) % 16];
+}
+
+function waveDescription(m){
+  if(m == null) return null;
+  if(m < 0.2) return "Calm (" + m.toFixed(1) + " m)";
+  if(m < 0.5) return "Slight (" + m.toFixed(1) + " m)";
+  if(m < 1.0) return "Moderate (" + m.toFixed(1) + " m)";
+  if(m < 2.0) return "Rough (" + m.toFixed(1) + " m)";
+  return "Very rough (" + m.toFixed(1) + " m)";
+}
+
+function uvDescription(uv){
+  if(uv == null) return null;
+  const r = Math.round(uv);
+  if(r <= 2) return r + " (Low)";
+  if(r <= 5) return r + " (Moderate)";
+  if(r <= 7) return r + " (High)";
+  if(r <= 10) return r + " (Very high)";
+  return r + " (Extreme)";
+}
+
+async function fetchConditions(lat, lon){
+  const key = lat.toFixed(3) + "," + lon.toFixed(3);
+  if(conditionsCache.has(key)) return conditionsCache.get(key);
+
+  const wxUrl = "https://api.open-meteo.com/v1/forecast"
+    + "?latitude=" + lat + "&longitude=" + lon
+    + "&current=temperature_2m,wind_speed_10m,wind_direction_10m,precipitation,uv_index"
+    + "&daily=sunset,precipitation_probability_max,uv_index_max"
+    + "&timezone=auto&wind_speed_unit=kmh";
+
+  const seaUrl = "https://marine-api.open-meteo.com/v1/marine"
+    + "?latitude=" + lat + "&longitude=" + lon
+    + "&current=sea_surface_temperature,wave_height"
+    + "&timezone=auto";
+
+  // Fetched in parallel, and the marine one is allowed to fail: it has no
+  // coverage on lakes and rivers, which is a large part of this dataset
+  // (65,027 of Canada's 66,907 beaches are inland). A failure there must not
+  // take the whole page down.
+  const [wxRes, seaRes] = await Promise.allSettled([
+    fetch(wxUrl).then(r => r.ok ? r.json() : Promise.reject(new Error("weather " + r.status))),
+    fetch(seaUrl).then(r => r.ok ? r.json() : Promise.reject(new Error("marine " + r.status)))
+  ]);
+
+  if(wxRes.status !== "fulfilled") throw new Error("Could not load conditions");
+
+  const wx  = wxRes.value;
+  const sea = seaRes.status === "fulfilled" ? seaRes.value : null;
+
+  const cur   = wx.current || {};
+  const daily = wx.daily || {};
+  const seaCur = (sea && sea.current) || {};
+
+  const data = {
+    air:      cur.temperature_2m,
+    wind:     cur.wind_speed_10m,
+    windDir:  cur.wind_direction_10m,
+    uv:       cur.uv_index != null ? cur.uv_index : (daily.uv_index_max || [])[0],
+    rain:     (daily.precipitation_probability_max || [])[0],
+    sunset:   (daily.sunset || [])[0],
+    seaTemp:  seaCur.sea_surface_temperature,
+    waveH:    seaCur.wave_height,
+    marineAvailable: seaRes.status === "fulfilled" && seaCur.sea_surface_temperature != null
+  };
+
+  conditionsCache.set(key, data);
+  return data;
+}
+
+// A single honest verdict. Deliberately conservative: this is advice people may
+// act on, so it warns rather than reassures when the numbers are marginal.
+function beachVerdict(d){
+  const warnings = [];
+  if(d.waveH != null && d.waveH >= 1.5) warnings.push("large waves");
+  if(d.wind != null && d.wind >= 35)    warnings.push("strong wind");
+  if(d.uv != null && d.uv >= 8)         warnings.push("very high UV");
+  if(d.rain != null && d.rain >= 60)    warnings.push("rain likely");
+  if(d.seaTemp != null && d.seaTemp < 15) warnings.push("cold water");
+
+  if(warnings.length >= 2)
+    return { icon:"🔴", main:"Poor beach day", note:"Take care: " + warnings.join(", ") + "." };
+  if(warnings.length === 1)
+    return { icon:"🟠", main:"Mixed conditions", note:"Watch out for " + warnings[0] + "." };
+
+  const good = (d.air != null && d.air >= 22) && (d.seaTemp == null || d.seaTemp >= 20);
+  if(good)
+    return { icon:"🟢", main:"Excellent beach day", note:"Warm air and comfortable water." };
+
+  return { icon:"🟡", main:"Fair conditions", note:"Nothing alarming, but not perfect." };
+}
+
+async function renderConditions(beach){
+  const set = (id, v) => { const el = $(id); if(el) el.textContent = v; };
+
+  // Reset first. Leaving the PREVIOUS beach's numbers on screen while the new
+  // ones load would show stale data as if it were current — worse than nothing.
+  ["cAir","cSea","cWind","cWaves","cUV","cRain","cSunset"].forEach(id => set(id, "…"));
+  set("recKicker", "BeachScout Recommendation");
+  set("recMain", "Loading…");
+  set("recNote", "Fetching live conditions.");
+  set("cSafety", "No official warning feed connected");
+
+  if(!beach || beach.lat == null || beach.lon == null){
+    set("recMain", "No beach selected");
+    set("recNote", "");
+    return;
+  }
+
+  try{
+    const d = await fetchConditions(beach.lat, beach.lon);
+
+    set("cAir",  d.air  != null ? Math.round(d.air) + "°C" : "—");
+    set("cWind", d.wind != null
+      ? Math.round(d.wind) + " km/h " + (d.windDir != null ? degToCompass(d.windDir) : "")
+      : "—");
+    set("cUV",   uvDescription(d.uv) || "—");
+    set("cRain", d.rain != null ? d.rain + "%" : "—");
+    set("cSunset", d.sunset ? String(d.sunset).slice(11, 16) : "—");
+
+    // Say so explicitly when the marine model has no coverage, rather than a dash
+    // that looks like a failure. Lakes and rivers are not the sea, and most of
+    // this dataset is inland.
+    if(d.marineAvailable){
+      set("cSea",   d.seaTemp != null ? d.seaTemp.toFixed(1) + "°C" : "—");
+      set("cWaves", waveDescription(d.waveH) || "—");
+    }else{
+      set("cSea",   "No marine data (inland?)");
+      set("cWaves", "No marine data (inland?)");
+    }
+
+    const v = beachVerdict(d);
+    set("recKicker", v.icon + " BeachScout Recommendation");
+    set("recMain", v.main);
+    set("recNote", v.note);
+
+  }catch(e){
+    set("recMain", "Conditions unavailable");
+    set("recNote", "Could not reach the weather service. Try again shortly.");
+    ["cAir","cSea","cWind","cWaves","cUV","cRain","cSunset"].forEach(id => set(id, "—"));
+  }
+}
+
+function openConditionsPage(beach){
+  activeConditionsBeach = beach || activeUploadBeach || activeParkingBeach || null;
+  renderConditions(activeConditionsBeach);
+
+  const page = $("conditionsPage");
+  const name = $("conditionsBeachName");
+  if(!page) return;
+
+  if(name){
+    name.textContent = activeConditionsBeach
+      ? `${activeConditionsBeach.name} · ${coordText(activeConditionsBeach.lat, activeConditionsBeach.lon)}`
+      : "Selected beach";
+  }
+
+  closeActivePopup();
+  closeMobileSearchPanel();
+
+  const beachPage = $("mobileBeachPage");
+  if(beachPage) beachPage.classList.remove("show");
+
+  page.classList.add("show");
+  document.body.classList.add("mobile-detail-open");
+}
+
+function closeConditionsPage(returnToBeach=true){
+  const page = $("conditionsPage");
+  if(page) page.classList.remove("show");
+
+  if(returnToBeach && activeConditionsBeach){
+    const visible = allBeaches.filter(shouldShow);
+    const idx = visible.findIndex(b =>
+      Math.abs(Number(b.lat)-Number(activeConditionsBeach.lat)) < 0.00001 &&
+      Math.abs(Number(b.lon)-Number(activeConditionsBeach.lon)) < 0.00001
+    );
+    openMobileBeachPage(activeConditionsBeach, idx >= 0 ? idx + 1 : "", "conditions");
+  }else{
+    document.body.classList.remove("mobile-detail-open");
+  }
+}
+
 let mobileBeachReturnSource = "map";
 
 function isMobileView(){
@@ -1854,6 +3298,18 @@ function openMobileBeachPage(b, num, source="map"){
       <div id="${photoId}">
         <div class="photo-note">Searching for photo...</div>
       </div>
+    </div>
+
+    <div class="mobile-beach-section">
+      <h3>🌊 Beach Conditions</h3>
+      <p>See the BeachScout recommendation, weather, water quality and safety information for this beach.</p>
+      <button type="button" onclick="openConditionsPage(activeUploadBeach)" style="background:#0f766e;">Open Beach Conditions</button>
+    </div>
+
+    <div class="mobile-beach-section">
+      <h3>🏨 Stay Nearby</h3>
+      <p>Find hotels, motels, hostels, guest houses, apartments, resorts and campsites within 3 km of this beach.</p>
+      <button type="button" onclick="openStayNearbyPage(activeUploadBeach)" style="background:#7c3aed;">Find Places to Stay</button>
     </div>
 
     <div class="mobile-beach-section">
@@ -1945,6 +3401,8 @@ function openPopup(b,num){
         <div id="${photoId}">
           <div class="photo-note">Searching for photo...</div>
         </div>
+        <button type="button" onclick="openConditionsPage(activeUploadBeach)" style="margin:6px 0 8px;padding:8px 10px;font-size:13px;background:#0f766e;">🌊 Beach Conditions</button>
+        <button type="button" onclick="openStayNearbyPage(activeUploadBeach)" style="margin:0 0 8px;padding:8px 10px;font-size:13px;background:#7c3aed;">🏨 Stay Nearby (3 km)</button>
         <p><b>Beach coordinates:</b><br>${coordText(b.lat,b.lon)}</p>
         <p><a href="${googleMapsPointLink(b.lat,b.lon)}" target="_blank">Open beach in Google Maps</a></p>
         <button type="button" onclick="copyTextToClipboard('${coordText(b.lat,b.lon)}')" style="margin-top:6px;padding:8px 10px;font-size:13px;">Copy beach coordinates</button>
@@ -2394,13 +3852,37 @@ function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMap
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
 $('mobileSearchButton').addEventListener('click',openMobileSearchPanel);
 $('mobileBeachBack').addEventListener('click',closeMobileBeachPage);
+$('mobileBeachMap').addEventListener('click',returnToMap);
+$('conditionsBack').addEventListener('click',()=>closeConditionsPage(true));
+$('conditionsMap').addEventListener('click',returnToMap);
+$('stayBack').addEventListener('click',()=>closeStayNearbyPage(true));
+$('stayMap').addEventListener('click',returnToMap);
 $('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('countrySearch').addEventListener('click',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('localScan').addEventListener('click',localScan);
 $('nearMeScan').addEventListener('click',nearMeScan);
 $('newSearch').addEventListener('click',newSearchReset);
 $('placeSearch').addEventListener('input',schedulePlaceSuggestions);
-$('placeSearch').addEventListener('keydown',e=>{if(e.key==='Enter')localScan();});
+// One click selects the whole place string, so the next keystroke replaces it.
+$('placeSearch').addEventListener('focus',()=>setTimeout(()=>$("placeSearch").select(),50));
+$('placeSearch').addEventListener('click',()=>setTimeout(()=>$("placeSearch").select(),50));
+$('placeSearch').addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){ if(movePlaceSuggestion(1)) e.preventDefault(); return; }
+  if(e.key==='ArrowUp'){ if(movePlaceSuggestion(-1)) e.preventDefault(); return; }
+  if(e.key==='Escape'){ $("suggestions").innerHTML=""; placeSuggestActive=-1; return; }
+  if(e.key==='Enter'){
+    e.preventDefault();
+    const btns = placeSuggestButtons();
+    // Only commit to a place if the user explicitly highlighted one with the
+    // arrow keys. Otherwise Enter shows the list of same-named places and waits
+    // — it must never guess which "San Cataldo" was meant.
+    if(placeSuggestActive >= 0 && btns[placeSuggestActive]){
+      btns[placeSuggestActive].click();
+      return;
+    }
+    showPlaceSuggestionsNow();
+  }
+});
 $('countrySearch').addEventListener('input',scheduleCountrySuggestions);
 $('countrySearch').addEventListener('keydown',e=>{if(e.key==='Enter'){const first=$("countrySuggestions").querySelector("button");if(first)first.click();}});
 $('country').addEventListener('change',()=>{
@@ -2416,6 +3898,10 @@ $('country').addEventListener('change',()=>{
   allBeaches=[];
   $('list').innerHTML='';
   $('stats').textContent='No beaches loaded yet.';
+  placeQueryCache.clear();
+  $('suggestions').innerHTML='';
+  const ps=$('placeSearch');
+  if(ps){ ps.focus(); ps.select(); }
 });
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
 map.on('click',(e)=>{
@@ -2429,11 +3915,12 @@ map.on('load',()=>{
   trackEvent("beachscout_page_view", "page", {
     page: location.href
   });
-  setTimeout(startDefaultSantaMonicaOnce, 150);
+  setTimeout(startDefaultViewOnce, 150);
 });
 
 window.addEventListener('load',()=>{
-  setTimeout(startDefaultSantaMonicaOnce, 500);
+  const vt=$('versionTag'); if(vt) vt.textContent="build "+BUILD_VERSION+" · data "+BEACH_DATA_VERSION;
+  setTimeout(startDefaultViewOnce, 500);
 });
 </script>
 </body>

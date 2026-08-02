@@ -1,0 +1,2523 @@
+13:33:49  === Build started. 76 countries queued. ===
+13:33:49  FR : already built (3109 KB) - skipping. Use -Force to rebuild.
+13:33:49  IT : starting (8 chunks)
+13:35:23        attempt 1/4 on overpass.private.coffee failed: The remote server returned an error: (504) Gateway Timeout.
+13:35:51      natural=beach : 6178 elements
+13:38:15      leisure=beach* : 5357 elements
+13:39:40        attempt 1/4 on overpass.private.coffee failed: The remote server returned an error: (504) Gateway Timeout.
+13:39:51      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+13:41:36        attempt 1/4 on overpass.private.coffee failed: The remote server returned an error: (504) Gateway Timeout.
+13:42:04      sport=swimming : 4969 elements
+13:44:08        attempt 1/4 on overpass.private.coffee failed: The remote server returned an error: (502) Bad Gateway.
+13:44:19      nudism=* : 349 elements
+13:56:22        attempt 1/4 on overpass.private.coffee failed: The operation has timed out
+13:56:34      naturism=* : 2 elements
+13:57:43      clothing=optional : 0 elements (tag not used in this country - fine)
+14:01:17        attempt 1/4 on overpass.private.coffee failed: The remote server returned an error: (504) Gateway Timeout.
+14:02:32      name~naturist/nudist : 43 elements
+14:02:36  IT : DONE - 16312 places, 2.33 MB, 8/8 chunks.
+14:03:06  ES : starting (8 chunks)
+14:04:45        attempt 1/4 on overpass.private.coffee failed: The remote server returned an error: (504) Gateway Timeout.
+14:05:10      natural=beach : 6150 elements
+14:06:39        attempt 1/4 on overpass.private.coffee failed: The remote server returned an error: (504) Gateway Timeout.
+14:07:00      leisure=beach* : 589 elements
+14:08:35      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:12:24  === Build started. 76 countries queued. ===
+14:12:24  FR : already built (3109 KB) - skipping. Use -Force to rebuild.
+14:12:24  IT : already built (2385 KB) - skipping. Use -Force to rebuild.
+14:12:24  ES : starting (8 chunks)
+14:12:39      natural=beach : 6150 elements
+14:12:52      leisure=beach* : 589 elements
+14:12:56      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:13:15      sport=swimming : 10776 elements
+14:13:21      nudism=* : 354 elements
+14:13:25      naturism=* : 2 elements
+14:13:29      clothing=optional : 0 elements (tag not used in this country - fine)
+14:14:14      name~naturist/nudist : 44 elements
+14:14:18  ES : DONE - 17528 places, 2.72 MB, 8/8 chunks.
+14:14:48  GR : starting (8 chunks)
+14:14:53      natural=beach : 6662 elements
+14:15:00      leisure=beach* : 1097 elements
+14:15:04      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:15:10      sport=swimming : 653 elements
+14:15:14      nudism=* : 167 elements
+14:15:18      naturism=* : 2 elements
+14:15:22      clothing=optional : 0 elements (tag not used in this country - fine)
+14:16:09      name~naturist/nudist : 48 elements
+14:16:12  GR : DONE - 8379 places, 1.18 MB, 8/8 chunks.
+14:16:42  HR : starting (8 chunks)
+14:16:45      natural=beach : 2982 elements
+14:16:52      leisure=beach* : 292 elements
+14:16:55      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:17:01      sport=swimming : 240 elements
+14:17:06      nudism=* : 621 elements
+14:17:10      naturism=* : 2 elements
+14:17:14      clothing=optional : 0 elements (tag not used in this country - fine)
+14:18:03      name~naturist/nudist : 123 elements
+14:18:06  HR : DONE - 3528 places, 0.48 MB, 8/8 chunks.
+14:18:36  PT : starting (8 chunks)
+14:18:41      natural=beach : 1442 elements
+14:18:49      leisure=beach* : 221 elements
+14:18:52      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:18:59      sport=swimming : 2674 elements
+14:19:04      nudism=* : 80 elements
+14:19:07      naturism=* : 1 elements
+14:19:11      clothing=optional : 0 elements (tag not used in this country - fine)
+14:19:57      name~naturist/nudist : 27 elements
+14:20:00  PT : DONE - 4278 places, 0.69 MB, 8/8 chunks.
+14:20:30  ME : starting (8 chunks)
+14:20:36      natural=beach : 292 elements
+14:20:41      leisure=beach* : 74 elements
+14:20:44      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:20:49      sport=swimming : 28 elements
+14:20:53      nudism=* : 37 elements
+14:20:57      naturism=* : 1 elements
+14:21:01      clothing=optional : 0 elements (tag not used in this country - fine)
+14:22:15      name~naturist/nudist : 11 elements
+14:22:18  ME : DONE - 387 places, 0.06 MB, 8/8 chunks.
+14:22:48  AL : starting (8 chunks)
+14:22:50      natural=beach : 284 elements
+14:22:54      leisure=beach* : 38 elements
+14:22:58      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:23:02      sport=swimming : 75 elements
+14:23:05      nudism=* : 56 elements
+14:23:09      naturism=* : 0 elements (tag not used in this country - fine)
+14:23:12      clothing=optional : 0 elements (tag not used in this country - fine)
+14:23:56      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+14:23:59  AL : DONE - 338 places, 0.05 MB, 8/8 chunks.
+14:24:29  SI : starting (8 chunks)
+14:24:32      natural=beach : 114 elements
+14:24:38      leisure=beach* : 48 elements
+14:24:42      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:24:47      sport=swimming : 113 elements
+14:24:52      nudism=* : 24 elements
+14:24:56      naturism=* : 0 elements (tag not used in this country - fine)
+14:24:59      clothing=optional : 0 elements (tag not used in this country - fine)
+14:25:44      name~naturist/nudist : 7 elements
+14:25:47  SI : DONE - 268 places, 0.05 MB, 8/8 chunks.
+14:26:17  TR : starting (8 chunks)
+14:26:24      natural=beach : 2005 elements
+14:26:29      leisure=beach* : 199 elements
+14:26:33      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:26:45      sport=swimming : 2495 elements
+14:26:49      nudism=* : 13 elements
+14:26:53      naturism=* : 0 elements (tag not used in this country - fine)
+14:26:57      clothing=optional : 0 elements (tag not used in this country - fine)
+14:27:40      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+14:27:43  TR : DONE - 4677 places, 0.62 MB, 8/8 chunks.
+14:28:13  CY : starting (8 chunks)
+14:28:15      natural=beach : 285 elements
+14:28:19      leisure=beach* : 56 elements
+14:28:23      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:28:27      sport=swimming : 149 elements
+14:28:30      nudism=* : 3 elements
+14:28:34      naturism=* : 0 elements (tag not used in this country - fine)
+14:28:37      clothing=optional : 0 elements (tag not used in this country - fine)
+14:29:20      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+14:29:23  CY : DONE - 478 places, 0.07 MB, 8/8 chunks.
+14:29:54  MT : starting (8 chunks)
+14:29:54      natural=beach : 67 elements
+14:29:58      leisure=beach* : 15 elements
+14:30:02      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:30:05      sport=swimming : 175 elements
+14:30:09      nudism=* : 0 elements (tag not used in this country - fine)
+14:30:12      naturism=* : 0 elements (tag not used in this country - fine)
+14:30:16      clothing=optional : 0 elements (tag not used in this country - fine)
+14:30:59      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+14:31:02  MT : DONE - 255 places, 0.04 MB, 8/8 chunks.
+14:31:32  MC : starting (8 chunks)
+14:31:34      natural=beach : 4 elements
+14:31:37      leisure=beach* : 4 elements
+14:31:41      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:31:44      sport=swimming : 4 elements
+14:31:48      nudism=* : 0 elements (tag not used in this country - fine)
+14:31:52      naturism=* : 0 elements (tag not used in this country - fine)
+14:31:55      clothing=optional : 0 elements (tag not used in this country - fine)
+14:31:59      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+14:32:02  MC : DONE - 12 places, 0 MB, 8/8 chunks.
+14:32:32  BG : starting (8 chunks)
+14:32:34      natural=beach : 316 elements
+14:32:39      leisure=beach* : 17 elements
+14:32:43      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:32:48      sport=swimming : 296 elements
+14:32:52      nudism=* : 18 elements
+14:32:55      naturism=* : 2 elements
+14:32:59      clothing=optional : 0 elements (tag not used in this country - fine)
+14:33:42      name~naturist/nudist : 6 elements
+14:33:45  BG : DONE - 634 places, 0.09 MB, 8/8 chunks.
+14:34:15  RO : starting (8 chunks)
+14:34:19      natural=beach : 263 elements
+14:34:26      leisure=beach* : 72 elements
+14:34:30      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:34:35      sport=swimming : 303 elements
+14:34:39      nudism=* : 10 elements
+14:34:42      naturism=* : 0 elements (tag not used in this country - fine)
+14:34:46      clothing=optional : 0 elements (tag not used in this country - fine)
+14:35:30      name~naturist/nudist : 36 elements
+14:35:33  RO : DONE - 679 places, 0.11 MB, 8/8 chunks.
+14:36:03  UA : starting (8 chunks)
+14:36:14      natural=beach : 4422 elements
+14:36:23      leisure=beach* : 598 elements
+14:36:26      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:36:36      sport=swimming : 349 elements
+14:36:40      nudism=* : 95 elements
+14:36:43      naturism=* : 0 elements (tag not used in this country - fine)
+14:36:47      clothing=optional : 0 elements (tag not used in this country - fine)
+14:37:31      name~naturist/nudist : 48 elements
+14:37:34  UA : DONE - 5015 places, 0.67 MB, 8/8 chunks.
+14:38:04  GE : starting (8 chunks)
+14:38:06      natural=beach : 246 elements
+14:38:11      leisure=beach* : 14 elements
+14:38:15      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:38:19      sport=swimming : 37 elements
+14:38:23      nudism=* : 2 elements
+14:38:26      naturism=* : 0 elements (tag not used in this country - fine)
+14:38:29      clothing=optional : 0 elements (tag not used in this country - fine)
+14:39:14      name~naturist/nudist : 1 elements
+14:39:17  GE : DONE - 294 places, 0.04 MB, 8/8 chunks.
+14:39:47  GB : starting (8 chunks)
+14:40:05      natural=beach : 7137 elements
+14:40:21      leisure=beach* : 74 elements
+14:40:27      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:40:51      sport=swimming : 1777 elements
+14:40:56      nudism=* : 93 elements
+14:41:01      naturism=* : 1 elements
+14:41:37        attempt 1/4 on maps.mail.ru failed: The remote server returned an error: (504) Gateway Timeout.
+14:41:48        attempt 2/4 on overpass-api.de failed: The remote server returned an error: (406) Not Acceptable.
+14:43:03      clothing=optional : 0 elements (tag not used in this country - fine)
+14:43:51      name~naturist/nudist : 20 elements
+14:43:54  GB : DONE - 9003 places, 1.24 MB, 8/8 chunks.
+14:44:24  IE : starting (8 chunks)
+14:44:31      natural=beach : 1570 elements
+14:44:38      leisure=beach* : 16 elements
+14:44:45      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:44:53      sport=swimming : 123 elements
+14:44:58      nudism=* : 29 elements
+14:45:02      naturism=* : 0 elements (tag not used in this country - fine)
+14:45:09      clothing=optional : 0 elements (tag not used in this country - fine)
+14:45:55      name~naturist/nudist : 1 elements
+14:45:58  IE : DONE - 1725 places, 0.24 MB, 8/8 chunks.
+14:46:28  NL : starting (8 chunks)
+14:46:41      natural=beach : 2549 elements
+14:46:53      leisure=beach* : 273 elements
+14:46:58      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:47:16      sport=swimming : 1053 elements
+14:47:30      nudism=* : 201 elements
+14:47:33      naturism=* : 2 elements
+14:47:37      clothing=optional : 0 elements (tag not used in this country - fine)
+14:48:25      name~naturist/nudist : 88 elements
+14:48:28  NL : DONE - 3848 places, 0.61 MB, 8/8 chunks.
+14:48:58  BE : starting (8 chunks)
+14:49:03      natural=beach : 200 elements
+14:49:12      leisure=beach* : 63 elements
+14:49:30      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:49:39      sport=swimming : 822 elements
+14:49:46      nudism=* : 14 elements
+14:49:49      naturism=* : 0 elements (tag not used in this country - fine)
+14:49:53      clothing=optional : 0 elements (tag not used in this country - fine)
+14:50:40      name~naturist/nudist : 7 elements
+14:50:43  BE : DONE - 1060 places, 0.21 MB, 8/8 chunks.
+14:51:13  DE : starting (8 chunks)
+14:52:33      natural=beach : 6147 elements
+14:53:04      leisure=beach* : 1302 elements
+14:53:08      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:53:55      sport=swimming : 10103 elements
+14:54:05      nudism=* : 1173 elements
+14:54:09      naturism=* : 43 elements
+14:54:15      clothing=optional : 0 elements (tag not used in this country - fine)
+14:55:03      name~naturist/nudist : 494 elements
+14:55:07  DE : DONE - 17032 places, 3.3 MB, 8/8 chunks.
+14:55:37  DK : starting (8 chunks)
+14:55:41      natural=beach : 1504 elements
+14:55:48      leisure=beach* : 41 elements
+14:55:51      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:55:58      sport=swimming : 310 elements
+14:56:03      nudism=* : 26 elements
+14:56:09      naturism=* : 1 elements
+14:56:13      clothing=optional : 0 elements (tag not used in this country - fine)
+14:56:58      name~naturist/nudist : 5 elements
+14:57:02  DK : DONE - 1845 places, 0.24 MB, 8/8 chunks.
+14:57:32  SE : starting (8 chunks)
+14:57:40      natural=beach : 4055 elements
+14:57:45      leisure=beach* : 354 elements
+14:57:49      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+14:58:02      sport=swimming : 1020 elements
+14:58:06      nudism=* : 65 elements
+14:58:10      naturism=* : 5 elements
+14:58:14      clothing=optional : 1 elements
+14:59:00      name~naturist/nudist : 29 elements
+14:59:03  SE : DONE - 5381 places, 0.74 MB, 8/8 chunks.
+14:59:33  NO : starting (8 chunks)
+14:59:44      natural=beach : 4678 elements
+14:59:51      leisure=beach* : 246 elements
+14:59:55      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:00:02      sport=swimming : 452 elements
+15:00:07      nudism=* : 30 elements
+15:00:10      naturism=* : 3 elements
+15:00:20      clothing=optional : 0 elements (tag not used in this country - fine)
+15:01:07      name~naturist/nudist : 10 elements
+15:01:10  NO : DONE - 5258 places, 0.64 MB, 8/8 chunks.
+15:01:40  FI : starting (8 chunks)
+15:01:48      natural=beach : 3993 elements
+15:01:56      leisure=beach* : 393 elements
+15:02:00      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:02:08      sport=swimming : 1118 elements
+15:02:12      nudism=* : 14 elements
+15:02:16      naturism=* : 1 elements
+15:02:19      clothing=optional : 0 elements (tag not used in this country - fine)
+15:03:03      name~naturist/nudist : 1 elements
+15:03:06  FI : DONE - 4961 places, 0.72 MB, 8/8 chunks.
+15:03:36  PL : starting (8 chunks)
+15:03:57      natural=beach : 3514 elements
+15:04:16      leisure=beach* : 381 elements
+15:04:20      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:04:40      sport=swimming : 1110 elements
+15:04:49      nudism=* : 168 elements
+15:04:54      naturism=* : 1 elements
+15:04:58      clothing=optional : 0 elements (tag not used in this country - fine)
+15:05:41      name~naturist/nudist : 9 elements
+15:05:44  PL : DONE - 4907 places, 0.77 MB, 8/8 chunks.
+15:06:14  EE : starting (8 chunks)
+15:06:16      natural=beach : 569 elements
+15:06:22      leisure=beach* : 548 elements
+15:06:26      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:06:31      sport=swimming : 888 elements
+15:06:36      nudism=* : 6 elements
+15:06:40      naturism=* : 0 elements (tag not used in this country - fine)
+15:06:45      clothing=optional : 0 elements (tag not used in this country - fine)
+15:07:29      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+15:07:32  EE : DONE - 1170 places, 0.37 MB, 8/8 chunks.
+15:08:02  LV : starting (8 chunks)
+15:08:04      natural=beach : 585 elements
+15:08:10      leisure=beach* : 19 elements
+15:08:15      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:08:20      sport=swimming : 57 elements
+15:08:24      nudism=* : 7 elements
+15:08:28      naturism=* : 0 elements (tag not used in this country - fine)
+15:08:31      clothing=optional : 0 elements (tag not used in this country - fine)
+15:09:15      name~naturist/nudist : 1 elements
+15:09:18  LV : DONE - 653 places, 0.08 MB, 8/8 chunks.
+15:09:48  LT : starting (8 chunks)
+15:09:51      natural=beach : 430 elements
+15:09:56      leisure=beach* : 17 elements
+15:10:00      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:10:05      sport=swimming : 55 elements
+15:10:09      nudism=* : 21 elements
+15:10:13      naturism=* : 0 elements (tag not used in this country - fine)
+15:10:16      clothing=optional : 0 elements (tag not used in this country - fine)
+15:11:02      name~naturist/nudist : 24 elements
+15:11:05  LT : DONE - 507 places, 0.07 MB, 8/8 chunks.
+15:11:35  IS : starting (8 chunks)
+15:11:40      natural=beach : 387 elements
+15:11:45      leisure=beach* : 0 elements (tag not used in this country - fine)
+15:11:48      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:11:52      sport=swimming : 227 elements
+15:11:56      nudism=* : 1 elements
+15:11:59      naturism=* : 0 elements (tag not used in this country - fine)
+15:12:03      clothing=optional : 0 elements (tag not used in this country - fine)
+15:12:46      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+15:12:49  IS : DONE - 615 places, 0.1 MB, 8/8 chunks.
+15:13:19  AT : starting (8 chunks)
+15:13:25      natural=beach : 563 elements
+15:13:35      leisure=beach* : 213 elements
+15:13:38      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:13:50      sport=swimming : 3662 elements
+15:13:58      nudism=* : 118 elements
+15:14:01      naturism=* : 5 elements
+15:14:05      clothing=optional : 0 elements (tag not used in this country - fine)
+15:14:50      name~naturist/nudist : 73 elements
+15:14:53  AT : DONE - 4450 places, 0.74 MB, 8/8 chunks.
+15:15:23  CH : starting (8 chunks)
+15:15:28      natural=beach : 630 elements
+15:15:36      leisure=beach* : 218 elements
+15:15:39      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:15:49      sport=swimming : 1743 elements
+15:15:58      nudism=* : 40 elements
+15:16:01      naturism=* : 2 elements
+15:16:05      clothing=optional : 0 elements (tag not used in this country - fine)
+15:16:51      name~naturist/nudist : 17 elements
+15:16:54  CH : DONE - 2469 places, 0.46 MB, 8/8 chunks.
+15:17:24  CZ : starting (8 chunks)
+15:17:33      natural=beach : 424 elements
+15:17:43      leisure=beach* : 215 elements
+15:17:46      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:17:57      sport=swimming : 708 elements
+15:18:06      nudism=* : 121 elements
+15:18:10      naturism=* : 2 elements
+15:18:14      clothing=optional : 0 elements (tag not used in this country - fine)
+15:18:59      name~naturist/nudist : 20 elements
+15:19:02  CZ : DONE - 1331 places, 0.25 MB, 8/8 chunks.
+15:19:32  SK : starting (8 chunks)
+15:19:36      natural=beach : 237 elements
+15:19:43      leisure=beach* : 26 elements
+15:19:48      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:19:54      sport=swimming : 281 elements
+15:20:00      nudism=* : 26 elements
+15:20:03      naturism=* : 0 elements (tag not used in this country - fine)
+15:20:07      clothing=optional : 0 elements (tag not used in this country - fine)
+15:20:54      name~naturist/nudist : 2 elements
+15:20:57  SK : DONE - 542 places, 0.11 MB, 8/8 chunks.
+15:21:27  HU : starting (8 chunks)
+15:21:33      natural=beach : 257 elements
+15:21:39      leisure=beach* : 330 elements
+15:21:43      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:21:49      sport=swimming : 666 elements
+15:21:55      nudism=* : 26 elements
+15:21:58      naturism=* : 0 elements (tag not used in this country - fine)
+15:22:02      clothing=optional : 0 elements (tag not used in this country - fine)
+15:22:46      name~naturist/nudist : 15 elements
+15:22:49  HU : DONE - 1182 places, 0.29 MB, 8/8 chunks.
+15:23:19  RS : starting (8 chunks)
+15:23:22      natural=beach : 137 elements
+15:23:28      leisure=beach* : 37 elements
+15:23:32      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:23:37      sport=swimming : 139 elements
+15:23:42      nudism=* : 13 elements
+15:23:45      naturism=* : 0 elements (tag not used in this country - fine)
+15:23:49      clothing=optional : 0 elements (tag not used in this country - fine)
+15:24:32      name~naturist/nudist : 3 elements
+15:24:35  RS : DONE - 302 places, 0.05 MB, 8/8 chunks.
+15:25:05  BA : starting (8 chunks)
+15:25:07      natural=beach : 212 elements
+15:25:13      leisure=beach* : 20 elements
+15:25:17      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:25:21      sport=swimming : 76 elements
+15:25:26      nudism=* : 3 elements
+15:25:29      naturism=* : 0 elements (tag not used in this country - fine)
+15:25:33      clothing=optional : 0 elements (tag not used in this country - fine)
+15:26:17      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+15:26:20  BA : DONE - 308 places, 0.04 MB, 8/8 chunks.
+15:26:50  MK : starting (8 chunks)
+15:26:51      natural=beach : 59 elements
+15:26:56      leisure=beach* : 5 elements
+15:27:00      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:27:04      sport=swimming : 20 elements
+15:27:08      nudism=* : 0 elements (tag not used in this country - fine)
+15:27:12      naturism=* : 0 elements (tag not used in this country - fine)
+15:27:16      clothing=optional : 0 elements (tag not used in this country - fine)
+15:28:02      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+15:28:05  MK : DONE - 83 places, 0.01 MB, 8/8 chunks.
+15:28:35  LU : starting (8 chunks)
+15:28:36      natural=beach : 16 elements
+15:28:41      leisure=beach* : 2 elements
+15:28:44      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:28:48      sport=swimming : 40 elements
+15:28:52      nudism=* : 9 elements
+15:28:56      naturism=* : 0 elements (tag not used in this country - fine)
+15:29:00      clothing=optional : 0 elements (tag not used in this country - fine)
+15:29:45      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+15:29:48  LU : DONE - 64 places, 0.02 MB, 8/8 chunks.
+15:30:18  US : starting (8 chunks)
+15:30:56      natural=beach : 21072 elements
+15:31:09      leisure=beach* : 1020 elements
+15:31:14      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:32:02      sport=swimming : 20803 elements
+15:32:10      nudism=* : 763 elements
+15:32:15      naturism=* : 13 elements
+15:32:20      clothing=optional : 0 elements (tag not used in this country - fine)
+15:33:08      name~naturist/nudist : 36 elements
+15:33:13  US : DONE - 43147 places, 6.75 MB, 8/8 chunks.
+15:33:43  CA : starting (8 chunks)
+15:34:19      natural=beach : 65027 elements
+15:34:26      leisure=beach* : 192 elements
+15:34:32      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:34:43      sport=swimming : 1631 elements
+15:34:49      nudism=* : 135 elements
+15:34:55      naturism=* : 6 elements
+15:35:00      clothing=optional : 2 elements
+15:35:47      name~naturist/nudist : 28 elements
+15:35:53  CA : DONE - 66907 places, 10.98 MB, 8/8 chunks.
+15:36:23  AU : starting (8 chunks)
+15:36:32      natural=beach : 7722 elements
+15:36:37      leisure=beach* : 147 elements
+15:36:41      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:36:49      sport=swimming : 1902 elements
+15:36:54      nudism=* : 66 elements
+15:36:58      naturism=* : 8 elements
+15:37:02      clothing=optional : 0 elements (tag not used in this country - fine)
+15:37:46      name~naturist/nudist : 13 elements
+15:37:49  AU : DONE - 9760 places, 1.35 MB, 8/8 chunks.
+15:38:19  NZ : starting (8 chunks)
+15:38:26      natural=beach : 2196 elements
+15:38:33      leisure=beach* : 19 elements
+15:38:38      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:38:45      sport=swimming : 465 elements
+15:38:48      nudism=* : 27 elements
+15:38:52      naturism=* : 0 elements (tag not used in this country - fine)
+15:38:56      clothing=optional : 0 elements (tag not used in this country - fine)
+15:39:39      name~naturist/nudist : 4 elements
+15:39:42  NZ : DONE - 2688 places, 0.45 MB, 8/8 chunks.
+15:40:12  TH : starting (8 chunks)
+15:40:16      natural=beach : 1289 elements
+15:40:23      leisure=beach* : 84 elements
+15:40:26      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:40:34      sport=swimming : 351 elements
+15:40:38      nudism=* : 13 elements
+15:40:42      naturism=* : 0 elements (tag not used in this country - fine)
+15:40:45      clothing=optional : 0 elements (tag not used in this country - fine)
+15:41:29      name~naturist/nudist : 6 elements
+15:41:32  TH : DONE - 1728 places, 0.27 MB, 8/8 chunks.
+15:42:02  BR : starting (8 chunks)
+15:42:17      natural=beach : 3804 elements
+15:42:23      leisure=beach* : 99 elements
+15:42:28      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:42:36      sport=swimming : 2699 elements
+15:42:40      nudism=* : 89 elements
+15:42:45      naturism=* : 0 elements (tag not used in this country - fine)
+15:42:49      clothing=optional : 0 elements (tag not used in this country - fine)
+15:43:35      name~naturist/nudist : 10 elements
+15:43:38  BR : DONE - 6649 places, 0.97 MB, 8/8 chunks.
+15:44:08  MX : starting (8 chunks)
+15:44:12      natural=beach : 1365 elements
+15:44:20      leisure=beach* : 144 elements
+15:44:24      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:44:31      sport=swimming : 1030 elements
+15:44:35      nudism=* : 47 elements
+15:44:38      naturism=* : 0 elements (tag not used in this country - fine)
+15:44:42      clothing=optional : 0 elements (tag not used in this country - fine)
+15:45:26      name~naturist/nudist : 71 elements
+15:45:29  MX : DONE - 2634 places, 0.36 MB, 8/8 chunks.
+15:45:59  AR : starting (8 chunks)
+15:46:04      natural=beach : 1296 elements
+15:46:09      leisure=beach* : 524 elements
+15:46:12      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:46:18      sport=swimming : 1058 elements
+15:46:22      nudism=* : 34 elements
+15:46:26      naturism=* : 0 elements (tag not used in this country - fine)
+15:46:30      clothing=optional : 0 elements (tag not used in this country - fine)
+15:47:15      name~naturist/nudist : 8 elements
+15:47:19  AR : DONE - 2893 places, 0.4 MB, 8/8 chunks.
+15:47:49  CL : starting (8 chunks)
+15:47:54      natural=beach : 1629 elements
+15:47:59      leisure=beach* : 54 elements
+15:48:03      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:48:09      sport=swimming : 205 elements
+15:48:12      nudism=* : 4 elements
+15:48:16      naturism=* : 0 elements (tag not used in this country - fine)
+15:48:20      clothing=optional : 0 elements (tag not used in this country - fine)
+15:49:04      name~naturist/nudist : 7 elements
+15:49:07  CL : DONE - 1895 places, 0.24 MB, 8/8 chunks.
+15:49:37  UY : starting (8 chunks)
+15:49:38      natural=beach : 303 elements
+15:49:43      leisure=beach* : 0 elements (tag not used in this country - fine)
+15:49:46      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:49:50      sport=swimming : 25 elements
+15:49:54      nudism=* : 8 elements
+15:49:58      naturism=* : 0 elements (tag not used in this country - fine)
+15:50:01      clothing=optional : 0 elements (tag not used in this country - fine)
+15:50:44      name~naturist/nudist : 3 elements
+15:50:47  UY : DONE - 332 places, 0.05 MB, 8/8 chunks.
+15:51:17  ZA : starting (8 chunks)
+15:51:26      natural=beach : 582 elements
+15:51:31      leisure=beach* : 61 elements
+15:51:34      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:51:42      sport=swimming : 931 elements
+15:51:46      nudism=* : 12 elements
+15:51:50      naturism=* : 0 elements (tag not used in this country - fine)
+15:51:53      clothing=optional : 0 elements (tag not used in this country - fine)
+15:52:38      name~naturist/nudist : 3 elements
+15:52:41  ZA : DONE - 1576 places, 0.21 MB, 8/8 chunks.
+15:53:11  MA : starting (8 chunks)
+15:53:15      natural=beach : 437 elements
+15:53:21      leisure=beach* : 36 elements
+15:53:24      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:53:30      sport=swimming : 201 elements
+15:53:34      nudism=* : 3 elements
+15:53:38      naturism=* : 0 elements (tag not used in this country - fine)
+15:53:41      clothing=optional : 0 elements (tag not used in this country - fine)
+15:54:27      name~naturist/nudist : 1 elements
+15:54:30  MA : DONE - 675 places, 0.09 MB, 8/8 chunks.
+15:55:00  TN : starting (8 chunks)
+15:55:06      natural=beach : 277 elements
+15:55:13      leisure=beach* : 47 elements
+15:55:18      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:55:22      sport=swimming : 26 elements
+15:55:29      nudism=* : 0 elements (tag not used in this country - fine)
+15:55:32      naturism=* : 0 elements (tag not used in this country - fine)
+15:55:36      clothing=optional : 0 elements (tag not used in this country - fine)
+15:56:22      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+15:56:25  TN : DONE - 349 places, 0.05 MB, 8/8 chunks.
+15:56:55  EG : starting (8 chunks)
+15:56:58      natural=beach : 513 elements
+15:57:04      leisure=beach* : 277 elements
+15:57:08      tourism=beach_resort : 4 elements
+15:57:13      sport=swimming : 262 elements
+15:57:17      nudism=* : 4 elements
+15:57:21      naturism=* : 0 elements (tag not used in this country - fine)
+15:57:24      clothing=optional : 0 elements (tag not used in this country - fine)
+15:58:13      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+15:58:16  EG : DONE - 1026 places, 0.15 MB, 8/8 chunks.
+15:58:46  AE : starting (8 chunks)
+15:58:48      natural=beach : 630 elements
+15:58:53      leisure=beach* : 36 elements
+15:58:56      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+15:59:01      sport=swimming : 62 elements
+15:59:14      nudism=* : 0 elements (tag not used in this country - fine)
+15:59:17      naturism=* : 0 elements (tag not used in this country - fine)
+15:59:21      clothing=optional : 0 elements (tag not used in this country - fine)
+16:00:07      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:00:10  AE : DONE - 722 places, 0.09 MB, 8/8 chunks.
+16:00:40  IL : starting (8 chunks)
+16:00:42      natural=beach : 225 elements
+16:00:48      leisure=beach* : 12 elements
+16:00:52      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:00:58      sport=swimming : 522 elements
+16:01:05      nudism=* : 6 elements
+16:01:09      naturism=* : 0 elements (tag not used in this country - fine)
+16:01:13      clothing=optional : 0 elements (tag not used in this country - fine)
+16:02:23      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:02:26  IL : DONE - 762 places, 0.12 MB, 8/8 chunks.
+16:02:56  VN : starting (8 chunks)
+16:03:01      natural=beach : 653 elements
+16:03:13      leisure=beach* : 66 elements
+16:03:16      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:03:23      sport=swimming : 1590 elements
+16:03:26      nudism=* : 0 elements (tag not used in this country - fine)
+16:03:30      naturism=* : 0 elements (tag not used in this country - fine)
+16:03:34      clothing=optional : 0 elements (tag not used in this country - fine)
+16:04:19      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:04:22  VN : DONE - 2304 places, 0.29 MB, 8/8 chunks.
+16:04:52  ID : starting (8 chunks)
+16:05:05      natural=beach : 3252 elements
+16:05:12      leisure=beach* : 138 elements
+16:05:16      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:05:27      sport=swimming : 1394 elements
+16:05:31      nudism=* : 17 elements
+16:05:35      naturism=* : 0 elements (tag not used in this country - fine)
+16:05:39      clothing=optional : 0 elements (tag not used in this country - fine)
+16:06:39      name~naturist/nudist : 4 elements
+16:06:42  ID : DONE - 4780 places, 0.6 MB, 8/8 chunks.
+16:07:12  PH : starting (8 chunks)
+16:07:20      natural=beach : 3663 elements
+16:07:28      leisure=beach* : 1337 elements
+16:07:31      tourism=beach_resort : 7 elements
+16:07:41      sport=swimming : 587 elements
+16:07:44      nudism=* : 5 elements
+16:07:48      naturism=* : 0 elements (tag not used in this country - fine)
+16:07:51      clothing=optional : 0 elements (tag not used in this country - fine)
+16:08:37      name~naturist/nudist : 1 elements
+16:08:40  PH : DONE - 5589 places, 0.74 MB, 8/8 chunks.
+16:09:10  MY : starting (8 chunks)
+16:09:18      natural=beach : 656 elements
+16:09:28      leisure=beach* : 47 elements
+16:09:32      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:09:37      sport=swimming : 440 elements
+16:09:40      nudism=* : 21 elements
+16:09:44      naturism=* : 0 elements (tag not used in this country - fine)
+16:09:48      clothing=optional : 0 elements (tag not used in this country - fine)
+16:10:33      name~naturist/nudist : 1 elements
+16:10:36  MY : DONE - 1139 places, 0.17 MB, 8/8 chunks.
+16:11:06  SG : starting (8 chunks)
+16:11:06      natural=beach : 111 elements
+16:11:14      leisure=beach* : 1 elements
+16:11:21      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:11:48      sport=swimming : 488 elements
+16:11:52      nudism=* : 1 elements
+16:11:55      naturism=* : 0 elements (tag not used in this country - fine)
+16:11:59      clothing=optional : 0 elements (tag not used in this country - fine)
+16:12:43      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:12:46  SG : DONE - 600 places, 0.09 MB, 8/8 chunks.
+16:13:16  LK : starting (8 chunks)
+16:13:18      natural=beach : 354 elements
+16:13:24      leisure=beach* : 69 elements
+16:13:27      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:13:32      sport=swimming : 121 elements
+16:13:38      nudism=* : 0 elements (tag not used in this country - fine)
+16:13:41      naturism=* : 0 elements (tag not used in this country - fine)
+16:13:45      clothing=optional : 0 elements (tag not used in this country - fine)
+16:14:29      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:14:32  LK : DONE - 539 places, 0.07 MB, 8/8 chunks.
+16:15:02  IN : starting (8 chunks)
+16:15:14      natural=beach : 1234 elements
+16:15:19      leisure=beach* : 70 elements
+16:15:24      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:15:35      sport=swimming : 683 elements
+16:15:40      nudism=* : 4 elements
+16:15:44      naturism=* : 0 elements (tag not used in this country - fine)
+16:15:48      clothing=optional : 0 elements (tag not used in this country - fine)
+16:16:32      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:16:35  IN : DONE - 1988 places, 0.27 MB, 8/8 chunks.
+16:17:05  JP : starting (8 chunks)
+16:17:32      natural=beach : 4019 elements
+16:17:37      leisure=beach* : 160 elements
+16:17:48      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:18:17      sport=swimming : 6554 elements
+16:18:21      nudism=* : 14 elements
+16:18:25      naturism=* : 0 elements (tag not used in this country - fine)
+16:18:33      clothing=optional : 0 elements (tag not used in this country - fine)
+16:19:15        attempt 1/4 on maps.mail.ru failed: The remote server returned an error: (504) Gateway Timeout.
+16:19:25        attempt 2/4 on overpass-api.de failed: The remote server returned an error: (406) Not Acceptable.
+16:23:45      name~naturist/nudist : 1 elements
+16:23:48  JP : DONE - 10672 places, 1.43 MB, 8/8 chunks.
+16:24:18  KR : starting (8 chunks)
+16:24:22      natural=beach : 895 elements
+16:24:28      leisure=beach* : 9 elements
+16:24:31      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:24:37      sport=swimming : 217 elements
+16:24:42      nudism=* : 1 elements
+16:24:45      naturism=* : 0 elements (tag not used in this country - fine)
+16:24:49      clothing=optional : 0 elements (tag not used in this country - fine)
+16:25:33      name~naturist/nudist : 1 elements
+16:25:36  KR : DONE - 1123 places, 0.17 MB, 8/8 chunks.
+16:26:06  TW : starting (8 chunks)
+16:26:10      natural=beach : 354 elements
+16:26:15      leisure=beach* : 5 elements
+16:26:19      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:26:26      sport=swimming : 244 elements
+16:26:32      nudism=* : 2 elements
+16:26:45      naturism=* : 0 elements (tag not used in this country - fine)
+16:26:49      clothing=optional : 0 elements (tag not used in this country - fine)
+16:27:35      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:27:38  TW : DONE - 601 places, 0.09 MB, 8/8 chunks.
+16:28:08  CR : starting (8 chunks)
+16:28:10      natural=beach : 439 elements
+16:28:25      leisure=beach* : 20 elements
+16:28:28      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:28:32      sport=swimming : 232 elements
+16:28:38      nudism=* : 6 elements
+16:28:41      naturism=* : 0 elements (tag not used in this country - fine)
+16:28:45      clothing=optional : 0 elements (tag not used in this country - fine)
+16:29:29      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:29:32  CR : DONE - 694 places, 0.1 MB, 8/8 chunks.
+16:30:02  PA : starting (8 chunks)
+16:30:03      natural=beach : 469 elements
+16:30:15      leisure=beach* : 11 elements
+16:30:18      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:30:22      sport=swimming : 25 elements
+16:30:26      nudism=* : 1 elements
+16:31:00        attempt 1/4 on maps.mail.ru failed: The remote server returned an error: (504) Gateway Timeout.
+16:31:10        attempt 2/4 on overpass-api.de failed: The remote server returned an error: (406) Not Acceptable.
+16:43:30        attempt 3/4 on overpass.kumi.systems failed: The operation has timed out
+16:45:33      naturism=* : 0 elements (tag not used in this country - fine)
+16:45:37      clothing=optional : 0 elements (tag not used in this country - fine)
+16:46:21      name~naturist/nudist : 6 elements
+16:46:24  PA : DONE - 511 places, 0.06 MB, 8/8 chunks.
+16:46:54  DO : starting (8 chunks)
+16:46:55      natural=beach : 253 elements
+16:46:59      leisure=beach* : 24 elements
+16:47:15      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:47:35      sport=swimming : 105 elements
+16:47:38      nudism=* : 1 elements
+16:47:49      naturism=* : 0 elements (tag not used in this country - fine)
+16:47:53      clothing=optional : 0 elements (tag not used in this country - fine)
+16:48:37      name~naturist/nudist : 5 elements
+16:48:40  DO : DONE - 384 places, 0.05 MB, 8/8 chunks.
+16:49:10  CU : starting (8 chunks)
+16:49:12      natural=beach : 709 elements
+16:49:16      leisure=beach* : 54 elements
+16:49:20      tourism=beach_resort : 7 elements
+16:49:25      sport=swimming : 271 elements
+16:49:28      nudism=* : 8 elements
+16:49:32      naturism=* : 0 elements (tag not used in this country - fine)
+16:49:35      clothing=optional : 0 elements (tag not used in this country - fine)
+16:50:19      name~naturist/nudist : 1 elements
+16:50:22  CU : DONE - 1039 places, 0.13 MB, 8/8 chunks.
+16:50:53  JM : starting (8 chunks)
+16:50:58      natural=beach : 86 elements
+16:51:34        attempt 1/4 on maps.mail.ru failed: The remote server returned an error: (504) Gateway Timeout.
+16:51:44        attempt 2/4 on overpass-api.de failed: The remote server returned an error: (406) Not Acceptable.
+16:53:32        attempt 3/4 on overpass.kumi.systems failed: The remote server returned an error: (504) Gateway Timeout.
+16:54:59      leisure=beach* : 2 elements
+16:55:03      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:55:07      sport=swimming : 21 elements
+16:55:11      nudism=* : 2 elements
+16:55:14      naturism=* : 0 elements (tag not used in this country - fine)
+16:55:17      clothing=optional : 0 elements (tag not used in this country - fine)
+16:56:01      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:56:04  JM : DONE - 105 places, 0.01 MB, 8/8 chunks.
+16:56:34  BS : starting (8 chunks)
+16:56:37      natural=beach : 1079 elements
+16:56:42      leisure=beach* : 23 elements
+16:56:45      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:56:49      sport=swimming : 24 elements
+16:56:52      nudism=* : 1 elements
+16:56:56      naturism=* : 0 elements (tag not used in this country - fine)
+16:56:59      clothing=optional : 0 elements (tag not used in this country - fine)
+16:57:46      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:57:49  BS : DONE - 1124 places, 0.12 MB, 8/8 chunks.
+16:58:19  FJ : starting (8 chunks)
+16:58:20      natural=beach : 904 elements
+16:58:24      leisure=beach* : 7 elements
+16:58:28      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+16:58:32      sport=swimming : 89 elements
+16:58:35      nudism=* : 0 elements (tag not used in this country - fine)
+16:58:39      naturism=* : 0 elements (tag not used in this country - fine)
+16:58:43      clothing=optional : 0 elements (tag not used in this country - fine)
+16:59:28      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+16:59:31  FJ : DONE - 1000 places, 0.11 MB, 8/8 chunks.
+17:00:01  MU : starting (8 chunks)
+17:00:02      natural=beach : 319 elements
+17:00:07      leisure=beach* : 5 elements
+17:00:10      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:00:13      sport=swimming : 15 elements
+17:00:17      nudism=* : 1 elements
+17:00:21      naturism=* : 0 elements (tag not used in this country - fine)
+17:00:25      clothing=optional : 0 elements (tag not used in this country - fine)
+17:01:09      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:01:12  MU : DONE - 339 places, 0.04 MB, 8/8 chunks.
+17:01:42  SC : starting (8 chunks)
+17:01:43      natural=beach : 282 elements
+17:01:47      leisure=beach* : 3 elements
+17:01:51      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:01:54      sport=swimming : 18 elements
+17:01:57      nudism=* : 1 elements
+17:02:01      naturism=* : 0 elements (tag not used in this country - fine)
+17:02:04      clothing=optional : 0 elements (tag not used in this country - fine)
+17:02:47      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:02:50  SC : DONE - 295 places, 0.04 MB, 8/8 chunks.
+17:03:20  MV : starting (8 chunks)
+17:03:21      natural=beach : 652 elements
+17:03:25      leisure=beach* : 21 elements
+17:03:28      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:03:32      sport=swimming : 20 elements
+17:03:35      nudism=* : 3 elements
+17:03:39      naturism=* : 0 elements (tag not used in this country - fine)
+17:03:42      clothing=optional : 0 elements (tag not used in this country - fine)
+17:04:26      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:04:29  MV : DONE - 691 places, 0.08 MB, 8/8 chunks.
+17:04:59  === Build finished. ===
+17:09:01  === Build started. 76 countries queued. ===
+17:09:01  FR : already built (3109 KB) - skipping. Use -Force to rebuild.
+17:09:01  IT : already built (2385 KB) - skipping. Use -Force to rebuild.
+17:09:01  ES : already built (2789 KB) - skipping. Use -Force to rebuild.
+17:09:01  GR : already built (1206 KB) - skipping. Use -Force to rebuild.
+17:09:01  HR : already built (489 KB) - skipping. Use -Force to rebuild.
+17:09:01  PT : already built (704 KB) - skipping. Use -Force to rebuild.
+17:09:01  ME : already built (65 KB) - skipping. Use -Force to rebuild.
+17:09:01  AL : already built (56 KB) - skipping. Use -Force to rebuild.
+17:09:01  SI : already built (47 KB) - skipping. Use -Force to rebuild.
+17:09:01  TR : already built (638 KB) - skipping. Use -Force to rebuild.
+17:09:01  CY : already built (72 KB) - skipping. Use -Force to rebuild.
+17:09:01  MT : already built (38 KB) - skipping. Use -Force to rebuild.
+17:09:01  MC : already built (5 KB) - skipping. Use -Force to rebuild.
+17:09:01  BG : already built (96 KB) - skipping. Use -Force to rebuild.
+17:09:01  RO : already built (117 KB) - skipping. Use -Force to rebuild.
+17:09:01  UA : already built (685 KB) - skipping. Use -Force to rebuild.
+17:09:01  GE : already built (41 KB) - skipping. Use -Force to rebuild.
+17:09:01  GB : already built (1274 KB) - skipping. Use -Force to rebuild.
+17:09:01  IE : already built (247 KB) - skipping. Use -Force to rebuild.
+17:09:01  NL : already built (625 KB) - skipping. Use -Force to rebuild.
+17:09:01  BE : already built (219 KB) - skipping. Use -Force to rebuild.
+17:09:01  DE : already built (3378 KB) - skipping. Use -Force to rebuild.
+17:09:01  DK : already built (246 KB) - skipping. Use -Force to rebuild.
+17:09:01  SE : already built (759 KB) - skipping. Use -Force to rebuild.
+17:09:01  NO : already built (654 KB) - skipping. Use -Force to rebuild.
+17:09:01  FI : already built (741 KB) - skipping. Use -Force to rebuild.
+17:09:01  PL : already built (784 KB) - skipping. Use -Force to rebuild.
+17:09:01  EE : already built (383 KB) - skipping. Use -Force to rebuild.
+17:09:01  LV : already built (81 KB) - skipping. Use -Force to rebuild.
+17:09:01  LT : already built (74 KB) - skipping. Use -Force to rebuild.
+17:09:01  IS : already built (100 KB) - skipping. Use -Force to rebuild.
+17:09:01  AT : already built (762 KB) - skipping. Use -Force to rebuild.
+17:09:01  CH : already built (476 KB) - skipping. Use -Force to rebuild.
+17:09:01  CZ : already built (261 KB) - skipping. Use -Force to rebuild.
+17:09:01  SK : already built (109 KB) - skipping. Use -Force to rebuild.
+17:09:01  HU : already built (293 KB) - skipping. Use -Force to rebuild.
+17:09:01  RS : already built (55 KB) - skipping. Use -Force to rebuild.
+17:09:01  BA : already built (43 KB) - skipping. Use -Force to rebuild.
+17:09:01  MK : already built (13 KB) - skipping. Use -Force to rebuild.
+17:09:01  LU : already built (16 KB) - skipping. Use -Force to rebuild.
+17:09:01  US : already built (6913 KB) - skipping. Use -Force to rebuild.
+17:09:01  CA : already built (11244 KB) - skipping. Use -Force to rebuild.
+17:09:01  AU : already built (1385 KB) - skipping. Use -Force to rebuild.
+17:09:01  NZ : already built (463 KB) - skipping. Use -Force to rebuild.
+17:09:01  TH : already built (275 KB) - skipping. Use -Force to rebuild.
+17:09:01  BR : already built (995 KB) - skipping. Use -Force to rebuild.
+17:09:01  MX : already built (373 KB) - skipping. Use -Force to rebuild.
+17:09:01  AR : already built (408 KB) - skipping. Use -Force to rebuild.
+17:09:01  CL : already built (244 KB) - skipping. Use -Force to rebuild.
+17:09:01  UY : already built (50 KB) - skipping. Use -Force to rebuild.
+17:09:01  ZA : already built (214 KB) - skipping. Use -Force to rebuild.
+17:09:01  MA : already built (88 KB) - skipping. Use -Force to rebuild.
+17:09:01  TN : already built (47 KB) - skipping. Use -Force to rebuild.
+17:09:01  EG : already built (155 KB) - skipping. Use -Force to rebuild.
+17:09:01  AE : already built (91 KB) - skipping. Use -Force to rebuild.
+17:09:01  IL : already built (120 KB) - skipping. Use -Force to rebuild.
+17:09:01  VN : already built (298 KB) - skipping. Use -Force to rebuild.
+17:09:01  ID : already built (610 KB) - skipping. Use -Force to rebuild.
+17:09:01  PH : already built (757 KB) - skipping. Use -Force to rebuild.
+17:09:01  MY : already built (170 KB) - skipping. Use -Force to rebuild.
+17:09:01  SG : already built (92 KB) - skipping. Use -Force to rebuild.
+17:09:01  LK : already built (74 KB) - skipping. Use -Force to rebuild.
+17:09:01  IN : already built (272 KB) - skipping. Use -Force to rebuild.
+17:09:01  JP : already built (1467 KB) - skipping. Use -Force to rebuild.
+17:09:01  KR : already built (173 KB) - skipping. Use -Force to rebuild.
+17:09:01  TW : already built (90 KB) - skipping. Use -Force to rebuild.
+17:09:01  CR : already built (97 KB) - skipping. Use -Force to rebuild.
+17:09:01  PA : already built (64 KB) - skipping. Use -Force to rebuild.
+17:09:01  DO : already built (55 KB) - skipping. Use -Force to rebuild.
+17:09:01  CU : already built (129 KB) - skipping. Use -Force to rebuild.
+17:09:01  JM : already built (14 KB) - skipping. Use -Force to rebuild.
+17:09:01  BS : already built (128 KB) - skipping. Use -Force to rebuild.
+17:09:01  FJ : already built (112 KB) - skipping. Use -Force to rebuild.
+17:09:01  MU : already built (41 KB) - skipping. Use -Force to rebuild.
+17:09:01  SC : already built (36 KB) - skipping. Use -Force to rebuild.
+17:09:01  MV : already built (84 KB) - skipping. Use -Force to rebuild.
+17:09:01  === Build finished. ===
+17:10:54  === Build started. 166 countries queued. ===
+17:10:54  AD : starting (8 chunks)
+17:10:56      natural=beach : 0 elements (tag not used in this country - fine)
+17:10:59      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:11:03      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:11:07      sport=swimming : 5 elements
+17:11:44      nudism=* : 0 elements (tag not used in this country - fine)
+17:11:48      naturism=* : 0 elements (tag not used in this country - fine)
+17:11:51      clothing=optional : 0 elements (tag not used in this country - fine)
+17:11:55      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:11:58  AD : DONE - 5 places, 0 MB, 8/8 chunks.
+17:12:28  BY : starting (8 chunks)
+17:12:32      natural=beach : 829 elements
+17:12:38      leisure=beach* : 77 elements
+17:12:41      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:12:47      sport=swimming : 181 elements
+17:12:51      nudism=* : 12 elements
+17:12:54      naturism=* : 0 elements (tag not used in this country - fine)
+17:12:57      clothing=optional : 0 elements (tag not used in this country - fine)
+17:13:42      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:13:45  BY : DONE - 1063 places, 0.17 MB, 8/8 chunks.
+17:14:15  LI : starting (8 chunks)
+17:14:17      natural=beach : 2 elements
+17:14:21      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:14:24      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:14:28      sport=swimming : 5 elements
+17:14:31      nudism=* : 0 elements (tag not used in this country - fine)
+17:14:35      naturism=* : 0 elements (tag not used in this country - fine)
+17:14:39      clothing=optional : 0 elements (tag not used in this country - fine)
+17:14:43      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:14:46  LI : DONE - 7 places, 0 MB, 8/8 chunks.
+17:15:16  MD : starting (8 chunks)
+17:15:18      natural=beach : 117 elements
+17:15:28      leisure=beach* : 4 elements
+17:15:31      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:15:36      sport=swimming : 22 elements
+17:15:40      nudism=* : 0 elements (tag not used in this country - fine)
+17:15:43      naturism=* : 0 elements (tag not used in this country - fine)
+17:15:47      clothing=optional : 0 elements (tag not used in this country - fine)
+17:16:32      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:16:35  MD : DONE - 143 places, 0.02 MB, 8/8 chunks.
+17:17:05  RU : starting (8 chunks)
+17:17:22      natural=beach : 18460 elements
+17:17:31      leisure=beach* : 1268 elements
+17:17:37      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:17:48      sport=swimming : 1787 elements
+17:17:54      nudism=* : 99 elements
+17:18:00      naturism=* : 8 elements
+17:18:08      clothing=optional : 0 elements (tag not used in this country - fine)
+17:18:57      name~naturist/nudist : 40 elements
+17:19:00  RU : DONE - 20986 places, 2.67 MB, 8/8 chunks.
+17:19:30  SM : starting (8 chunks)
+17:19:31      natural=beach : 0 elements (tag not used in this country - fine)
+17:19:35      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:19:38      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:19:42      sport=swimming : 6 elements
+17:19:45      nudism=* : 0 elements (tag not used in this country - fine)
+17:19:49      naturism=* : 0 elements (tag not used in this country - fine)
+17:19:53      clothing=optional : 0 elements (tag not used in this country - fine)
+17:19:56      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:19:59  SM : DONE - 6 places, 0 MB, 8/8 chunks.
+17:20:29  VA : starting (8 chunks)
+17:20:30      natural=beach : 0 elements (tag not used in this country - fine)
+17:20:33      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:20:37      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:20:40      sport=swimming : 0 elements (tag not used in this country - fine)
+17:20:44      nudism=* : 0 elements (tag not used in this country - fine)
+17:20:47      naturism=* : 0 elements (tag not used in this country - fine)
+17:21:11      clothing=optional : 0 elements (tag not used in this country - fine)
+17:21:26      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:21:29  VA : NOTHING retrieved. No file written.
+17:21:59  XK : starting (8 chunks)
+17:22:00      natural=beach : 8 elements
+17:22:04      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:22:08      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:22:11      sport=swimming : 32 elements
+17:22:15      nudism=* : 0 elements (tag not used in this country - fine)
+17:22:18      naturism=* : 0 elements (tag not used in this country - fine)
+17:22:22      clothing=optional : 0 elements (tag not used in this country - fine)
+17:23:06      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:23:09  XK : DONE - 40 places, 0.01 MB, 8/8 chunks.
+17:23:39  AM : starting (8 chunks)
+17:23:39      natural=beach : 32 elements
+17:23:44      leisure=beach* : 15 elements
+17:23:47      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:23:52      sport=swimming : 24 elements
+17:23:56      nudism=* : 0 elements (tag not used in this country - fine)
+17:23:59      naturism=* : 0 elements (tag not used in this country - fine)
+17:24:03      clothing=optional : 0 elements (tag not used in this country - fine)
+17:24:47      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:24:50  AM : DONE - 71 places, 0.01 MB, 8/8 chunks.
+17:25:20  AZ : starting (8 chunks)
+17:25:21      natural=beach : 183 elements
+17:25:25      leisure=beach* : 8 elements
+17:25:29      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:25:32      sport=swimming : 8 elements
+17:25:36      nudism=* : 0 elements (tag not used in this country - fine)
+17:25:40      naturism=* : 0 elements (tag not used in this country - fine)
+17:25:43      clothing=optional : 0 elements (tag not used in this country - fine)
+17:26:26      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:26:29  AZ : DONE - 199 places, 0.02 MB, 8/8 chunks.
+17:26:59  FO : starting (8 chunks)
+17:27:00      natural=beach : 196 elements
+17:27:04      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:27:08      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:27:11      sport=swimming : 7 elements
+17:27:14      nudism=* : 2 elements
+17:27:18      naturism=* : 0 elements (tag not used in this country - fine)
+17:27:21      clothing=optional : 0 elements (tag not used in this country - fine)
+17:28:05      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:28:08  FO : DONE - 205 places, 0.02 MB, 8/8 chunks.
+17:28:38  GI : starting (8 chunks)
+17:28:38      natural=beach : 10 elements
+17:28:42      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:28:45      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:28:48      sport=swimming : 21 elements
+17:28:52      nudism=* : 0 elements (tag not used in this country - fine)
+17:28:55      naturism=* : 0 elements (tag not used in this country - fine)
+17:28:59      clothing=optional : 0 elements (tag not used in this country - fine)
+17:29:03      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:29:06  GI : DONE - 31 places, 0.01 MB, 8/8 chunks.
+17:29:36  GG : starting (8 chunks)
+17:29:36      natural=beach : 114 elements
+17:29:40      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:29:44      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:29:47      sport=swimming : 6 elements
+17:29:51      nudism=* : 0 elements (tag not used in this country - fine)
+17:29:54      naturism=* : 0 elements (tag not used in this country - fine)
+17:29:57      clothing=optional : 0 elements (tag not used in this country - fine)
+17:30:40      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:30:43  GG : DONE - 120 places, 0.02 MB, 8/8 chunks.
+17:31:13  IM : starting (8 chunks)
+17:31:15      natural=beach : 129 elements
+17:31:19      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:31:50      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:31:53      sport=swimming : 5 elements
+17:31:57      nudism=* : 0 elements (tag not used in this country - fine)
+17:32:00      naturism=* : 0 elements (tag not used in this country - fine)
+17:32:07      clothing=optional : 0 elements (tag not used in this country - fine)
+17:32:51      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:32:54  IM : DONE - 134 places, 0.02 MB, 8/8 chunks.
+17:33:24  JE : starting (8 chunks)
+17:33:25      natural=beach : 54 elements
+17:33:29      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:33:32      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:33:36      sport=swimming : 6 elements
+17:33:39      nudism=* : 0 elements (tag not used in this country - fine)
+17:33:43      naturism=* : 0 elements (tag not used in this country - fine)
+17:33:46      clothing=optional : 0 elements (tag not used in this country - fine)
+17:34:29      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:34:32  JE : DONE - 59 places, 0.01 MB, 8/8 chunks.
+17:35:02  AX : starting (8 chunks)
+17:35:03      natural=beach : 0 elements (tag not used in this country - fine)
+17:35:08      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:35:12      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:35:15      sport=swimming : 0 elements (tag not used in this country - fine)
+17:35:19      nudism=* : 0 elements (tag not used in this country - fine)
+17:35:22      naturism=* : 0 elements (tag not used in this country - fine)
+17:35:26      clothing=optional : 0 elements (tag not used in this country - fine)
+17:35:29      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:35:32  AX : NOTHING retrieved. No file written.
+17:36:02  SJ : starting (8 chunks)
+17:36:03      natural=beach : 0 elements (tag not used in this country - fine)
+17:36:06      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:36:09      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:36:13      sport=swimming : 0 elements (tag not used in this country - fine)
+17:36:16      nudism=* : 0 elements (tag not used in this country - fine)
+17:36:19      naturism=* : 0 elements (tag not used in this country - fine)
+17:36:23      clothing=optional : 0 elements (tag not used in this country - fine)
+17:36:26      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:36:29  SJ : NOTHING retrieved. No file written.
+17:36:59  AG : starting (8 chunks)
+17:37:00      natural=beach : 136 elements
+17:37:04      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:37:07      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:37:11      sport=swimming : 4 elements
+17:37:16      nudism=* : 1 elements
+17:37:20      naturism=* : 0 elements (tag not used in this country - fine)
+17:37:23      clothing=optional : 0 elements (tag not used in this country - fine)
+17:38:07      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:38:10  AG : DONE - 140 places, 0.02 MB, 8/8 chunks.
+17:38:40  AI : starting (8 chunks)
+17:38:41      natural=beach : 35 elements
+17:38:45      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:38:49      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:38:52      sport=swimming : 0 elements (tag not used in this country - fine)
+17:38:55      nudism=* : 0 elements (tag not used in this country - fine)
+17:39:01      naturism=* : 0 elements (tag not used in this country - fine)
+17:39:06      clothing=optional : 0 elements (tag not used in this country - fine)
+17:39:50      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:39:53  AI : DONE - 35 places, 0 MB, 8/8 chunks.
+17:40:23  AW : starting (8 chunks)
+17:40:23      natural=beach : 0 elements (tag not used in this country - fine)
+17:40:26      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:40:30      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:40:33      sport=swimming : 0 elements (tag not used in this country - fine)
+17:40:36      nudism=* : 0 elements (tag not used in this country - fine)
+17:40:40      naturism=* : 0 elements (tag not used in this country - fine)
+17:40:43      clothing=optional : 0 elements (tag not used in this country - fine)
+17:40:47      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:40:50  AW : NOTHING retrieved. No file written.
+17:41:20  BB : starting (8 chunks)
+17:41:20      natural=beach : 104 elements
+17:41:36      leisure=beach* : 2 elements
+17:41:40      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:41:43      sport=swimming : 4 elements
+17:41:47      nudism=* : 0 elements (tag not used in this country - fine)
+17:41:50      naturism=* : 0 elements (tag not used in this country - fine)
+17:41:54      clothing=optional : 0 elements (tag not used in this country - fine)
+17:42:39      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:42:42  BB : DONE - 109 places, 0.01 MB, 8/8 chunks.
+17:43:13  BZ : starting (8 chunks)
+17:43:14      natural=beach : 406 elements
+17:43:19      leisure=beach* : 31 elements
+17:43:22      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:43:26      sport=swimming : 5 elements
+17:43:30      nudism=* : 1 elements
+17:43:33      naturism=* : 0 elements (tag not used in this country - fine)
+17:43:38      clothing=optional : 0 elements (tag not used in this country - fine)
+17:44:23      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:44:26  BZ : DONE - 443 places, 0.05 MB, 8/8 chunks.
+17:44:56  BM : starting (8 chunks)
+17:44:57      natural=beach : 126 elements
+17:45:01      leisure=beach* : 2 elements
+17:45:05      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:45:08      sport=swimming : 6 elements
+17:45:22      nudism=* : 0 elements (tag not used in this country - fine)
+17:45:27      naturism=* : 0 elements (tag not used in this country - fine)
+17:45:30      clothing=optional : 0 elements (tag not used in this country - fine)
+17:46:13      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:46:17  BM : DONE - 134 places, 0.02 MB, 8/8 chunks.
+17:46:47  BO : starting (8 chunks)
+17:46:50      natural=beach : 184 elements
+17:46:54      leisure=beach* : 9 elements
+17:46:58      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:47:10      sport=swimming : 84 elements
+17:47:13      nudism=* : 0 elements (tag not used in this country - fine)
+17:47:17      naturism=* : 0 elements (tag not used in this country - fine)
+17:47:29      clothing=optional : 0 elements (tag not used in this country - fine)
+17:48:11      name~naturist/nudist : 3 elements
+17:48:14  BO : DONE - 279 places, 0.04 MB, 8/8 chunks.
+17:48:44  BQ : starting (8 chunks)
+17:48:47      natural=beach : 0 elements (tag not used in this country - fine)
+17:48:50      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:48:54      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:48:59      sport=swimming : 0 elements (tag not used in this country - fine)
+17:49:04      nudism=* : 0 elements (tag not used in this country - fine)
+17:49:07      naturism=* : 0 elements (tag not used in this country - fine)
+17:49:11      clothing=optional : 0 elements (tag not used in this country - fine)
+17:49:15      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:49:18  BQ : NOTHING retrieved. No file written.
+17:49:48  CW : starting (8 chunks)
+17:49:49      natural=beach : 0 elements (tag not used in this country - fine)
+17:49:52      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:49:56      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:49:59      sport=swimming : 0 elements (tag not used in this country - fine)
+17:50:03      nudism=* : 0 elements (tag not used in this country - fine)
+17:50:06      naturism=* : 0 elements (tag not used in this country - fine)
+17:50:09      clothing=optional : 0 elements (tag not used in this country - fine)
+17:50:13      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:50:16  CW : NOTHING retrieved. No file written.
+17:50:46  DM : starting (8 chunks)
+17:50:46      natural=beach : 33 elements
+17:50:51      leisure=beach* : 7 elements
+17:50:55      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:51:02      sport=swimming : 2 elements
+17:51:06      nudism=* : 0 elements (tag not used in this country - fine)
+17:51:09      naturism=* : 0 elements (tag not used in this country - fine)
+17:51:12      clothing=optional : 0 elements (tag not used in this country - fine)
+17:52:04      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:52:07  DM : DONE - 42 places, 0.01 MB, 8/8 chunks.
+17:52:37  EC : starting (8 chunks)
+17:52:38      natural=beach : 416 elements
+17:52:44      leisure=beach* : 47 elements
+17:52:48      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:52:53      sport=swimming : 158 elements
+17:52:57      nudism=* : 2 elements
+17:53:01      naturism=* : 0 elements (tag not used in this country - fine)
+17:53:05      clothing=optional : 0 elements (tag not used in this country - fine)
+17:53:49      name~naturist/nudist : 98 elements
+17:53:52  EC : DONE - 718 places, 0.1 MB, 8/8 chunks.
+17:54:22  SV : starting (8 chunks)
+17:54:23      natural=beach : 182 elements
+17:54:27      leisure=beach* : 48 elements
+17:54:34      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:54:38      sport=swimming : 14 elements
+17:54:42      nudism=* : 0 elements (tag not used in this country - fine)
+17:54:45      naturism=* : 0 elements (tag not used in this country - fine)
+17:54:49      clothing=optional : 0 elements (tag not used in this country - fine)
+17:55:33      name~naturist/nudist : 3 elements
+17:55:36  SV : DONE - 247 places, 0.03 MB, 8/8 chunks.
+17:56:06  FK : starting (8 chunks)
+17:56:07      natural=beach : 258 elements
+17:56:12      leisure=beach* : 0 elements (tag not used in this country - fine)
+17:56:19      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:56:23      sport=swimming : 1 elements
+17:56:26      nudism=* : 0 elements (tag not used in this country - fine)
+17:56:29      naturism=* : 0 elements (tag not used in this country - fine)
+17:56:33      clothing=optional : 0 elements (tag not used in this country - fine)
+17:57:20      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:57:23  FK : DONE - 259 places, 0.03 MB, 8/8 chunks.
+17:57:53  GD : starting (8 chunks)
+17:57:54      natural=beach : 104 elements
+17:57:58      leisure=beach* : 2 elements
+17:58:01      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+17:58:23      sport=swimming : 1 elements
+17:58:26      nudism=* : 0 elements (tag not used in this country - fine)
+17:58:30      naturism=* : 0 elements (tag not used in this country - fine)
+17:58:34      clothing=optional : 0 elements (tag not used in this country - fine)
+17:59:21      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+17:59:24  GD : DONE - 107 places, 0.01 MB, 8/8 chunks.
+17:59:54  GL : starting (8 chunks)
+17:59:55      natural=beach : 228 elements
+18:00:00      leisure=beach* : 1 elements
+18:00:03      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:00:07      sport=swimming : 2 elements
+18:00:11      nudism=* : 0 elements (tag not used in this country - fine)
+18:00:15      naturism=* : 0 elements (tag not used in this country - fine)
+18:00:19      clothing=optional : 0 elements (tag not used in this country - fine)
+18:01:03      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:01:06  GL : DONE - 231 places, 0.02 MB, 8/8 chunks.
+18:01:36  GP : starting (8 chunks)
+18:01:36      natural=beach : 0 elements (tag not used in this country - fine)
+18:01:39      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:01:43      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:01:46      sport=swimming : 0 elements (tag not used in this country - fine)
+18:01:49      nudism=* : 0 elements (tag not used in this country - fine)
+18:01:53      naturism=* : 0 elements (tag not used in this country - fine)
+18:01:56      clothing=optional : 0 elements (tag not used in this country - fine)
+18:01:59      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:02:03  GP : NOTHING retrieved. No file written.
+18:02:33  GT : starting (8 chunks)
+18:02:35      natural=beach : 52 elements
+18:02:40      leisure=beach* : 30 elements
+18:02:44      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:02:49      sport=swimming : 46 elements
+18:02:54      nudism=* : 0 elements (tag not used in this country - fine)
+18:02:58      naturism=* : 0 elements (tag not used in this country - fine)
+18:03:01      clothing=optional : 0 elements (tag not used in this country - fine)
+18:03:46      name~naturist/nudist : 6 elements
+18:03:49  GT : DONE - 133 places, 0.02 MB, 8/8 chunks.
+18:04:19  GY : starting (8 chunks)
+18:04:20      natural=beach : 10 elements
+18:04:24      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:04:46      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:04:50      sport=swimming : 5 elements
+18:04:53      nudism=* : 0 elements (tag not used in this country - fine)
+18:04:57      naturism=* : 0 elements (tag not used in this country - fine)
+18:05:00      clothing=optional : 0 elements (tag not used in this country - fine)
+18:05:43      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:05:46  GY : DONE - 15 places, 0 MB, 8/8 chunks.
+18:06:16  HT : starting (8 chunks)
+18:06:17      natural=beach : 166 elements
+18:06:22      leisure=beach* : 12 elements
+18:06:25      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:06:29      sport=swimming : 10 elements
+18:06:33      nudism=* : 0 elements (tag not used in this country - fine)
+18:06:44      naturism=* : 0 elements (tag not used in this country - fine)
+18:06:47      clothing=optional : 0 elements (tag not used in this country - fine)
+18:07:31      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:07:34  HT : DONE - 188 places, 0.02 MB, 8/8 chunks.
+18:08:04  HN : starting (8 chunks)
+18:08:06      natural=beach : 160 elements
+18:08:11      leisure=beach* : 13 elements
+18:08:15      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:08:19      sport=swimming : 7 elements
+18:08:23      nudism=* : 0 elements (tag not used in this country - fine)
+18:08:41      naturism=* : 0 elements (tag not used in this country - fine)
+18:08:44      clothing=optional : 0 elements (tag not used in this country - fine)
+18:09:29      name~naturist/nudist : 1 elements
+18:09:32  HN : DONE - 181 places, 0.02 MB, 8/8 chunks.
+18:10:02  KN : starting (8 chunks)
+18:10:03      natural=beach : 34 elements
+18:10:08      leisure=beach* : 12 elements
+18:10:11      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:10:15      sport=swimming : 0 elements (tag not used in this country - fine)
+18:10:18      nudism=* : 0 elements (tag not used in this country - fine)
+18:10:21      naturism=* : 0 elements (tag not used in this country - fine)
+18:10:25      clothing=optional : 0 elements (tag not used in this country - fine)
+18:11:08      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:11:11  KN : DONE - 46 places, 0.01 MB, 8/8 chunks.
+18:11:41  KY : starting (8 chunks)
+18:11:42      natural=beach : 35 elements
+18:11:46      leisure=beach* : 3 elements
+18:11:50      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:11:53      sport=swimming : 2 elements
+18:11:56      nudism=* : 0 elements (tag not used in this country - fine)
+18:12:00      naturism=* : 0 elements (tag not used in this country - fine)
+18:12:05      clothing=optional : 0 elements (tag not used in this country - fine)
+18:12:48      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:12:51  KY : DONE - 40 places, 0.01 MB, 8/8 chunks.
+18:13:21  LC : starting (8 chunks)
+18:13:22      natural=beach : 84 elements
+18:13:26      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:13:30      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:13:33      sport=swimming : 2 elements
+18:13:36      nudism=* : 0 elements (tag not used in this country - fine)
+18:13:40      naturism=* : 0 elements (tag not used in this country - fine)
+18:13:43      clothing=optional : 0 elements (tag not used in this country - fine)
+18:14:28      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:14:31  LC : DONE - 86 places, 0.01 MB, 8/8 chunks.
+18:15:01  MF : starting (8 chunks)
+18:15:02      natural=beach : 0 elements (tag not used in this country - fine)
+18:15:07      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:15:10      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:15:17      sport=swimming : 0 elements (tag not used in this country - fine)
+18:15:20      nudism=* : 0 elements (tag not used in this country - fine)
+18:15:24      naturism=* : 0 elements (tag not used in this country - fine)
+18:15:27      clothing=optional : 0 elements (tag not used in this country - fine)
+18:15:31      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:15:34  MF : NOTHING retrieved. No file written.
+18:16:04  MQ : starting (8 chunks)
+18:16:04      natural=beach : 0 elements (tag not used in this country - fine)
+18:16:07      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:16:11      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:16:14      sport=swimming : 0 elements (tag not used in this country - fine)
+18:16:17      nudism=* : 0 elements (tag not used in this country - fine)
+18:16:21      naturism=* : 0 elements (tag not used in this country - fine)
+18:16:24      clothing=optional : 0 elements (tag not used in this country - fine)
+18:16:27      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:16:30  MQ : NOTHING retrieved. No file written.
+18:17:00  MS : starting (8 chunks)
+18:17:01      natural=beach : 11 elements
+18:17:05      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:17:09      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:17:12      sport=swimming : 0 elements (tag not used in this country - fine)
+18:17:15      nudism=* : 0 elements (tag not used in this country - fine)
+18:17:19      naturism=* : 0 elements (tag not used in this country - fine)
+18:17:22      clothing=optional : 0 elements (tag not used in this country - fine)
+18:18:09      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:18:12  MS : DONE - 11 places, 0 MB, 8/8 chunks.
+18:18:42  NI : starting (8 chunks)
+18:18:44      natural=beach : 254 elements
+18:18:49      leisure=beach* : 11 elements
+18:18:53      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:18:58      sport=swimming : 35 elements
+18:19:01      nudism=* : 0 elements (tag not used in this country - fine)
+18:19:05      naturism=* : 0 elements (tag not used in this country - fine)
+18:19:08      clothing=optional : 0 elements (tag not used in this country - fine)
+18:19:56      name~naturist/nudist : 7 elements
+18:19:59  NI : DONE - 307 places, 0.08 MB, 8/8 chunks.
+18:20:29  PE : starting (8 chunks)
+18:20:42      natural=beach : 629 elements
+18:20:47      leisure=beach* : 22 elements
+18:20:50      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:20:55      sport=swimming : 165 elements
+18:20:59      nudism=* : 2 elements
+18:21:06      naturism=* : 0 elements (tag not used in this country - fine)
+18:21:28      clothing=optional : 0 elements (tag not used in this country - fine)
+18:22:13      name~naturist/nudist : 30 elements
+18:22:16  PE : DONE - 844 places, 0.11 MB, 8/8 chunks.
+18:22:46  PM : starting (8 chunks)
+18:22:46      natural=beach : 0 elements (tag not used in this country - fine)
+18:22:50      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:22:53      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:22:56      sport=swimming : 0 elements (tag not used in this country - fine)
+18:23:00      nudism=* : 0 elements (tag not used in this country - fine)
+18:23:03      naturism=* : 0 elements (tag not used in this country - fine)
+18:23:07      clothing=optional : 0 elements (tag not used in this country - fine)
+18:23:10      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:23:13  PM : NOTHING retrieved. No file written.
+18:23:43  PR : starting (8 chunks)
+18:23:43      natural=beach : 0 elements (tag not used in this country - fine)
+18:23:47      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:23:50      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:23:56      sport=swimming : 0 elements (tag not used in this country - fine)
+18:23:59      nudism=* : 0 elements (tag not used in this country - fine)
+18:24:02      naturism=* : 0 elements (tag not used in this country - fine)
+18:24:06      clothing=optional : 0 elements (tag not used in this country - fine)
+18:24:09      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:24:12  PR : NOTHING retrieved. No file written.
+18:24:42  PY : starting (8 chunks)
+18:24:44      natural=beach : 92 elements
+18:24:50      leisure=beach* : 8 elements
+18:24:53      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:24:58      sport=swimming : 19 elements
+18:25:01      nudism=* : 2 elements
+18:25:05      naturism=* : 0 elements (tag not used in this country - fine)
+18:25:08      clothing=optional : 0 elements (tag not used in this country - fine)
+18:25:51      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:25:54  PY : DONE - 119 places, 0.01 MB, 8/8 chunks.
+18:26:24  SR : starting (8 chunks)
+18:26:25      natural=beach : 32 elements
+18:26:29      leisure=beach* : 1 elements
+18:26:33      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:26:36      sport=swimming : 29 elements
+18:26:40      nudism=* : 0 elements (tag not used in this country - fine)
+18:26:43      naturism=* : 0 elements (tag not used in this country - fine)
+18:26:47      clothing=optional : 0 elements (tag not used in this country - fine)
+18:27:30      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:27:33  SR : DONE - 62 places, 0.01 MB, 8/8 chunks.
+18:28:03  SX : starting (8 chunks)
+18:28:04      natural=beach : 0 elements (tag not used in this country - fine)
+18:28:08      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:28:11      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:28:14      sport=swimming : 0 elements (tag not used in this country - fine)
+18:28:18      nudism=* : 0 elements (tag not used in this country - fine)
+18:28:21      naturism=* : 0 elements (tag not used in this country - fine)
+18:28:24      clothing=optional : 0 elements (tag not used in this country - fine)
+18:28:28      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:28:31  SX : NOTHING retrieved. No file written.
+18:29:01  TC : starting (8 chunks)
+18:29:01      natural=beach : 36 elements
+18:29:06      leisure=beach* : 2 elements
+18:29:09      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:29:12      sport=swimming : 8 elements
+18:29:16      nudism=* : 0 elements (tag not used in this country - fine)
+18:29:19      naturism=* : 0 elements (tag not used in this country - fine)
+18:29:23      clothing=optional : 0 elements (tag not used in this country - fine)
+18:30:07      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:30:10  TC : DONE - 46 places, 0.01 MB, 8/8 chunks.
+18:30:40  TT : starting (8 chunks)
+18:30:40      natural=beach : 119 elements
+18:30:45      leisure=beach* : 21 elements
+18:30:48      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:31:01      sport=swimming : 6 elements
+18:31:06      nudism=* : 0 elements (tag not used in this country - fine)
+18:31:10      naturism=* : 0 elements (tag not used in this country - fine)
+18:31:17      clothing=optional : 0 elements (tag not used in this country - fine)
+18:32:02      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:32:05  TT : DONE - 146 places, 0.02 MB, 8/8 chunks.
+18:32:35  VC : starting (8 chunks)
+18:32:35      natural=beach : 158 elements
+18:32:39      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:32:43      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:32:46      sport=swimming : 1 elements
+18:32:50      nudism=* : 2 elements
+18:32:53      naturism=* : 0 elements (tag not used in this country - fine)
+18:32:56      clothing=optional : 0 elements (tag not used in this country - fine)
+18:33:41      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:33:44  VC : DONE - 159 places, 0.02 MB, 8/8 chunks.
+18:34:14  VE : starting (8 chunks)
+18:34:17      natural=beach : 990 elements
+18:34:22      leisure=beach* : 185 elements
+18:34:26      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:34:30      sport=swimming : 154 elements
+18:34:34      nudism=* : 175 elements
+18:34:38      naturism=* : 0 elements (tag not used in this country - fine)
+18:34:41      clothing=optional : 0 elements (tag not used in this country - fine)
+18:35:25      name~naturist/nudist : 7 elements
+18:35:28  VE : DONE - 1329 places, 0.21 MB, 8/8 chunks.
+18:35:58  VG : starting (8 chunks)
+18:36:01      natural=beach : 75 elements
+18:36:05      leisure=beach* : 1 elements
+18:36:23      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:36:26      sport=swimming : 1 elements
+18:36:30      nudism=* : 0 elements (tag not used in this country - fine)
+18:36:33      naturism=* : 0 elements (tag not used in this country - fine)
+18:36:38      clothing=optional : 0 elements (tag not used in this country - fine)
+18:37:22      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:37:25  VG : DONE - 77 places, 0.01 MB, 8/8 chunks.
+18:37:55  VI : starting (8 chunks)
+18:37:55      natural=beach : 0 elements (tag not used in this country - fine)
+18:37:59      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:38:04      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:38:07      sport=swimming : 0 elements (tag not used in this country - fine)
+18:38:11      nudism=* : 0 elements (tag not used in this country - fine)
+18:38:15      naturism=* : 0 elements (tag not used in this country - fine)
+18:38:22      clothing=optional : 0 elements (tag not used in this country - fine)
+18:38:25      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:38:28  VI : NOTHING retrieved. No file written.
+18:38:58  CO : starting (8 chunks)
+18:39:04      natural=beach : 763 elements
+18:39:08      leisure=beach* : 67 elements
+18:39:12      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:39:18      sport=swimming : 458 elements
+18:39:22      nudism=* : 7 elements
+18:39:25      naturism=* : 0 elements (tag not used in this country - fine)
+18:39:29      clothing=optional : 0 elements (tag not used in this country - fine)
+18:40:13      name~naturist/nudist : 101 elements
+18:40:16  CO : DONE - 1387 places, 0.23 MB, 8/8 chunks.
+18:40:46  AO : starting (8 chunks)
+18:40:48      natural=beach : 138 elements
+18:40:52      leisure=beach* : 6 elements
+18:40:56      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:41:01      sport=swimming : 14 elements
+18:41:04      nudism=* : 0 elements (tag not used in this country - fine)
+18:41:07      naturism=* : 0 elements (tag not used in this country - fine)
+18:41:11      clothing=optional : 0 elements (tag not used in this country - fine)
+18:41:54      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:41:57  AO : DONE - 158 places, 0.02 MB, 8/8 chunks.
+18:42:27  BJ : starting (8 chunks)
+18:42:28      natural=beach : 27 elements
+18:42:33      leisure=beach* : 3 elements
+18:42:36      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:42:40      sport=swimming : 5 elements
+18:42:44      nudism=* : 0 elements (tag not used in this country - fine)
+18:42:47      naturism=* : 0 elements (tag not used in this country - fine)
+18:42:51      clothing=optional : 0 elements (tag not used in this country - fine)
+18:43:34      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:43:37  BJ : DONE - 35 places, 0 MB, 8/8 chunks.
+18:44:07  BW : starting (8 chunks)
+18:44:08      natural=beach : 2 elements
+18:44:13      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:44:18      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:44:23      sport=swimming : 22 elements
+18:44:26      nudism=* : 0 elements (tag not used in this country - fine)
+18:44:29      naturism=* : 0 elements (tag not used in this country - fine)
+18:44:33      clothing=optional : 0 elements (tag not used in this country - fine)
+18:45:17      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:45:20  BW : DONE - 24 places, 0 MB, 8/8 chunks.
+18:45:50  BF : starting (8 chunks)
+18:45:51      natural=beach : 9 elements
+18:45:56      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:46:00      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:46:04      sport=swimming : 9 elements
+18:46:08      nudism=* : 0 elements (tag not used in this country - fine)
+18:46:11      naturism=* : 0 elements (tag not used in this country - fine)
+18:46:15      clothing=optional : 0 elements (tag not used in this country - fine)
+18:46:59      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:47:02  BF : DONE - 18 places, 0 MB, 8/8 chunks.
+18:47:32  BI : starting (8 chunks)
+18:47:33      natural=beach : 2 elements
+18:47:38      leisure=beach* : 1 elements
+18:47:41      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:47:45      sport=swimming : 5 elements
+18:47:49      nudism=* : 0 elements (tag not used in this country - fine)
+18:47:52      naturism=* : 0 elements (tag not used in this country - fine)
+18:47:56      clothing=optional : 0 elements (tag not used in this country - fine)
+18:48:40      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:48:43  BI : DONE - 8 places, 0 MB, 8/8 chunks.
+18:49:14  CM : starting (8 chunks)
+18:49:17      natural=beach : 76 elements
+18:49:23      leisure=beach* : 1 elements
+18:49:26      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:49:32      sport=swimming : 20 elements
+18:49:35      nudism=* : 0 elements (tag not used in this country - fine)
+18:49:39      naturism=* : 0 elements (tag not used in this country - fine)
+18:49:42      clothing=optional : 0 elements (tag not used in this country - fine)
+18:50:26      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:50:29  CM : DONE - 97 places, 0.01 MB, 8/8 chunks.
+18:50:59  CV : starting (8 chunks)
+18:51:04      natural=beach : 235 elements
+18:51:08      leisure=beach* : 40 elements
+18:51:12      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:51:15      sport=swimming : 23 elements
+18:51:19      nudism=* : 0 elements (tag not used in this country - fine)
+18:51:22      naturism=* : 0 elements (tag not used in this country - fine)
+18:51:25      clothing=optional : 0 elements (tag not used in this country - fine)
+18:52:09      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:52:12  CV : DONE - 297 places, 0.04 MB, 8/8 chunks.
+18:52:42  CF : starting (8 chunks)
+18:52:43      natural=beach : 2 elements
+18:52:48      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:52:52      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:52:56      sport=swimming : 7 elements
+18:53:00      nudism=* : 0 elements (tag not used in this country - fine)
+18:53:07      naturism=* : 0 elements (tag not used in this country - fine)
+18:53:10      clothing=optional : 0 elements (tag not used in this country - fine)
+18:53:53      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:53:56  CF : DONE - 9 places, 0 MB, 8/8 chunks.
+18:54:26  TD : starting (8 chunks)
+18:54:28      natural=beach : 1 elements
+18:54:32      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:54:36      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:54:40      sport=swimming : 7 elements
+18:54:44      nudism=* : 0 elements (tag not used in this country - fine)
+18:54:47      naturism=* : 0 elements (tag not used in this country - fine)
+18:54:50      clothing=optional : 0 elements (tag not used in this country - fine)
+18:55:36      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:55:39  TD : DONE - 8 places, 0 MB, 8/8 chunks.
+18:56:09  KM : starting (8 chunks)
+18:56:09      natural=beach : 87 elements
+18:56:14      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:56:17      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:56:21      sport=swimming : 1 elements
+18:56:24      nudism=* : 0 elements (tag not used in this country - fine)
+18:56:28      naturism=* : 0 elements (tag not used in this country - fine)
+18:56:31      clothing=optional : 0 elements (tag not used in this country - fine)
+18:57:20      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:57:23  KM : DONE - 88 places, 0.01 MB, 8/8 chunks.
+18:57:53  CG : starting (8 chunks)
+18:57:54      natural=beach : 10 elements
+18:57:59      leisure=beach* : 0 elements (tag not used in this country - fine)
+18:58:03      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+18:58:07      sport=swimming : 3 elements
+18:58:10      nudism=* : 0 elements (tag not used in this country - fine)
+18:58:23      naturism=* : 0 elements (tag not used in this country - fine)
+18:58:27      clothing=optional : 0 elements (tag not used in this country - fine)
+18:59:15      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+18:59:18  CG : DONE - 13 places, 0 MB, 8/8 chunks.
+18:59:48  CD : starting (8 chunks)
+18:59:51      natural=beach : 146 elements
+18:59:56      leisure=beach* : 1 elements
+18:59:59      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:00:04      sport=swimming : 46 elements
+19:00:08      nudism=* : 0 elements (tag not used in this country - fine)
+19:00:12      naturism=* : 0 elements (tag not used in this country - fine)
+19:00:16      clothing=optional : 0 elements (tag not used in this country - fine)
+19:01:06      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:01:09  CD : DONE - 193 places, 0.03 MB, 8/8 chunks.
+19:01:39  CI : starting (8 chunks)
+19:01:40      natural=beach : 70 elements
+19:01:46      leisure=beach* : 6 elements
+19:01:50      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:01:54      sport=swimming : 40 elements
+19:01:57      nudism=* : 1 elements
+19:02:01      naturism=* : 0 elements (tag not used in this country - fine)
+19:02:04      clothing=optional : 0 elements (tag not used in this country - fine)
+19:02:51      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:02:54  CI : DONE - 116 places, 0.02 MB, 8/8 chunks.
+19:03:24  DJ : starting (8 chunks)
+19:03:25      natural=beach : 55 elements
+19:03:29      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:03:32      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:03:36      sport=swimming : 2 elements
+19:03:39      nudism=* : 0 elements (tag not used in this country - fine)
+19:03:43      naturism=* : 0 elements (tag not used in this country - fine)
+19:03:46      clothing=optional : 0 elements (tag not used in this country - fine)
+19:04:31      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:04:34  DJ : DONE - 56 places, 0.01 MB, 8/8 chunks.
+19:05:04  DZ : starting (8 chunks)
+19:05:06      natural=beach : 586 elements
+19:05:10      leisure=beach* : 16 elements
+19:05:14      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:05:18      sport=swimming : 204 elements
+19:05:22      nudism=* : 2 elements
+19:05:26      naturism=* : 0 elements (tag not used in this country - fine)
+19:05:29      clothing=optional : 0 elements (tag not used in this country - fine)
+19:06:13      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:06:16  DZ : DONE - 789 places, 0.12 MB, 8/8 chunks.
+19:06:46  ER : starting (8 chunks)
+19:06:47      natural=beach : 106 elements
+19:06:51      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:06:55      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:06:58      sport=swimming : 1 elements
+19:07:02      nudism=* : 0 elements (tag not used in this country - fine)
+19:07:05      naturism=* : 0 elements (tag not used in this country - fine)
+19:07:09      clothing=optional : 0 elements (tag not used in this country - fine)
+19:07:53      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:07:56  ER : DONE - 107 places, 0.01 MB, 8/8 chunks.
+19:08:26  SZ : starting (8 chunks)
+19:08:26      natural=beach : 1 elements
+19:08:31      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:08:34      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:08:38      sport=swimming : 11 elements
+19:08:42      nudism=* : 0 elements (tag not used in this country - fine)
+19:08:45      naturism=* : 0 elements (tag not used in this country - fine)
+19:08:48      clothing=optional : 0 elements (tag not used in this country - fine)
+19:09:32      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:09:35  SZ : DONE - 12 places, 0 MB, 8/8 chunks.
+19:10:05  ET : starting (8 chunks)
+19:10:07      natural=beach : 57 elements
+19:10:11      leisure=beach* : 1 elements
+19:10:15      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:10:19      sport=swimming : 11 elements
+19:10:23      nudism=* : 0 elements (tag not used in this country - fine)
+19:10:26      naturism=* : 0 elements (tag not used in this country - fine)
+19:10:30      clothing=optional : 0 elements (tag not used in this country - fine)
+19:11:14      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:11:17  ET : DONE - 69 places, 0.01 MB, 8/8 chunks.
+19:11:47  GA : starting (8 chunks)
+19:11:48      natural=beach : 37 elements
+19:11:53      leisure=beach* : 4 elements
+19:11:56      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:12:00      sport=swimming : 4 elements
+19:12:03      nudism=* : 0 elements (tag not used in this country - fine)
+19:12:07      naturism=* : 0 elements (tag not used in this country - fine)
+19:12:11      clothing=optional : 0 elements (tag not used in this country - fine)
+19:12:55      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:12:58  GA : DONE - 43 places, 0.01 MB, 8/8 chunks.
+19:13:28  GM : starting (8 chunks)
+19:13:28      natural=beach : 33 elements
+19:13:33      leisure=beach* : 1 elements
+19:13:36      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:13:40      sport=swimming : 2 elements
+19:13:43      nudism=* : 0 elements (tag not used in this country - fine)
+19:13:47      naturism=* : 0 elements (tag not used in this country - fine)
+19:13:50      clothing=optional : 0 elements (tag not used in this country - fine)
+19:14:34      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:14:37  GM : DONE - 36 places, 0 MB, 8/8 chunks.
+19:15:07  GH : starting (8 chunks)
+19:15:09      natural=beach : 114 elements
+19:15:14      leisure=beach* : 38 elements
+19:15:18      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:15:27      sport=swimming : 18 elements
+19:15:30      nudism=* : 0 elements (tag not used in this country - fine)
+19:15:34      naturism=* : 0 elements (tag not used in this country - fine)
+19:15:37      clothing=optional : 0 elements (tag not used in this country - fine)
+19:16:20      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:16:23  GH : DONE - 169 places, 0.02 MB, 8/8 chunks.
+19:16:53  GN : starting (8 chunks)
+19:16:56      natural=beach : 29 elements
+19:17:01      leisure=beach* : 2 elements
+19:17:04      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:17:09      sport=swimming : 4 elements
+19:17:14      nudism=* : 0 elements (tag not used in this country - fine)
+19:17:17      naturism=* : 0 elements (tag not used in this country - fine)
+19:17:21      clothing=optional : 0 elements (tag not used in this country - fine)
+19:18:05      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:18:08  GN : DONE - 35 places, 0 MB, 8/8 chunks.
+19:18:38  GW : starting (8 chunks)
+19:18:38      natural=beach : 79 elements
+19:18:43      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:18:47      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:18:51      sport=swimming : 3 elements
+19:18:54      nudism=* : 0 elements (tag not used in this country - fine)
+19:18:58      naturism=* : 0 elements (tag not used in this country - fine)
+19:19:01      clothing=optional : 0 elements (tag not used in this country - fine)
+19:19:46      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:19:49  GW : DONE - 82 places, 0.01 MB, 8/8 chunks.
+19:20:19  KE : starting (8 chunks)
+19:20:24      natural=beach : 93 elements
+19:20:31      leisure=beach* : 17 elements
+19:20:34      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:20:43      sport=swimming : 105 elements
+19:20:47      nudism=* : 2 elements
+19:20:50      naturism=* : 0 elements (tag not used in this country - fine)
+19:20:55      clothing=optional : 0 elements (tag not used in this country - fine)
+19:21:38      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:21:41  KE : DONE - 217 places, 0.03 MB, 8/8 chunks.
+19:22:11  LS : starting (8 chunks)
+19:22:14      natural=beach : 2 elements
+19:22:19      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:22:23      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:22:27      sport=swimming : 6 elements
+19:22:31      nudism=* : 0 elements (tag not used in this country - fine)
+19:22:35      naturism=* : 0 elements (tag not used in this country - fine)
+19:22:38      clothing=optional : 0 elements (tag not used in this country - fine)
+19:23:23      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:23:26  LS : DONE - 8 places, 0 MB, 8/8 chunks.
+19:23:56  LR : starting (8 chunks)
+19:23:57      natural=beach : 47 elements
+19:24:02      leisure=beach* : 1 elements
+19:24:07      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:24:11      sport=swimming : 1 elements
+19:24:14      nudism=* : 0 elements (tag not used in this country - fine)
+19:24:18      naturism=* : 0 elements (tag not used in this country - fine)
+19:24:21      clothing=optional : 0 elements (tag not used in this country - fine)
+19:25:04      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:25:07  LR : DONE - 49 places, 0.01 MB, 8/8 chunks.
+19:25:37  LY : starting (8 chunks)
+19:25:39      natural=beach : 217 elements
+19:25:43      leisure=beach* : 141 elements
+19:25:47      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:25:50      sport=swimming : 2 elements
+19:25:55      nudism=* : 0 elements (tag not used in this country - fine)
+19:25:58      naturism=* : 0 elements (tag not used in this country - fine)
+19:26:01      clothing=optional : 0 elements (tag not used in this country - fine)
+19:26:45      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:26:48  LY : DONE - 360 places, 0.04 MB, 8/8 chunks.
+19:27:18  MG : starting (8 chunks)
+19:27:24      natural=beach : 328 elements
+19:27:33      leisure=beach* : 8 elements
+19:27:37      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:27:43      sport=swimming : 21 elements
+19:27:46      nudism=* : 0 elements (tag not used in this country - fine)
+19:27:50      naturism=* : 0 elements (tag not used in this country - fine)
+19:27:53      clothing=optional : 0 elements (tag not used in this country - fine)
+19:28:37      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:28:40  MG : DONE - 357 places, 0.04 MB, 8/8 chunks.
+19:29:10  MW : starting (8 chunks)
+19:29:12      natural=beach : 107 elements
+19:29:18      leisure=beach* : 1 elements
+19:29:21      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:29:26      sport=swimming : 25 elements
+19:29:30      nudism=* : 0 elements (tag not used in this country - fine)
+19:29:36      naturism=* : 0 elements (tag not used in this country - fine)
+19:29:39      clothing=optional : 0 elements (tag not used in this country - fine)
+19:30:25      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:30:28  MW : DONE - 133 places, 0.01 MB, 8/8 chunks.
+19:30:58  ML : starting (8 chunks)
+19:31:06      natural=beach : 3 elements
+19:31:26      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:31:31      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:31:36      sport=swimming : 10 elements
+19:31:40      nudism=* : 0 elements (tag not used in this country - fine)
+19:31:43      naturism=* : 0 elements (tag not used in this country - fine)
+19:31:47      clothing=optional : 0 elements (tag not used in this country - fine)
+19:32:31      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:32:34  ML : DONE - 13 places, 0 MB, 8/8 chunks.
+19:33:04  MR : starting (8 chunks)
+19:33:05      natural=beach : 30 elements
+19:33:11      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:33:15      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:33:18      sport=swimming : 0 elements (tag not used in this country - fine)
+19:33:22      nudism=* : 0 elements (tag not used in this country - fine)
+19:33:33      naturism=* : 0 elements (tag not used in this country - fine)
+19:33:48      clothing=optional : 0 elements (tag not used in this country - fine)
+19:34:32      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:34:35  MR : DONE - 30 places, 0 MB, 8/8 chunks.
+19:35:05  YT : starting (8 chunks)
+19:35:05      natural=beach : 0 elements (tag not used in this country - fine)
+19:35:09      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:35:28      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:35:47      sport=swimming : 0 elements (tag not used in this country - fine)
+19:35:51      nudism=* : 0 elements (tag not used in this country - fine)
+19:36:03      naturism=* : 0 elements (tag not used in this country - fine)
+19:36:07      clothing=optional : 0 elements (tag not used in this country - fine)
+19:36:10      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:36:13  YT : NOTHING retrieved. No file written.
+19:36:43  MZ : starting (8 chunks)
+19:36:47      natural=beach : 100 elements
+19:36:54      leisure=beach* : 4 elements
+19:36:59      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:37:07      sport=swimming : 43 elements
+19:37:10      nudism=* : 0 elements (tag not used in this country - fine)
+19:37:14      naturism=* : 0 elements (tag not used in this country - fine)
+19:37:17      clothing=optional : 0 elements (tag not used in this country - fine)
+19:38:02      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:38:05  MZ : DONE - 147 places, 0.02 MB, 8/8 chunks.
+19:38:35  NA : starting (8 chunks)
+19:38:39      natural=beach : 20 elements
+19:38:44      leisure=beach* : 4 elements
+19:38:52      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:39:10      sport=swimming : 24 elements
+19:39:16      nudism=* : 4 elements
+19:39:19      naturism=* : 0 elements (tag not used in this country - fine)
+19:39:22      clothing=optional : 0 elements (tag not used in this country - fine)
+19:40:07      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:40:10  NA : DONE - 52 places, 0.01 MB, 8/8 chunks.
+19:40:40  NE : starting (8 chunks)
+19:40:41      natural=beach : 1 elements
+19:40:45      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:40:49      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:40:56      sport=swimming : 3 elements
+19:41:03      nudism=* : 0 elements (tag not used in this country - fine)
+19:41:07      naturism=* : 0 elements (tag not used in this country - fine)
+19:41:13      clothing=optional : 0 elements (tag not used in this country - fine)
+19:42:02      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:42:05  NE : DONE - 4 places, 0 MB, 8/8 chunks.
+19:42:35  NG : starting (8 chunks)
+19:42:44      natural=beach : 76 elements
+19:42:52      leisure=beach* : 3 elements
+19:43:07      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:43:16      sport=swimming : 20 elements
+19:43:19      nudism=* : 0 elements (tag not used in this country - fine)
+19:43:23      naturism=* : 0 elements (tag not used in this country - fine)
+19:43:27      clothing=optional : 0 elements (tag not used in this country - fine)
+19:44:11      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:44:14  NG : DONE - 99 places, 0.01 MB, 8/8 chunks.
+19:44:44  RE : starting (8 chunks)
+19:44:45      natural=beach : 0 elements (tag not used in this country - fine)
+19:44:48      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:45:04      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:45:09      sport=swimming : 0 elements (tag not used in this country - fine)
+19:45:13      nudism=* : 0 elements (tag not used in this country - fine)
+19:45:16      naturism=* : 0 elements (tag not used in this country - fine)
+19:45:20      clothing=optional : 0 elements (tag not used in this country - fine)
+19:45:32      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:45:35  RE : NOTHING retrieved. No file written.
+19:46:05  RW : starting (8 chunks)
+19:46:09      natural=beach : 10 elements
+19:46:27      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:46:30      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:46:34      sport=swimming : 9 elements
+19:46:38      nudism=* : 0 elements (tag not used in this country - fine)
+19:46:42      naturism=* : 0 elements (tag not used in this country - fine)
+19:46:45      clothing=optional : 0 elements (tag not used in this country - fine)
+19:47:29      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:47:32  RW : DONE - 19 places, 0 MB, 8/8 chunks.
+19:48:02  SH : starting (8 chunks)
+19:48:13      natural=beach : 44 elements
+19:48:18      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:48:22      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:48:39      sport=swimming : 1 elements
+19:48:42      nudism=* : 0 elements (tag not used in this country - fine)
+19:48:46      naturism=* : 0 elements (tag not used in this country - fine)
+19:48:49      clothing=optional : 0 elements (tag not used in this country - fine)
+19:49:32      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:49:35  SH : DONE - 45 places, 0.01 MB, 8/8 chunks.
+19:50:05  ST : starting (8 chunks)
+19:50:06      natural=beach : 120 elements
+19:50:17      leisure=beach* : 1 elements
+19:50:49      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:51:26        attempt 1/4 on maps.mail.ru failed: The remote server returned an error: (504) Gateway Timeout.
+19:51:36        attempt 2/4 on overpass-api.de failed: The remote server returned an error: (406) Not Acceptable.
+19:53:10      sport=swimming : 5 elements
+19:53:17      nudism=* : 0 elements (tag not used in this country - fine)
+19:53:21      naturism=* : 0 elements (tag not used in this country - fine)
+19:53:24      clothing=optional : 0 elements (tag not used in this country - fine)
+19:54:08      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:54:11  ST : DONE - 125 places, 0.01 MB, 8/8 chunks.
+19:54:41  SN : starting (8 chunks)
+19:54:42      natural=beach : 230 elements
+19:54:47      leisure=beach* : 20 elements
+19:54:51      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:54:55      sport=swimming : 24 elements
+19:54:59      nudism=* : 0 elements (tag not used in this country - fine)
+19:55:02      naturism=* : 0 elements (tag not used in this country - fine)
+19:55:06      clothing=optional : 0 elements (tag not used in this country - fine)
+19:55:51      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:55:54  SN : DONE - 268 places, 0.03 MB, 8/8 chunks.
+19:56:24  SL : starting (8 chunks)
+19:56:25      natural=beach : 67 elements
+19:56:30      leisure=beach* : 0 elements (tag not used in this country - fine)
+19:56:33      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:56:38      sport=swimming : 7 elements
+19:56:42      nudism=* : 0 elements (tag not used in this country - fine)
+19:56:45      naturism=* : 0 elements (tag not used in this country - fine)
+19:56:49      clothing=optional : 0 elements (tag not used in this country - fine)
+19:57:38      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:57:41  SL : DONE - 74 places, 0.01 MB, 8/8 chunks.
+19:58:11  SO : starting (8 chunks)
+19:58:15      natural=beach : 81 elements
+19:58:22      leisure=beach* : 2 elements
+19:58:26      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+19:58:31      sport=swimming : 1 elements
+19:58:34      nudism=* : 0 elements (tag not used in this country - fine)
+19:58:37      naturism=* : 0 elements (tag not used in this country - fine)
+19:58:41      clothing=optional : 0 elements (tag not used in this country - fine)
+19:59:27      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+19:59:30  SO : DONE - 84 places, 0.01 MB, 8/8 chunks.
+20:00:00  SS : starting (8 chunks)
+20:00:02      natural=beach : 13 elements
+20:00:07      leisure=beach* : 0 elements (tag not used in this country - fine)
+20:00:11      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:00:16      sport=swimming : 9 elements
+20:00:20      nudism=* : 0 elements (tag not used in this country - fine)
+20:00:23      naturism=* : 0 elements (tag not used in this country - fine)
+20:00:26      clothing=optional : 0 elements (tag not used in this country - fine)
+20:01:10      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:01:13  SS : DONE - 22 places, 0 MB, 8/8 chunks.
+20:01:43  SD : starting (8 chunks)
+20:01:44      natural=beach : 65 elements
+20:01:49      leisure=beach* : 4 elements
+20:01:54      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:01:58      sport=swimming : 12 elements
+20:02:01      nudism=* : 0 elements (tag not used in this country - fine)
+20:02:06      naturism=* : 0 elements (tag not used in this country - fine)
+20:02:10      clothing=optional : 0 elements (tag not used in this country - fine)
+20:02:53      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:02:56  SD : DONE - 81 places, 0.01 MB, 8/8 chunks.
+20:03:26  TZ : starting (8 chunks)
+20:03:37      natural=beach : 199 elements
+20:03:45      leisure=beach* : 37 elements
+20:03:48      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:04:00      sport=swimming : 28 elements
+20:04:03      nudism=* : 7 elements
+20:04:07      naturism=* : 0 elements (tag not used in this country - fine)
+20:04:10      clothing=optional : 0 elements (tag not used in this country - fine)
+20:04:53      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:04:56  TZ : DONE - 269 places, 0.03 MB, 8/8 chunks.
+20:05:26  TG : starting (8 chunks)
+20:05:28      natural=beach : 7 elements
+20:05:38      leisure=beach* : 5 elements
+20:05:42      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:05:46      sport=swimming : 6 elements
+20:05:50      nudism=* : 0 elements (tag not used in this country - fine)
+20:05:53      naturism=* : 0 elements (tag not used in this country - fine)
+20:05:57      clothing=optional : 0 elements (tag not used in this country - fine)
+20:06:43      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:06:46  TG : DONE - 18 places, 0 MB, 8/8 chunks.
+20:07:16  UG : starting (8 chunks)
+20:07:20      natural=beach : 127 elements
+20:07:27      leisure=beach* : 8 elements
+20:07:33      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:07:43      sport=swimming : 51 elements
+20:07:48      nudism=* : 0 elements (tag not used in this country - fine)
+20:07:51      naturism=* : 0 elements (tag not used in this country - fine)
+20:07:55      clothing=optional : 0 elements (tag not used in this country - fine)
+20:08:39      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:08:42  UG : DONE - 186 places, 0.02 MB, 8/8 chunks.
+20:09:13  EH : starting (8 chunks)
+20:09:13      natural=beach : 0 elements (tag not used in this country - fine)
+20:09:16      leisure=beach* : 0 elements (tag not used in this country - fine)
+20:09:20      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:09:23      sport=swimming : 0 elements (tag not used in this country - fine)
+20:09:27      nudism=* : 0 elements (tag not used in this country - fine)
+20:09:30      naturism=* : 0 elements (tag not used in this country - fine)
+20:09:35      clothing=optional : 0 elements (tag not used in this country - fine)
+20:09:39      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:09:42  EH : NOTHING retrieved. No file written.
+20:10:12  ZM : starting (8 chunks)
+20:10:15      natural=beach : 7 elements
+20:10:21      leisure=beach* : 1 elements
+20:10:26      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:10:32      sport=swimming : 22 elements
+20:10:35      nudism=* : 0 elements (tag not used in this country - fine)
+20:10:39      naturism=* : 0 elements (tag not used in this country - fine)
+20:10:43      clothing=optional : 0 elements (tag not used in this country - fine)
+20:11:26      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:11:29  ZM : DONE - 30 places, 0 MB, 8/8 chunks.
+20:11:59  ZW : starting (8 chunks)
+20:12:02      natural=beach : 0 elements (tag not used in this country - fine)
+20:12:10      leisure=beach* : 1 elements
+20:12:14      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:12:21      sport=swimming : 161 elements
+20:12:24      nudism=* : 0 elements (tag not used in this country - fine)
+20:12:28      naturism=* : 0 elements (tag not used in this country - fine)
+20:12:33      clothing=optional : 0 elements (tag not used in this country - fine)
+20:13:20      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:13:23  ZW : DONE - 162 places, 0.02 MB, 8/8 chunks.
+20:13:53  AF : starting (8 chunks)
+20:13:56      natural=beach : 0 elements (tag not used in this country - fine)
+20:14:04      leisure=beach* : 0 elements (tag not used in this country - fine)
+20:14:07      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:14:20      sport=swimming : 3 elements
+20:14:27      nudism=* : 1 elements
+20:14:31      naturism=* : 0 elements (tag not used in this country - fine)
+20:14:34      clothing=optional : 0 elements (tag not used in this country - fine)
+20:15:20      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:15:23  AF : DONE - 4 places, 0 MB, 8/8 chunks.
+20:15:53  BH : starting (8 chunks)
+20:15:53      natural=beach : 47 elements
+20:15:58      leisure=beach* : 3 elements
+20:16:01      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:16:07      sport=swimming : 5 elements
+20:16:10      nudism=* : 0 elements (tag not used in this country - fine)
+20:16:14      naturism=* : 0 elements (tag not used in this country - fine)
+20:16:23      clothing=optional : 0 elements (tag not used in this country - fine)
+20:17:08      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:17:12  BH : DONE - 55 places, 0.01 MB, 8/8 chunks.
+20:17:42  BD : starting (8 chunks)
+20:17:47      natural=beach : 73 elements
+20:17:54      leisure=beach* : 12 elements
+20:17:58      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:18:11      sport=swimming : 33 elements
+20:18:16      nudism=* : 0 elements (tag not used in this country - fine)
+20:18:19      naturism=* : 0 elements (tag not used in this country - fine)
+20:18:22      clothing=optional : 0 elements (tag not used in this country - fine)
+20:19:09      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:19:12  BD : DONE - 118 places, 0.02 MB, 8/8 chunks.
+20:19:42  BT : starting (8 chunks)
+20:19:42      natural=beach : 1 elements
+20:19:47      leisure=beach* : 0 elements (tag not used in this country - fine)
+20:19:51      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:19:55      sport=swimming : 1 elements
+20:19:59      nudism=* : 0 elements (tag not used in this country - fine)
+20:20:06      naturism=* : 0 elements (tag not used in this country - fine)
+20:20:10      clothing=optional : 0 elements (tag not used in this country - fine)
+20:20:55      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:20:58  BT : DONE - 2 places, 0 MB, 8/8 chunks.
+20:21:28  BN : starting (8 chunks)
+20:21:29      natural=beach : 13 elements
+20:21:33      leisure=beach* : 0 elements (tag not used in this country - fine)
+20:21:37      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:21:40      sport=swimming : 18 elements
+20:21:44      nudism=* : 0 elements (tag not used in this country - fine)
+20:21:47      naturism=* : 0 elements (tag not used in this country - fine)
+20:21:50      clothing=optional : 0 elements (tag not used in this country - fine)
+20:22:34      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:22:37  BN : DONE - 31 places, 0 MB, 8/8 chunks.
+20:23:07  KH : starting (8 chunks)
+20:23:08      natural=beach : 114 elements
+20:23:13      leisure=beach* : 6 elements
+20:23:16      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:23:20      sport=swimming : 27 elements
+20:23:24      nudism=* : 0 elements (tag not used in this country - fine)
+20:23:27      naturism=* : 0 elements (tag not used in this country - fine)
+20:23:31      clothing=optional : 0 elements (tag not used in this country - fine)
+20:24:16      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:24:19  KH : DONE - 147 places, 0.02 MB, 8/8 chunks.
+20:24:49  CN : starting (8 chunks)
+20:24:55      natural=beach : 1995 elements
+20:25:11      leisure=beach* : 84 elements
+20:25:16      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:25:22      sport=swimming : 1424 elements
+20:25:29      nudism=* : 8 elements
+20:25:34      naturism=* : 0 elements (tag not used in this country - fine)
+20:25:38      clothing=optional : 0 elements (tag not used in this country - fine)
+20:26:23      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:26:26  CN : DONE - 3491 places, 0.48 MB, 8/8 chunks.
+20:26:56  HK : starting (8 chunks)
+20:26:56      natural=beach : 0 elements (tag not used in this country - fine)
+20:26:59      leisure=beach* : 0 elements (tag not used in this country - fine)
+20:27:03      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:27:06      sport=swimming : 0 elements (tag not used in this country - fine)
+20:27:09      nudism=* : 0 elements (tag not used in this country - fine)
+20:27:13      naturism=* : 0 elements (tag not used in this country - fine)
+20:27:16      clothing=optional : 0 elements (tag not used in this country - fine)
+20:27:20      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:27:23  HK : NOTHING retrieved. No file written.
+20:27:53  IQ : starting (8 chunks)
+20:27:54      natural=beach : 20 elements
+20:27:59      leisure=beach* : 7 elements
+20:28:02      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:28:06      sport=swimming : 101 elements
+20:28:10      nudism=* : 0 elements (tag not used in this country - fine)
+20:28:13      naturism=* : 0 elements (tag not used in this country - fine)
+20:28:17      clothing=optional : 0 elements (tag not used in this country - fine)
+20:29:00      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:29:03  IQ : DONE - 128 places, 0.02 MB, 8/8 chunks.
+20:29:33  IR : starting (8 chunks)
+20:29:34      natural=beach : 229 elements
+20:29:39      leisure=beach* : 112 elements
+20:29:42      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:29:48      sport=swimming : 700 elements
+20:29:52      nudism=* : 0 elements (tag not used in this country - fine)
+20:29:55      naturism=* : 0 elements (tag not used in this country - fine)
+20:29:59      clothing=optional : 0 elements (tag not used in this country - fine)
+20:30:42      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:30:45  IR : DONE - 1039 places, 0.16 MB, 8/8 chunks.
+20:31:15  JO : starting (8 chunks)
+20:31:16      natural=beach : 53 elements
+20:31:24      leisure=beach* : 6 elements
+20:31:28      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:31:32      sport=swimming : 13 elements
+20:31:35      nudism=* : 2 elements
+20:31:39      naturism=* : 0 elements (tag not used in this country - fine)
+20:31:42      clothing=optional : 0 elements (tag not used in this country - fine)
+20:32:26      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:32:29  JO : DONE - 71 places, 0.01 MB, 8/8 chunks.
+20:32:59  KZ : starting (8 chunks)
+20:33:01      natural=beach : 601 elements
+20:33:06      leisure=beach* : 46 elements
+20:33:10      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:33:14      sport=swimming : 100 elements
+20:33:18      nudism=* : 18 elements
+20:33:22      naturism=* : 0 elements (tag not used in this country - fine)
+20:33:25      clothing=optional : 0 elements (tag not used in this country - fine)
+20:34:09      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:34:12  KZ : DONE - 758 places, 0.09 MB, 8/8 chunks.
+20:34:42  KG : starting (8 chunks)
+20:34:43      natural=beach : 171 elements
+20:34:47      leisure=beach* : 10 elements
+20:34:51      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:34:55      sport=swimming : 64 elements
+20:34:58      nudism=* : 2 elements
+20:35:02      naturism=* : 0 elements (tag not used in this country - fine)
+20:35:05      clothing=optional : 0 elements (tag not used in this country - fine)
+20:35:48      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:35:51  KG : DONE - 245 places, 0.03 MB, 8/8 chunks.
+20:36:21  KW : starting (8 chunks)
+20:36:22      natural=beach : 30 elements
+20:36:26      leisure=beach* : 2 elements
+20:36:29      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:36:33      sport=swimming : 17 elements
+20:36:36      nudism=* : 4 elements
+20:36:40      naturism=* : 0 elements (tag not used in this country - fine)
+20:36:43      clothing=optional : 0 elements (tag not used in this country - fine)
+20:37:27      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:37:30  KW : DONE - 49 places, 0.01 MB, 8/8 chunks.
+20:38:00  LA : starting (8 chunks)
+20:38:01      natural=beach : 35 elements
+20:38:05      leisure=beach* : 14 elements
+20:38:09      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:38:13      sport=swimming : 28 elements
+20:38:17      nudism=* : 0 elements (tag not used in this country - fine)
+20:38:20      naturism=* : 0 elements (tag not used in this country - fine)
+20:38:23      clothing=optional : 0 elements (tag not used in this country - fine)
+20:39:08      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:39:11  LA : DONE - 72 places, 0.01 MB, 8/8 chunks.
+20:39:41  LB : starting (8 chunks)
+20:39:42      natural=beach : 85 elements
+20:39:46      leisure=beach* : 71 elements
+20:39:50      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:39:54      sport=swimming : 41 elements
+20:39:57      nudism=* : 0 elements (tag not used in this country - fine)
+20:40:01      naturism=* : 0 elements (tag not used in this country - fine)
+20:40:04      clothing=optional : 0 elements (tag not used in this country - fine)
+20:40:49      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:40:52  LB : DONE - 197 places, 0.03 MB, 8/8 chunks.
+20:41:22  MO : starting (8 chunks)
+20:41:29      natural=beach : 0 elements (tag not used in this country - fine)
+20:41:36      leisure=beach* : 0 elements (tag not used in this country - fine)
+20:41:39      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:41:43      sport=swimming : 0 elements (tag not used in this country - fine)
+20:41:46      nudism=* : 0 elements (tag not used in this country - fine)
+20:41:50      naturism=* : 0 elements (tag not used in this country - fine)
+20:41:53      clothing=optional : 0 elements (tag not used in this country - fine)
+20:41:57      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:42:00  MO : NOTHING retrieved. No file written.
+20:42:30  MN : starting (8 chunks)
+20:42:30      natural=beach : 29 elements
+20:42:35      leisure=beach* : 2 elements
+20:42:38      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:42:42      sport=swimming : 12 elements
+20:42:46      nudism=* : 0 elements (tag not used in this country - fine)
+20:42:49      naturism=* : 0 elements (tag not used in this country - fine)
+20:42:53      clothing=optional : 0 elements (tag not used in this country - fine)
+20:43:36      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:43:39  MN : DONE - 42 places, 0.01 MB, 8/8 chunks.
+20:44:09  MM : starting (8 chunks)
+20:44:12      natural=beach : 237 elements
+20:44:18      leisure=beach* : 10 elements
+20:44:21      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:44:29      sport=swimming : 33 elements
+20:44:32      nudism=* : 1 elements
+20:44:36      naturism=* : 0 elements (tag not used in this country - fine)
+20:44:40      clothing=optional : 0 elements (tag not used in this country - fine)
+20:45:29      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:45:32  MM : DONE - 276 places, 0.03 MB, 8/8 chunks.
+20:46:02  NP : starting (8 chunks)
+20:46:14      natural=beach : 258 elements
+20:46:22      leisure=beach* : 7 elements
+20:46:25      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:46:31      sport=swimming : 44 elements
+20:46:36      nudism=* : 0 elements (tag not used in this country - fine)
+20:46:39      naturism=* : 0 elements (tag not used in this country - fine)
+20:46:43      clothing=optional : 0 elements (tag not used in this country - fine)
+20:47:27      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:47:30  NP : DONE - 309 places, 0.04 MB, 8/8 chunks.
+20:48:00  KP : starting (8 chunks)
+20:48:01      natural=beach : 646 elements
+20:48:06      leisure=beach* : 1 elements
+20:48:10      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:48:14      sport=swimming : 8 elements
+20:48:19      nudism=* : 0 elements (tag not used in this country - fine)
+20:48:24      naturism=* : 0 elements (tag not used in this country - fine)
+20:48:27      clothing=optional : 0 elements (tag not used in this country - fine)
+20:49:13      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:49:16  KP : DONE - 655 places, 0.07 MB, 8/8 chunks.
+20:49:46  OM : starting (8 chunks)
+20:49:47      natural=beach : 339 elements
+20:49:51      leisure=beach* : 5 elements
+20:49:55      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:49:58      sport=swimming : 30 elements
+20:50:02      nudism=* : 0 elements (tag not used in this country - fine)
+20:50:07      naturism=* : 0 elements (tag not used in this country - fine)
+20:50:10      clothing=optional : 0 elements (tag not used in this country - fine)
+20:50:58      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:51:01  OM : DONE - 374 places, 0.04 MB, 8/8 chunks.
+20:51:31  PK : starting (8 chunks)
+20:51:35      natural=beach : 93 elements
+20:51:41      leisure=beach* : 38 elements
+20:51:44      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:51:49      sport=swimming : 37 elements
+20:51:53      nudism=* : 0 elements (tag not used in this country - fine)
+20:51:56      naturism=* : 0 elements (tag not used in this country - fine)
+20:52:00      clothing=optional : 0 elements (tag not used in this country - fine)
+20:52:46      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:52:49  PK : DONE - 167 places, 0.02 MB, 8/8 chunks.
+20:53:19  PS : starting (8 chunks)
+20:53:19      natural=beach : 0 elements (tag not used in this country - fine)
+20:53:23      leisure=beach* : 0 elements (tag not used in this country - fine)
+20:53:26      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:53:37      sport=swimming : 0 elements (tag not used in this country - fine)
+20:53:40      nudism=* : 0 elements (tag not used in this country - fine)
+20:53:43      naturism=* : 0 elements (tag not used in this country - fine)
+20:53:47      clothing=optional : 0 elements (tag not used in this country - fine)
+20:53:50      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:53:53  PS : NOTHING retrieved. No file written.
+20:54:23  QA : starting (8 chunks)
+20:54:24      natural=beach : 127 elements
+20:54:29      leisure=beach* : 4 elements
+20:54:32      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:54:36      sport=swimming : 22 elements
+20:54:39      nudism=* : 0 elements (tag not used in this country - fine)
+20:54:43      naturism=* : 0 elements (tag not used in this country - fine)
+20:54:46      clothing=optional : 0 elements (tag not used in this country - fine)
+20:55:30      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:55:33  QA : DONE - 152 places, 0.02 MB, 8/8 chunks.
+20:56:03  SA : starting (8 chunks)
+20:56:04      natural=beach : 107 elements
+20:56:09      leisure=beach* : 16 elements
+20:56:12      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:56:16      sport=swimming : 115 elements
+20:56:20      nudism=* : 0 elements (tag not used in this country - fine)
+20:56:23      naturism=* : 0 elements (tag not used in this country - fine)
+20:56:27      clothing=optional : 0 elements (tag not used in this country - fine)
+20:57:14      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:57:17  SA : DONE - 235 places, 0.03 MB, 8/8 chunks.
+20:57:47  SY : starting (8 chunks)
+20:57:49      natural=beach : 41 elements
+20:57:53      leisure=beach* : 5 elements
+20:57:57      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:58:01      sport=swimming : 61 elements
+20:58:05      nudism=* : 0 elements (tag not used in this country - fine)
+20:58:09      naturism=* : 0 elements (tag not used in this country - fine)
+20:58:12      clothing=optional : 0 elements (tag not used in this country - fine)
+20:58:58      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+20:59:01  SY : DONE - 107 places, 0.02 MB, 8/8 chunks.
+20:59:31  TJ : starting (8 chunks)
+20:59:32      natural=beach : 70 elements
+20:59:37      leisure=beach* : 3 elements
+20:59:41      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+20:59:45      sport=swimming : 12 elements
+20:59:49      nudism=* : 0 elements (tag not used in this country - fine)
+20:59:52      naturism=* : 0 elements (tag not used in this country - fine)
+20:59:55      clothing=optional : 0 elements (tag not used in this country - fine)
+21:00:42      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:00:45  TJ : DONE - 85 places, 0.01 MB, 8/8 chunks.
+21:01:15  TM : starting (8 chunks)
+21:01:22      natural=beach : 16 elements
+21:01:26      leisure=beach* : 2 elements
+21:01:30      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:01:36      sport=swimming : 7 elements
+21:01:39      nudism=* : 0 elements (tag not used in this country - fine)
+21:01:42      naturism=* : 0 elements (tag not used in this country - fine)
+21:01:46      clothing=optional : 0 elements (tag not used in this country - fine)
+21:02:31      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:02:34  TM : DONE - 25 places, 0 MB, 8/8 chunks.
+21:03:04  UZ : starting (8 chunks)
+21:03:08      natural=beach : 90 elements
+21:03:14      leisure=beach* : 14 elements
+21:03:17      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:03:22      sport=swimming : 144 elements
+21:03:25      nudism=* : 0 elements (tag not used in this country - fine)
+21:03:29      naturism=* : 0 elements (tag not used in this country - fine)
+21:03:32      clothing=optional : 0 elements (tag not used in this country - fine)
+21:04:17      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:04:20  UZ : DONE - 248 places, 0.04 MB, 8/8 chunks.
+21:04:50  YE : starting (8 chunks)
+21:04:51      natural=beach : 122 elements
+21:04:55      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:04:59      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:05:04      sport=swimming : 4 elements
+21:05:07      nudism=* : 0 elements (tag not used in this country - fine)
+21:05:11      naturism=* : 0 elements (tag not used in this country - fine)
+21:05:14      clothing=optional : 0 elements (tag not used in this country - fine)
+21:05:57      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:06:00  YE : DONE - 126 places, 0.01 MB, 8/8 chunks.
+21:06:30  AS : starting (8 chunks)
+21:06:31      natural=beach : 0 elements (tag not used in this country - fine)
+21:06:34      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:06:37      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:06:41      sport=swimming : 0 elements (tag not used in this country - fine)
+21:06:44      nudism=* : 0 elements (tag not used in this country - fine)
+21:06:47      naturism=* : 0 elements (tag not used in this country - fine)
+21:06:51      clothing=optional : 0 elements (tag not used in this country - fine)
+21:06:54      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:06:57  AS : NOTHING retrieved. No file written.
+21:07:27  CK : starting (8 chunks)
+21:07:28      natural=beach : 55 elements
+21:07:32      leisure=beach* : 2 elements
+21:07:36      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:07:39      sport=swimming : 0 elements (tag not used in this country - fine)
+21:07:42      nudism=* : 0 elements (tag not used in this country - fine)
+21:07:46      naturism=* : 0 elements (tag not used in this country - fine)
+21:07:49      clothing=optional : 0 elements (tag not used in this country - fine)
+21:08:32      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:08:35  CK : DONE - 57 places, 0.01 MB, 8/8 chunks.
+21:09:05  FM : starting (8 chunks)
+21:09:06      natural=beach : 146 elements
+21:09:10      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:09:14      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:09:17      sport=swimming : 1 elements
+21:09:20      nudism=* : 0 elements (tag not used in this country - fine)
+21:09:24      naturism=* : 0 elements (tag not used in this country - fine)
+21:09:27      clothing=optional : 0 elements (tag not used in this country - fine)
+21:10:11      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:10:14  FM : DONE - 146 places, 0.02 MB, 8/8 chunks.
+21:10:44  GU : starting (8 chunks)
+21:10:44      natural=beach : 0 elements (tag not used in this country - fine)
+21:10:47      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:10:51      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:10:54      sport=swimming : 0 elements (tag not used in this country - fine)
+21:10:58      nudism=* : 0 elements (tag not used in this country - fine)
+21:11:35        attempt 1/4 on maps.mail.ru failed: The remote server returned an error: (504) Gateway Timeout.
+21:11:45        attempt 2/4 on overpass-api.de failed: The remote server returned an error: (406) Not Acceptable.
+21:13:41        attempt 3/4 on overpass.kumi.systems failed: The remote server returned an error: (504) Gateway Timeout.
+21:15:43      naturism=* : 0 elements (tag not used in this country - fine)
+21:15:47      clothing=optional : 0 elements (tag not used in this country - fine)
+21:15:51      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:15:54  GU : NOTHING retrieved. No file written.
+21:16:24  KI : starting (8 chunks)
+21:16:24      natural=beach : 68 elements
+21:16:29      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:16:32      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:16:35      sport=swimming : 0 elements (tag not used in this country - fine)
+21:16:39      nudism=* : 0 elements (tag not used in this country - fine)
+21:16:42      naturism=* : 0 elements (tag not used in this country - fine)
+21:16:46      clothing=optional : 0 elements (tag not used in this country - fine)
+21:17:29      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:17:32  KI : DONE - 68 places, 0.01 MB, 8/8 chunks.
+21:18:02  MH : starting (8 chunks)
+21:18:03      natural=beach : 384 elements
+21:18:07      leisure=beach* : 1 elements
+21:18:11      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:18:14      sport=swimming : 3 elements
+21:18:18      nudism=* : 0 elements (tag not used in this country - fine)
+21:18:22      naturism=* : 0 elements (tag not used in this country - fine)
+21:18:25      clothing=optional : 0 elements (tag not used in this country - fine)
+21:19:12      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:19:15  MH : DONE - 388 places, 0.04 MB, 8/8 chunks.
+21:19:45  MP : starting (8 chunks)
+21:19:45      natural=beach : 0 elements (tag not used in this country - fine)
+21:19:49      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:19:52      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:19:56      sport=swimming : 0 elements (tag not used in this country - fine)
+21:19:59      nudism=* : 0 elements (tag not used in this country - fine)
+21:20:03      naturism=* : 0 elements (tag not used in this country - fine)
+21:20:06      clothing=optional : 0 elements (tag not used in this country - fine)
+21:20:10      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:20:13  MP : NOTHING retrieved. No file written.
+21:20:43  NC : starting (8 chunks)
+21:20:43      natural=beach : 0 elements (tag not used in this country - fine)
+21:20:46      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:20:50      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:21:09      sport=swimming : 0 elements (tag not used in this country - fine)
+21:21:16      nudism=* : 0 elements (tag not used in this country - fine)
+21:21:19      naturism=* : 0 elements (tag not used in this country - fine)
+21:21:27      clothing=optional : 0 elements (tag not used in this country - fine)
+21:21:49      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:21:52  NC : NOTHING retrieved. No file written.
+21:22:22  NF : starting (8 chunks)
+21:22:23      natural=beach : 0 elements (tag not used in this country - fine)
+21:22:26      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:22:29      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:22:33      sport=swimming : 0 elements (tag not used in this country - fine)
+21:22:37      nudism=* : 0 elements (tag not used in this country - fine)
+21:22:40      naturism=* : 0 elements (tag not used in this country - fine)
+21:22:44      clothing=optional : 0 elements (tag not used in this country - fine)
+21:22:48      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:22:51  NF : NOTHING retrieved. No file written.
+21:23:21  NR : starting (8 chunks)
+21:23:21      natural=beach : 10 elements
+21:23:26      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:23:29      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:23:33      sport=swimming : 0 elements (tag not used in this country - fine)
+21:23:37      nudism=* : 0 elements (tag not used in this country - fine)
+21:23:40      naturism=* : 0 elements (tag not used in this country - fine)
+21:23:46      clothing=optional : 0 elements (tag not used in this country - fine)
+21:24:30      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:24:33  NR : DONE - 10 places, 0 MB, 8/8 chunks.
+21:25:04  NU : starting (8 chunks)
+21:25:04      natural=beach : 6 elements
+21:25:08      leisure=beach* : 2 elements
+21:25:12      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:25:15      sport=swimming : 0 elements (tag not used in this country - fine)
+21:25:22      nudism=* : 0 elements (tag not used in this country - fine)
+21:25:26      naturism=* : 0 elements (tag not used in this country - fine)
+21:25:32      clothing=optional : 0 elements (tag not used in this country - fine)
+21:26:15      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:26:18  NU : DONE - 8 places, 0 MB, 8/8 chunks.
+21:26:48  PF : starting (8 chunks)
+21:26:49      natural=beach : 0 elements (tag not used in this country - fine)
+21:26:53      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:26:57      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:27:04      sport=swimming : 0 elements (tag not used in this country - fine)
+21:27:08      nudism=* : 0 elements (tag not used in this country - fine)
+21:27:24      naturism=* : 0 elements (tag not used in this country - fine)
+21:27:27      clothing=optional : 0 elements (tag not used in this country - fine)
+21:27:38      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:27:41  PF : NOTHING retrieved. No file written.
+21:28:11  PG : starting (8 chunks)
+21:28:19      natural=beach : 632 elements
+21:28:23      leisure=beach* : 2 elements
+21:28:27      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:28:31      sport=swimming : 1 elements
+21:28:34      nudism=* : 0 elements (tag not used in this country - fine)
+21:28:38      naturism=* : 0 elements (tag not used in this country - fine)
+21:28:42      clothing=optional : 0 elements (tag not used in this country - fine)
+21:29:28      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:29:31  PG : DONE - 635 places, 0.07 MB, 8/8 chunks.
+21:30:01  PN : starting (8 chunks)
+21:30:02      natural=beach : 8 elements
+21:30:14      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:30:19      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:30:22      sport=swimming : 0 elements (tag not used in this country - fine)
+21:30:26      nudism=* : 0 elements (tag not used in this country - fine)
+21:30:29      naturism=* : 0 elements (tag not used in this country - fine)
+21:30:32      clothing=optional : 0 elements (tag not used in this country - fine)
+21:31:17      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:31:20  PN : DONE - 8 places, 0 MB, 8/8 chunks.
+21:31:50  PW : starting (8 chunks)
+21:31:52      natural=beach : 53 elements
+21:31:56      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:31:59      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:32:03      sport=swimming : 2 elements
+21:32:06      nudism=* : 0 elements (tag not used in this country - fine)
+21:32:09      naturism=* : 0 elements (tag not used in this country - fine)
+21:32:13      clothing=optional : 0 elements (tag not used in this country - fine)
+21:32:56      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:32:59  PW : DONE - 55 places, 0.01 MB, 8/8 chunks.
+21:33:29  SB : starting (8 chunks)
+21:33:30      natural=beach : 958 elements
+21:33:35      leisure=beach* : 1 elements
+21:33:38      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:33:42      sport=swimming : 0 elements (tag not used in this country - fine)
+21:33:45      nudism=* : 0 elements (tag not used in this country - fine)
+21:33:49      naturism=* : 0 elements (tag not used in this country - fine)
+21:33:52      clothing=optional : 0 elements (tag not used in this country - fine)
+21:34:37      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:34:40  SB : DONE - 959 places, 0.11 MB, 8/8 chunks.
+21:35:10  TK : starting (8 chunks)
+21:35:10      natural=beach : 7 elements
+21:35:15      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:35:18      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:35:22      sport=swimming : 0 elements (tag not used in this country - fine)
+21:35:25      nudism=* : 0 elements (tag not used in this country - fine)
+21:35:28      naturism=* : 0 elements (tag not used in this country - fine)
+21:35:32      clothing=optional : 0 elements (tag not used in this country - fine)
+21:36:16      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:36:19  TK : DONE - 7 places, 0 MB, 8/8 chunks.
+21:36:49  TL : starting (8 chunks)
+21:36:50      natural=beach : 153 elements
+21:36:54      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:36:58      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:37:01      sport=swimming : 3 elements
+21:37:05      nudism=* : 0 elements (tag not used in this country - fine)
+21:37:08      naturism=* : 0 elements (tag not used in this country - fine)
+21:37:11      clothing=optional : 0 elements (tag not used in this country - fine)
+21:37:55      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:37:58  TL : DONE - 156 places, 0.02 MB, 8/8 chunks.
+21:38:28  TO : starting (8 chunks)
+21:38:29      natural=beach : 94 elements
+21:38:33      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:38:37      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:38:40      sport=swimming : 3 elements
+21:38:44      nudism=* : 0 elements (tag not used in this country - fine)
+21:38:47      naturism=* : 0 elements (tag not used in this country - fine)
+21:38:53      clothing=optional : 0 elements (tag not used in this country - fine)
+21:39:37      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:39:40  TO : DONE - 97 places, 0.01 MB, 8/8 chunks.
+21:40:10  TV : starting (8 chunks)
+21:40:11      natural=beach : 36 elements
+21:40:15      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:40:19      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:40:22      sport=swimming : 0 elements (tag not used in this country - fine)
+21:40:26      nudism=* : 0 elements (tag not used in this country - fine)
+21:40:29      naturism=* : 0 elements (tag not used in this country - fine)
+21:40:33      clothing=optional : 0 elements (tag not used in this country - fine)
+21:41:16      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:41:19  TV : DONE - 36 places, 0 MB, 8/8 chunks.
+21:41:49  VU : starting (8 chunks)
+21:41:50      natural=beach : 178 elements
+21:41:54      leisure=beach* : 6 elements
+21:41:58      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:42:01      sport=swimming : 10 elements
+21:42:04      nudism=* : 0 elements (tag not used in this country - fine)
+21:42:09      naturism=* : 0 elements (tag not used in this country - fine)
+21:42:13      clothing=optional : 0 elements (tag not used in this country - fine)
+21:42:56      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:42:59  VU : DONE - 193 places, 0.02 MB, 8/8 chunks.
+21:43:29  WF : starting (8 chunks)
+21:43:29      natural=beach : 0 elements (tag not used in this country - fine)
+21:43:33      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:43:36      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:43:39      sport=swimming : 0 elements (tag not used in this country - fine)
+21:43:43      nudism=* : 0 elements (tag not used in this country - fine)
+21:43:46      naturism=* : 0 elements (tag not used in this country - fine)
+21:43:50      clothing=optional : 0 elements (tag not used in this country - fine)
+21:43:53      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:43:56  WF : NOTHING retrieved. No file written.
+21:44:26  WS : starting (8 chunks)
+21:44:26      natural=beach : 167 elements
+21:44:31      leisure=beach* : 26 elements
+21:44:34      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:44:38      sport=swimming : 8 elements
+21:44:41      nudism=* : 0 elements (tag not used in this country - fine)
+21:44:44      naturism=* : 0 elements (tag not used in this country - fine)
+21:44:48      clothing=optional : 0 elements (tag not used in this country - fine)
+21:45:33      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:45:36  WS : DONE - 201 places, 0.02 MB, 8/8 chunks.
+21:46:06  IO : starting (8 chunks)
+21:46:07      natural=beach : 144 elements
+21:46:11      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:46:14      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:46:18      sport=swimming : 0 elements (tag not used in this country - fine)
+21:46:21      nudism=* : 0 elements (tag not used in this country - fine)
+21:46:25      naturism=* : 0 elements (tag not used in this country - fine)
+21:46:28      clothing=optional : 0 elements (tag not used in this country - fine)
+21:47:12      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:47:15  IO : DONE - 144 places, 0.02 MB, 8/8 chunks.
+21:47:45  CX : starting (8 chunks)
+21:47:46      natural=beach : 0 elements (tag not used in this country - fine)
+21:47:49      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:47:52      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:47:56      sport=swimming : 0 elements (tag not used in this country - fine)
+21:47:59      nudism=* : 0 elements (tag not used in this country - fine)
+21:48:03      naturism=* : 0 elements (tag not used in this country - fine)
+21:48:06      clothing=optional : 0 elements (tag not used in this country - fine)
+21:48:09      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:48:12  CX : NOTHING retrieved. No file written.
+21:48:42  CC : starting (8 chunks)
+21:48:43      natural=beach : 0 elements (tag not used in this country - fine)
+21:48:46      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:48:50      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:48:53      sport=swimming : 0 elements (tag not used in this country - fine)
+21:48:56      nudism=* : 0 elements (tag not used in this country - fine)
+21:49:00      naturism=* : 0 elements (tag not used in this country - fine)
+21:49:05      clothing=optional : 0 elements (tag not used in this country - fine)
+21:49:08      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:49:11  CC : NOTHING retrieved. No file written.
+21:49:41  HM : starting (8 chunks)
+21:49:42      natural=beach : 0 elements (tag not used in this country - fine)
+21:49:45      leisure=beach* : 0 elements (tag not used in this country - fine)
+21:49:48      tourism=beach_resort : 0 elements (tag not used in this country - fine)
+21:49:52      sport=swimming : 0 elements (tag not used in this country - fine)
+21:49:55      nudism=* : 0 elements (tag not used in this country - fine)
+21:50:00      naturism=* : 0 elements (tag not used in this country - fine)
+21:50:06      clothing=optional : 0 elements (tag not used in this country - fine)
+21:50:09      name~naturist/nudist : 0 elements (tag not used in this country - fine)
+21:50:12  HM : NOTHING retrieved. No file written.
+21:50:42  === Build finished. ===
