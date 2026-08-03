@@ -2,8 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>BeachScout Global — 10 km Place Picker</title>
+
+<!-- Home-screen install (added 3 Aug 2026).
+     manifest.json covers Android/Chrome. iOS still largely ignores the manifest
+     and reads its own apple-* meta tags, so both sets are needed: without the
+     apple-* lines an iPhone "Add to Home Screen" gives a plain bookmark that
+     opens in Safari chrome, not a standalone app. -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0B5FC0" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="BeachScout" />
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -485,7 +497,10 @@
 
       <div class="conditions-card">
         <h3>🚩 Safety</h3>
-        <div class="condition-row"><span>Current warnings</span><span class="condition-value" id="cSafety">—</span></div>
+        <!-- "Current warnings" row removed 3 Aug 2026: with no official feed
+             connected it only ever printed "No official warning feed connected",
+             i.e. a whole row whose sole content was an admission that the row
+             does not work. Restore it if/when a real warning feed is wired in. -->
         <!-- Jellyfish (medusa) are the most common summer hazard on Mediterranean
              and Adriatic beaches, and numbers change day to day with wind and
              current. We deliberately do NOT show a jellyfish photo or a presence
@@ -3164,7 +3179,6 @@ async function renderConditions(beach){
   set("recKicker", "BeachScout Recommendation");
   set("recMain", "Loading…");
   set("recNote", "Fetching live conditions.");
-  set("cSafety", "No official warning feed connected");
 
   if(!beach || beach.lat == null || beach.lon == null){
     set("recMain", "No beach selected");
