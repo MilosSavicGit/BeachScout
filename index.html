@@ -2843,14 +2843,36 @@ function localNameFromOsmTags(tags, fallback){
   );
 }
 
+// The pristine local name, captured ONCE per beach and never recomputed.
+//
+// Why this exists: _originalName used to be rebuilt from beach.name whenever the
+// translation memory was cleared (new search, country re-match while typing,
+// reset). If the user was in Latin mode at that moment, beach.name was ALREADY
+// the transliteration, so the "original" was rebuilt from it and the Cyrillic or
+// Greek name was lost permanently — the toggle then appeared to stick in Latin
+// with no way back. Display state must never be the source of truth for the
+// original, so capture it before anything can overwrite it and never delete it.
+function ensurePristineName(beach){
+  if(beach._pristineName === undefined){
+    const t = beach.tags || {};
+    beach._pristineName =
+      t.name || t.official_name || t["name:local"] ||
+      beach.originalName || beach.name || "Unnamed beach";
+  }
+  if(beach._pristineStatus === undefined){
+    beach._pristineStatus = beach.status || "";
+  }
+}
+
 function makeBeachMemory(beach){
+  ensurePristineName(beach);
+
   if(!beach._originalName){
-    // Original must be the local OSM name for this country, not the last translated display name.
-    beach._originalName = localNameFromOsmTags(beach.tags || {}, beach.originalName || beach.name);
+    beach._originalName = beach._pristineName;
   }
 
   if(!beach._originalStatus){
-    beach._originalStatus = beach.status || "";
+    beach._originalStatus = beach._pristineStatus;
   }
 
   if(!beach._englishName){
@@ -2889,8 +2911,9 @@ function initializeOriginalMemoryForNewSearch(){
     delete b._englishName;
     delete b._englishStatus;
 
-    b._originalName = localNameFromOsmTags(b.tags || {}, b.originalName || b.name);
-    b._originalStatus = b.status || "";
+    ensurePristineName(b);
+    b._originalName = b._pristineName;
+    b._originalStatus = b._pristineStatus;
 
     const t = b.tags || {};
     b._englishName =
@@ -2928,6 +2951,13 @@ function resetTranslationForNewResults(){
   translateMode = "original";
 
   for(const b of allBeaches){
+    // Restore the display BEFORE forgetting the memory. Deleting the memory
+    // while beach.name still holds transliterated text is exactly what stranded
+    // names in Latin with no way back.
+    ensurePristineName(b);
+    b.name = b._pristineName;
+    b.status = b._pristineStatus;
+
     delete b._originalName;
     delete b._originalStatus;
     delete b._englishName;
