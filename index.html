@@ -2667,6 +2667,128 @@ async function loadPopupPhoto(photoId, beach){
 
 
 
+// ---------------------------------------------------------------------------
+// Script transliteration (Greek + Cyrillic -> Latin), done locally.
+//
+// This is NOT translation. "Τουρλά" becomes "Tourla", not an English meaning —
+// place names rarely have one. What a visitor actually needs is to be able to
+// READ the name and match it to a road sign or type it into a maps app, and
+// that is a script problem, not a language problem.
+//
+// Done with a lookup table rather than an API on purpose: no network request,
+// no rate limit, works offline, instant on all 63+ results at once. The Google
+// endpoint used for user photo descriptions is unofficial and throttles, which
+// is fine for one description but not for every name in a country.
+//
+// Output is deliberately plain ASCII (Cyrillic ш -> "sh", not "š"): the point is
+// something an English speaker can read aloud and paste into a search box.
+// ---------------------------------------------------------------------------
+
+const GREEK_DIGRAPHS = [
+  ["ου","ou"],["ού","ou"],["Ου","Ou"],["ΟΥ","OU"],
+  ["αι","ai"],["αί","ai"],["Αι","Ai"],["ΑΙ","AI"],
+  ["ει","ei"],["εί","ei"],["Ει","Ei"],["ΕΙ","EI"],
+  ["οι","oi"],["οί","oi"],["Οι","Oi"],["ΟΙ","OI"],
+  ["υι","yi"],["Υι","Yi"],
+  ["αυ","av"],["αύ","av"],["Αυ","Av"],["ΑΥ","AV"],
+  ["ευ","ev"],["εύ","ev"],["Ευ","Ev"],["ΕΥ","EV"],
+  ["ηυ","iv"],["Ηυ","Iv"],
+  ["γγ","ng"],["Γγ","Ng"],
+  ["γκ","gk"],["Γκ","Gk"],["ΓΚ","GK"],
+  ["γχ","nch"],["γξ","nx"],
+  ["μπ","b"],["Μπ","B"],["ΜΠ","B"],
+  ["ντ","d"],["Ντ","D"],["ΝΤ","D"],
+  ["τσ","ts"],["Τσ","Ts"],["ΤΣ","TS"],
+  ["τζ","tz"],["Τζ","Tz"],["ΤΖ","TZ"]
+];
+
+const GREEK_LETTERS = {
+  "α":"a","ά":"a","β":"v","γ":"g","δ":"d","ε":"e","έ":"e","ζ":"z",
+  "η":"i","ή":"i","θ":"th","ι":"i","ί":"i","ϊ":"i","ΐ":"i","κ":"k",
+  "λ":"l","μ":"m","ν":"n","ξ":"x","ο":"o","ό":"o","π":"p","ρ":"r",
+  "σ":"s","ς":"s","τ":"t","υ":"y","ύ":"y","ϋ":"y","ΰ":"y","φ":"f",
+  "χ":"ch","ψ":"ps","ω":"o","ώ":"o",
+  "Α":"A","Ά":"A","Β":"V","Γ":"G","Δ":"D","Ε":"E","Έ":"E","Ζ":"Z",
+  "Η":"I","Ή":"I","Θ":"Th","Ι":"I","Ί":"I","Ϊ":"I","Κ":"K","Λ":"L",
+  "Μ":"M","Ν":"N","Ξ":"X","Ο":"O","Ό":"O","Π":"P","Ρ":"R","Σ":"S",
+  "Τ":"T","Υ":"Y","Ύ":"Y","Ϋ":"Y","Φ":"F","Χ":"Ch","Ψ":"Ps","Ω":"O","Ώ":"O"
+};
+
+// Serbian/Montenegrin letters (љ њ ђ ћ џ) plus the Russian/Bulgarian/Ukrainian
+// set. Where conventions differ, the English-readable digraph wins.
+const CYRILLIC_LETTERS = {
+  "а":"a","б":"b","в":"v","г":"g","ґ":"g","д":"d","ђ":"dj","е":"e","ё":"yo",
+  "є":"ye","ж":"zh","з":"z","и":"i","і":"i","ї":"yi","й":"y","ј":"j","к":"k",
+  "л":"l","љ":"lj","м":"m","н":"n","њ":"nj","о":"o","п":"p","р":"r","с":"s",
+  "т":"t","ћ":"c","у":"u","ў":"u","ф":"f","х":"h","ц":"c","ч":"ch","џ":"dz",
+  "ш":"sh","щ":"sht","ъ":"a","ы":"y","ь":"","э":"e","ю":"yu","я":"ya",
+  "А":"A","Б":"B","В":"V","Г":"G","Ґ":"G","Д":"D","Ђ":"Dj","Е":"E","Ё":"Yo",
+  "Є":"Ye","Ж":"Zh","З":"Z","И":"I","І":"I","Ї":"Yi","Й":"Y","Ј":"J","К":"K",
+  "Л":"L","Љ":"Lj","М":"M","Н":"N","Њ":"Nj","О":"O","П":"P","Р":"R","С":"S",
+  "Т":"T","Ћ":"C","У":"U","Ў":"U","Ф":"F","Х":"H","Ц":"C","Ч":"Ch","Џ":"Dz",
+  "Ш":"Sh","Щ":"Sht","Ъ":"A","Ы":"Y","Ь":"","Э":"E","Ю":"Yu","Я":"Ya"
+};
+
+// Any script we do NOT convert: CJK, kana, Arabic, Hebrew, Thai, Devanagari,
+// Korean, Georgian, Armenian. Used only to report honestly what was left alone.
+function hasUnconvertedScript(s){
+  return /[\u0600-\u06FF\u0590-\u05FF\u0E00-\u0E7F\u0900-\u097F\u10A0-\u10FF\u0530-\u058F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF]/.test(String(s||""));
+}
+
+// Serbian/Montenegrin/Bosnian Cyrillic is a special case. Unlike Russian, which
+// has no official Latin form, Serbian has one — gajica — and it is an exact 1:1
+// mapping used on every road sign in Serbia and Montenegro. So "Бечићи" has a
+// CORRECT Latin spelling, "Bečići", not an approximation. Rendering it "Bechici"
+// with the Russian-style digraphs would be a spelling that simply does not exist
+// and would not match any sign the visitor is looking at.
+const SERBIAN_LATIN = {
+  "а":"a","б":"b","в":"v","г":"g","д":"d","ђ":"đ","е":"e","ж":"ž","з":"z",
+  "и":"i","ј":"j","к":"k","л":"l","љ":"lj","м":"m","н":"n","њ":"nj","о":"o",
+  "п":"p","р":"r","с":"s","т":"t","ћ":"ć","у":"u","ф":"f","х":"h","ц":"c",
+  "ч":"č","џ":"dž","ш":"š",
+  "А":"A","Б":"B","В":"V","Г":"G","Д":"D","Ђ":"Đ","Е":"E","Ж":"Ž","З":"Z",
+  "И":"I","Ј":"J","К":"K","Л":"L","Љ":"Lj","М":"M","Н":"N","Њ":"Nj","О":"O",
+  "П":"P","Р":"R","С":"S","Т":"T","Ћ":"Ć","У":"U","Ф":"F","Х":"H","Ц":"C",
+  "Ч":"Č","Џ":"Dž","Ш":"Š"
+};
+
+// Letters that exist in Serbian Cyrillic but not Russian, and vice versa.
+const SERBIAN_ONLY = /[јљњђћџЈЉЊЂЋЏ]/;
+const RUSSIAN_ONLY = /[ыэёъщйюяЫЭЁЪЩЙЮЯ]/;
+
+function useSerbianLatin(text){
+  // Country first — most reliable, and covers plain names like "Ада" that
+  // contain no Serbian-specific letter at all.
+  if(["Serbia","Montenegro","Bosnia and Herzegovina"].includes(currentCountry)) return true;
+
+  if(RUSSIAN_ONLY.test(text)) return false;
+  return SERBIAN_ONLY.test(text);
+}
+
+function hasGreek(s){ return /[\u0370-\u03FF\u1F00-\u1FFF]/.test(s); }
+function hasCyrillic(s){ return /[\u0400-\u04FF]/.test(s); }
+
+function transliterateToLatin(text){
+  let s = String(text || "");
+  if(!s) return s;
+  if(!hasGreek(s) && !hasCyrillic(s)) return s;
+
+  if(hasGreek(s)){
+    // Digraphs first — order matters, "ου" must be consumed before "ο" and "υ".
+    for(const [from,to] of GREEK_DIGRAPHS){
+      s = s.split(from).join(to);
+    }
+    s = s.replace(/[\u0370-\u03FF\u1F00-\u1FFF]/g, ch => GREEK_LETTERS[ch] ?? ch);
+  }
+
+  if(hasCyrillic(s)){
+    const table = useSerbianLatin(s) ? SERBIAN_LATIN : CYRILLIC_LETTERS;
+    s = s.replace(/[\u0400-\u04FF]/g, ch => table[ch] ?? CYRILLIC_LETTERS[ch] ?? ch);
+  }
+
+  return s.replace(/\s+/g," ").trim();
+}
+
 function isProbablyEnglish(text){
   const s = String(text || "").trim();
   if(!s) return true;
@@ -2721,14 +2843,41 @@ function localNameFromOsmTags(tags, fallback){
   );
 }
 
+// The pristine local name, captured ONCE per beach and never recomputed.
+//
+// Why this exists: _originalName used to be rebuilt from beach.name whenever the
+// translation memory was cleared (new search, country re-match while typing,
+// reset). If the user was in Latin mode at that moment, beach.name was ALREADY
+// the transliteration, so the "original" was rebuilt from it and the Cyrillic or
+// Greek name was lost permanently — the toggle then appeared to stick in Latin
+// with no way back. Display state must never be the source of truth for the
+// original, so capture it before anything can overwrite it and never delete it.
+function ensurePristineName(beach){
+  if(!beach || typeof beach !== "object") return;
+
+  // Capture only once a real name exists. Locking in a placeholder because this
+  // happened to run before the beach was fully built would be permanent.
+  if(!beach._pristineName){
+    const t = beach.tags || {};
+    const n = t.name || t.official_name || t["name:local"] ||
+              beach.originalName || beach.name;
+    if(n) beach._pristineName = n;
+  }
+  // Same reasoning: an empty status must stay retryable, not be frozen as "".
+  if(!beach._pristineStatus && beach.status){
+    beach._pristineStatus = beach.status;
+  }
+}
+
 function makeBeachMemory(beach){
+  ensurePristineName(beach);
+
   if(!beach._originalName){
-    // Original must be the local OSM name for this country, not the last translated display name.
-    beach._originalName = localNameFromOsmTags(beach.tags || {}, beach.originalName || beach.name);
+    beach._originalName = beach._pristineName || beach.name || "Unnamed beach";
   }
 
   if(!beach._originalStatus){
-    beach._originalStatus = beach.status || "";
+    beach._originalStatus = beach._pristineStatus || beach.status || "";
   }
 
   if(!beach._englishName){
@@ -2741,7 +2890,10 @@ function makeBeachMemory(beach){
       t.int_name ||
       t["name:latin"] ||
       t.name_latin ||
-      beach._originalName;
+      // No English tag in OSM (true for most local beaches) — fall back to
+      // transliterating the local name into Latin script so it is at least
+      // readable, rather than silently showing the identical original.
+      transliterateToLatin(beach._originalName);
   }
 
   if(!beach._englishStatus){
@@ -2764,8 +2916,9 @@ function initializeOriginalMemoryForNewSearch(){
     delete b._englishName;
     delete b._englishStatus;
 
-    b._originalName = localNameFromOsmTags(b.tags || {}, b.originalName || b.name);
-    b._originalStatus = b.status || "";
+    ensurePristineName(b);
+    b._originalName = b._pristineName || b.name || "Unnamed beach";
+    b._originalStatus = b._pristineStatus || b.status || "";
 
     const t = b.tags || {};
     b._englishName =
@@ -2776,7 +2929,7 @@ function initializeOriginalMemoryForNewSearch(){
       t.int_name ||
       t["name:latin"] ||
       t.name_latin ||
-      b._originalName;
+      transliterateToLatin(b._originalName);
 
     b._englishStatus = b._originalStatus;
 
@@ -2837,7 +2990,11 @@ async function translateArbitraryTextToEnglish(text){
 }
 
 async function applyDescriptionModeToOpenPopup(){
-  const popup = document.querySelector(".maplibregl-popup .popup");
+  // Look in whichever beach view is actually open: desktop popup or mobile page.
+  const mobilePage = $("mobileBeachPage");
+  const popup =
+    (mobilePage && mobilePage.classList.contains("show") && $("mobileBeachContent"))
+    || document.querySelector(".maplibregl-popup .popup");
   if(!popup) return;
 
   const descriptions = popup.querySelectorAll(".community-description");
@@ -2866,6 +3023,15 @@ async function applyDescriptionModeToOpenPopup(){
 }
 
 function openPopupBeach(){
+  // The app has TWO beach views: the desktop MapLibre popup and the mobile
+  // full-page panel (#mobileBeachPage). This used to look only for the desktop
+  // popup and return null on mobile, which silently disabled the whole
+  // translate feature on phones. Check the mobile page first.
+  const mobilePage = $("mobileBeachPage");
+  if(mobilePage && mobilePage.classList.contains("show") && activeUploadBeach){
+    return activeUploadBeach;
+  }
+
   const popup = document.querySelector(".maplibregl-popup .popup");
   if(!popup) return null;
 
@@ -2906,6 +3072,20 @@ function updateCurrentDisplayWithoutRedraw(){
   const popup = document.querySelector(".maplibregl-popup .popup");
   const b = openPopupBeach();
 
+  // Mobile beach page: a separate DOM structure (<h2> + .mobile-status) that
+  // lives outside .maplibregl-popup, so the desktop branch below never saw it.
+  const mobilePage = $("mobileBeachPage");
+  const mobileContent = $("mobileBeachContent");
+  if(mobilePage && mobilePage.classList.contains("show") && mobileContent && b){
+    const h2 = mobileContent.querySelector("h2");
+    const statusEl = mobileContent.querySelector(".mobile-status");
+    const mBtn = mobileContent.querySelector(".translate-toggle-btn");
+
+    if(h2) h2.textContent = `${activeMobileNum}. ${b.name}`;
+    if(statusEl) statusEl.textContent = b.status;
+    if(mBtn) mBtn.textContent = translateButtonLabel();
+  }
+
   if(popup && b){
     const h3 = popup.querySelector("h3");
     const statusEl = popup.querySelector("p b");
@@ -2926,10 +3106,33 @@ async function toggleTranslate(){
   await applyDescriptionModeToOpenPopup();
   updateCurrentDisplayWithoutRedraw();
 
-  status(translateMode === "english"
-    ? "English shown where available. Press Show Original to restore original names and descriptions."
-    : "Original names and descriptions restored."
-  );
+  // Names are switched using OSM's own name:en / int_name tags — nothing is sent
+  // to a translation service. Plenty of beaches have no English tag at all, in
+  // which case _englishName falls back to the original and the name visibly does
+  // not change. Saying "English shown" then is simply untrue and reads as a broken
+  // button, so count what actually changed and report that honestly.
+  if(translateMode === "english"){
+    const visible = allBeaches.filter(shouldShow);
+    const changed = visible.filter(b => b._englishName && b._englishName !== b._originalName).length;
+
+    // Transliteration covers Greek and Cyrillic only. Chinese, Japanese, Arabic,
+    // Hebrew, Thai, Korean and others need per-language dictionaries or reading
+    // rules, not a character table, so those names are left exactly as they are.
+    // Say so rather than claiming everything is already Latin.
+    const unconverted = visible.filter(b => hasUnconvertedScript(b._englishName)).length;
+
+    if(changed === 0 && unconverted === 0){
+      status("These names are already in Latin script — nothing to convert. Press Show Original to switch back.");
+    }else if(changed === 0){
+      status(`These names use a script BeachScout cannot transliterate yet (Greek and Cyrillic are supported). Showing English names where OpenStreetMap has them. Press Show Original to switch back.`);
+    }else{
+      let msg = `Latin script shown for ${changed} of ${visible.length} places. English names are used where OpenStreetMap has one; otherwise the local name is transliterated (Τουρλά → Tourla), not translated.`;
+      if(unconverted) msg += ` ${unconverted} use a script not supported yet.`;
+      status(msg + " Press Show Original to restore.");
+    }
+  }else{
+    status("Original names and descriptions restored.");
+  }
 }
 
 
@@ -3261,6 +3464,9 @@ function closeConditionsPage(returnToBeach=true){
 }
 
 let mobileBeachReturnSource = "map";
+// Number shown before the beach name on the mobile page. Needed so the translate
+// toggle can rebuild the heading ("57. Tourla") without reopening the page.
+let activeMobileNum = "";
 
 function isMobileView(){
   return window.matchMedia && window.matchMedia("(max-width:900px)").matches;
@@ -3280,6 +3486,7 @@ function closeMobileBeachPage(){
 
 function openMobileBeachPage(b, num, source="map"){
   mobileBeachReturnSource = source || "map";
+  activeMobileNum = num;
 
   closeActivePopup();
   closeMobileSearchPanel();
