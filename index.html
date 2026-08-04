@@ -2837,7 +2837,11 @@ async function translateArbitraryTextToEnglish(text){
 }
 
 async function applyDescriptionModeToOpenPopup(){
-  const popup = document.querySelector(".maplibregl-popup .popup");
+  // Look in whichever beach view is actually open: desktop popup or mobile page.
+  const mobilePage = $("mobileBeachPage");
+  const popup =
+    (mobilePage && mobilePage.classList.contains("show") && $("mobileBeachContent"))
+    || document.querySelector(".maplibregl-popup .popup");
   if(!popup) return;
 
   const descriptions = popup.querySelectorAll(".community-description");
@@ -2866,6 +2870,15 @@ async function applyDescriptionModeToOpenPopup(){
 }
 
 function openPopupBeach(){
+  // The app has TWO beach views: the desktop MapLibre popup and the mobile
+  // full-page panel (#mobileBeachPage). This used to look only for the desktop
+  // popup and return null on mobile, which silently disabled the whole
+  // translate feature on phones. Check the mobile page first.
+  const mobilePage = $("mobileBeachPage");
+  if(mobilePage && mobilePage.classList.contains("show") && activeUploadBeach){
+    return activeUploadBeach;
+  }
+
   const popup = document.querySelector(".maplibregl-popup .popup");
   if(!popup) return null;
 
@@ -2906,6 +2919,20 @@ function updateCurrentDisplayWithoutRedraw(){
   const popup = document.querySelector(".maplibregl-popup .popup");
   const b = openPopupBeach();
 
+  // Mobile beach page: a separate DOM structure (<h2> + .mobile-status) that
+  // lives outside .maplibregl-popup, so the desktop branch below never saw it.
+  const mobilePage = $("mobileBeachPage");
+  const mobileContent = $("mobileBeachContent");
+  if(mobilePage && mobilePage.classList.contains("show") && mobileContent && b){
+    const h2 = mobileContent.querySelector("h2");
+    const statusEl = mobileContent.querySelector(".mobile-status");
+    const mBtn = mobileContent.querySelector(".translate-toggle-btn");
+
+    if(h2) h2.textContent = `${activeMobileNum}. ${b.name}`;
+    if(statusEl) statusEl.textContent = b.status;
+    if(mBtn) mBtn.textContent = translateButtonLabel();
+  }
+
   if(popup && b){
     const h3 = popup.querySelector("h3");
     const statusEl = popup.querySelector("p b");
@@ -2926,10 +2953,23 @@ async function toggleTranslate(){
   await applyDescriptionModeToOpenPopup();
   updateCurrentDisplayWithoutRedraw();
 
-  status(translateMode === "english"
-    ? "English shown where available. Press Show Original to restore original names and descriptions."
-    : "Original names and descriptions restored."
-  );
+  // Names are switched using OSM's own name:en / int_name tags — nothing is sent
+  // to a translation service. Plenty of beaches have no English tag at all, in
+  // which case _englishName falls back to the original and the name visibly does
+  // not change. Saying "English shown" then is simply untrue and reads as a broken
+  // button, so count what actually changed and report that honestly.
+  if(translateMode === "english"){
+    const visible = allBeaches.filter(shouldShow);
+    const changed = visible.filter(b => b._englishName && b._englishName !== b._originalName).length;
+
+    if(changed === 0){
+      status("No English names available for these places — OpenStreetMap has no name:en tag for them, so the local names are shown. Press Show Original to switch back.");
+    }else{
+      status(`English names shown for ${changed} of ${visible.length} places (the rest have no English name in OpenStreetMap). Press Show Original to restore original names.`);
+    }
+  }else{
+    status("Original names and descriptions restored.");
+  }
 }
 
 
@@ -3261,6 +3301,9 @@ function closeConditionsPage(returnToBeach=true){
 }
 
 let mobileBeachReturnSource = "map";
+// Number shown before the beach name on the mobile page. Needed so the translate
+// toggle can rebuild the heading ("57. Tourla") without reopening the page.
+let activeMobileNum = "";
 
 function isMobileView(){
   return window.matchMedia && window.matchMedia("(max-width:900px)").matches;
@@ -3280,6 +3323,7 @@ function closeMobileBeachPage(){
 
 function openMobileBeachPage(b, num, source="map"){
   mobileBeachReturnSource = source || "map";
+  activeMobileNum = num;
 
   closeActivePopup();
   closeMobileSearchPanel();
