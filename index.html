@@ -12,9 +12,19 @@
      opens in Safari chrome, not a standalone app. -->
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#0B5FC0" />
-<link rel="apple-touch-icon" href="icon-192.png" />
+
+<!-- iOS home-screen install. Three things differ from Android:
+     1. apple-touch-icon must be a 180x180 PNG with NO alpha channel — iOS
+        renders transparent pixels as black, and 180 is the size modern
+        iPhones and iPads request.
+     2. iOS masks the icon to a squircle itself, so the source must be a plain
+        full-bleed square with no pre-rounded corners.
+     3. status-bar-style "black-translucent" lets the page colour run under the
+        status bar instead of leaving a white strip above the blue header. -->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="BeachScout" />
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
