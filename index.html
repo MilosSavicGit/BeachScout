@@ -403,6 +403,7 @@
   .stay-meta a{color:var(--accent);text-decoration:none;font-weight:bold}
   .stay-missing{color:#9ca3af;font-style:italic}
   .stay-approx{color:#9ca3af;font-style:italic;font-size:11px}
+  .stay-copy{margin-left:8px;padding:2px 8px;border:1px solid var(--accent);border-radius:999px;background:#fff;color:var(--accent);font:inherit;font-size:11px;font-weight:bold;cursor:pointer;vertical-align:middle}
   .extlink-sheet{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.45);display:none;align-items:flex-end}
   .extlink-sheet.show{display:flex}
   .extlink-card{width:100%;background:var(--panel);border-radius:16px 16px 0 0;padding:16px 14px 22px;max-width:760px;margin:0 auto;box-shadow:0 -4px 24px rgba(0,0,0,.25)}
@@ -602,7 +603,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "v2.1 (2026-08-05) - Stay Nearby: address order by country, phone links, external-link sheet";
+const BUILD_VERSION = "v2.2 (2026-08-05) - Stay Nearby: address order by country, copyable phone numbers, external-link sheet";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 const MAPTILER_KEY='L0PMr6QA6YPkhSS8n4Sv';
 const MAP_STYLES={
@@ -3325,6 +3326,17 @@ function closeStayNearbyPage(returnToBeach=true){
     document.body.classList.remove("mobile-detail-open");
   }
 }
+document.addEventListener("click",function(ev){
+  const btn=ev.target && ev.target.closest ? ev.target.closest("#stayResults .stay-copy") : null;
+  if(!btn) return;
+  ev.preventDefault();
+  const num=btn.getAttribute("data-phone")||"";
+  if(num) copyTextToClipboard(num);
+  const prev=btn.textContent;
+  btn.textContent="Copied";
+  setTimeout(()=>{ btn.textContent=prev; },1500);
+});
+
 let pendingExternalUrl="";
 
 function hideExternalLinkSheet(){
@@ -3356,8 +3368,12 @@ function renderStayResults(places){
       ? `<a class="stay-link" href="${escapeHtml(p.website)}" target="_blank" rel="noopener noreferrer">\u{1F310} Official website</a>`
       : `<a class="stay-link secondary" href="${escapeHtml(webSearch)}" target="_blank" rel="noopener noreferrer">\u{1F50E} No website in OpenStreetMap \u2014 search the web</a>`;
 
+    // The tel: link is kept because it works in real mobile browsers, but the
+    // Android WebView throws ERR_UNKNOWN_URL_SCHEME on it, so every number also
+    // gets a Copy button that needs no scheme handler at all.
     const phone=p.phone
-      ? `<div class="stay-meta">\u260E <a href="${escapeHtml(telHref(p.phone))}">${escapeHtml(p.phone)}</a></div>`
+      ? `<div class="stay-meta">\u260E <a href="${escapeHtml(telHref(p.phone))}">${escapeHtml(p.phone)}</a>`
+        +`<button type="button" class="stay-copy" data-phone="${escapeHtml(p.phone)}">Copy</button></div>`
       : `<div class="stay-meta stay-missing">\u260E No phone number in OpenStreetMap</div>`;
 
     const address=p.address
