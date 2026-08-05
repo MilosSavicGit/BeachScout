@@ -400,6 +400,9 @@
   .stay-link{display:block;text-align:center;padding:10px 11px;border-radius:9px;background:#2f6b4f;color:#fff!important;text-decoration:none;font-weight:bold;font-size:13px}
   .stay-link.secondary{background:#fff;color:var(--accent)!important;border:1px solid var(--accent)}
   .stay-empty{padding:18px 12px;text-align:center;color:var(--muted);border:1px dashed var(--rule);border-radius:12px;background:#fffaf1}
+  .stay-meta a{color:var(--accent);text-decoration:none;font-weight:bold}
+  .stay-missing{color:#9ca3af;font-style:italic}
+  .stay-approx{color:#9ca3af;font-style:italic;font-size:11px}
 
 </style>
 </head>
@@ -3159,15 +3162,102 @@ const STAY_CATEGORY_LABELS = {
   camp_site:"Campsite", caravan_site:"Caravan / RV site", alpine_hut:"Alpine hut"
 };
 
+function firstTag(tags,keys){
+  for(const k of keys){ const v=tags?.[k]; if(v && String(v).trim()) return String(v).trim(); }
+  return "";
+}
+
+// OSM stores URLs inconsistently: bare domains, several URLs joined by ";",
+// stray angle brackets, and occasionally something that is not a URL at all.
+// Anything that does not parse into a hostname with a dot is dropped rather
+// than rendered as a link that goes nowhere.
 function stayWebsite(tags){
-  let raw = tags?.website || tags?.["contact:website"] || tags?.url || "";
+  let raw=firstTag(tags,["website","contact:website","url","contact:url","website:official","operator:website"]);
   if(!raw) return "";
-  return /^https?:\/\//i.test(raw) ? raw : "https://" + raw;
+  raw=raw.split(";")[0].trim().replace(/^<+|>+$/g,"");
+  if(!/^https?:\/\//i.test(raw)) raw="https://"+raw.replace(/^\/+/,"");
+  try{
+    const u=new URL(raw);
+    if(!u.hostname.includes(".")) return "";
+    return u.href;
+  }catch(e){ return ""; }
 }
-function stayPhone(tags){ return tags?.phone || tags?.["contact:phone"] || ""; }
+
+function stayPhone(tags){
+  const raw=firstTag(tags,["phone","contact:phone","contact:mobile","mobile","telephone","contact:telephone"]);
+  return raw ? raw.split(";")[0].trim() : "";
+}
+function telHref(phone){ return "tel:"+String(phone).replace(/[^\d+]/g,""); }
+
+// addr:place covers rural entries that have no street name at all; addr:full is
+// used in a few countries that do not decompose the address into parts.
 function stayAddress(tags){
-  return [tags?.["addr:housenumber"],tags?.["addr:street"],tags?.["addr:suburb"],tags?.["addr:city"],tags?.["addr:postcode"],tags?.["addr:state"],tags?.["addr:country"]].filter(Boolean).join(", ");
+  if(!tags) return "";
+  const full=firstTag(tags,["addr:full"]);
+  if(full) return full;
+  const street=firstTag(tags,["addr:street","addr:place","addr:housename"]);
+  const number=firstTag(tags,["addr:housenumber"]);
+  const line1=[street,number].filter(Boolean).join(" ");
+  const rest=[
+    firstTag(tags,["addr:postcode"]),
+    firstTag(tags,["addr:city","addr:town","addr:village","addr:suburb","addr:municipality"]),
+    firstTag(tags,["addr:state","addr:province","addr:region"]),
+    firstTag(tags,["addr:country"])
+  ].filter(Boolean);
+  return [line1,...rest].filter(Boolean).join(", ");
 }
+
+// --- Address fallback -------------------------------------------------------
+// Most accommodation in OSM carries no addr:* tags at all, so the address row
+// would be empty for the majority of results. Nominatim's /lookup endpoint
+// takes up to 50 OSM ids in ONE request and returns a resolved address for
+// each, so the whole result list is filled from a single call rather than one
+// reverse-geocode per hotel (which would take 30+ seconds under Nominatim's
+// 1 request/second policy). The result is the street the building sits on, not
+// a postal address the hotel published, so it is labelled as approximate.
+const NOMINATIM_LOOKUP="https://nominatim.openstreetmap.org/lookup";
+
+function osmRefOf(el){
+  const t=el?.type==="way"?"W":el?.type==="relation"?"R":"N";
+  return (el && el.id!=null) ? t+el.id : "";
+}
+function addressFromNominatim(a){
+  if(!a) return "";
+  const line1=[
+    a.road||a.pedestrian||a.footway||a.residential||a.neighbourhood||a.hamlet||"",
+    a.house_number||""
+  ].filter(Boolean).join(" ");
+  const rest=[
+    a.postcode,
+    a.city||a.town||a.village||a.municipality||a.county,
+    a.state,
+    a.country
+  ].filter(Boolean);
+  return [line1,...rest].filter(Boolean).join(", ");
+}
+async function enrichStayAddresses(places){
+  const missing=places.filter(p=>!p.address && p.osmRef).slice(0,50);
+  if(!missing.length) return false;
+  const url=`${NOMINATIM_LOOKUP}?format=jsonv2&addressdetails=1&accept-language=en`
+    +`&osm_ids=${encodeURIComponent(missing.map(p=>p.osmRef).join(","))}`;
+  try{
+    const r=await fetch(url,{headers:{"Accept":"application/json"}});
+    if(!r.ok) return false;
+    const rows=await r.json();
+    const byRef=new Map();
+    for(const row of rows||[]){
+      const t=row.osm_type==="way"?"W":row.osm_type==="relation"?"R":"N";
+      byRef.set(t+row.osm_id,row);
+    }
+    let filled=0;
+    for(const p of missing){
+      const addr=addressFromNominatim(byRef.get(p.osmRef)?.address);
+      if(addr){ p.address=addr; p.addressApprox=true; filled++; }
+    }
+    return filled>0;
+  }catch(e){ return false; }
+}
+
 function stayQuery(lat,lon,radius=3000){
   const types=["hotel","motel","guest_house","hostel","apartment","chalet","resort","camp_site","caravan_site","alpine_hut"];
   const lines=types.map(t=>`
@@ -3187,6 +3277,57 @@ function closeStayNearbyPage(returnToBeach=true){
     document.body.classList.remove("mobile-detail-open");
   }
 }
+let stayRenderToken=0;
+
+function renderStayResults(places){
+  const target=$("stayResults");
+  if(!target) return;
+  target.innerHTML=places.map((p,i)=>{
+    const maps=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name+" "+p.lat+","+p.lon)}`;
+    const directions=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(activeStayBeach.lat+","+activeStayBeach.lon)}&destination=${encodeURIComponent(p.lat+","+p.lon)}&travelmode=driving`;
+    const webSearch=`https://duckduckgo.com/?q=${encodeURIComponent(p.name+" "+(p.address||"")+" official site")}`;
+
+    const website=p.website
+      ? `<a class="stay-link" href="${escapeHtml(p.website)}" target="_blank" rel="noopener noreferrer">\u{1F310} Official website</a>`
+      : `<a class="stay-link secondary" href="${escapeHtml(webSearch)}" target="_blank" rel="noopener noreferrer">\u{1F50E} No website in OpenStreetMap \u2014 search the web</a>`;
+
+    const phone=p.phone
+      ? `<div class="stay-meta">\u260E <a href="${escapeHtml(telHref(p.phone))}">${escapeHtml(p.phone)}</a></div>`
+      : `<div class="stay-meta stay-missing">\u260E No phone number in OpenStreetMap</div>`;
+
+    const address=p.address
+      ? `<div class="stay-meta">\u{1F4CD} ${escapeHtml(p.address)}${p.addressApprox?' <span class="stay-approx">(street location, not a published address)</span>':''}</div>`
+      : `<div class="stay-meta stay-missing">\u{1F4CD} No address in OpenStreetMap</div>`;
+
+    return `<div class="stay-result">
+        <h3>${i+1}. ${escapeHtml(p.name)}</h3>
+        <div class="stay-meta">\u{1F4CF} ${p.dist.toFixed(1)} km from the selected beach</div>
+        ${address}${phone}
+        <span class="stay-kind">${escapeHtml(STAY_CATEGORY_LABELS[p.category]||p.category)}</span>
+        <div class="stay-actions">
+          ${website}
+          <a class="stay-link secondary" href="${escapeHtml(maps)}" target="_blank" rel="noopener noreferrer">\u{1F5FA} Open in Google Maps</a>
+          <a class="stay-link secondary" href="${escapeHtml(directions)}" target="_blank" rel="noopener noreferrer">\u{1F697} Directions from beach</a>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+// A plain target="_blank" anchor does nothing inside an Android WebView unless
+// the host app implements onCreateWindow, which is why the website button felt
+// dead in the Play build while working in a browser. Try the popup first; if
+// the WebView refuses it, navigate in place so the link at least opens.
+document.addEventListener("click",function(ev){
+  const a=ev.target && ev.target.closest ? ev.target.closest("#stayResults a[target='_blank']") : null;
+  if(!a) return;
+  const href=a.getAttribute("href");
+  if(!href) return;
+  ev.preventDefault();
+  let w=null;
+  try{ w=window.open(href,"_blank","noopener"); }catch(e){ w=null; }
+  if(!w) window.location.href=href;
+});
+
 async function openStayNearbyPage(beach){
   activeStayBeach=beach || activeUploadBeach || activeParkingBeach || null;
   if(!activeStayBeach) return;
@@ -3221,8 +3362,9 @@ async function openStayNearbyPage(beach){
       if(seen.has(key)) continue;
       seen.add(key);
       places.push({
-        name,lat:Number(lat),lon:Number(lon),dist,category,tags,
-        address:stayAddress(tags),website:stayWebsite(tags),phone:stayPhone(tags)
+        name,lat:Number(lat),lon:Number(lon),dist,category,tags,osmRef:osmRefOf(el),
+        address:stayAddress(tags),website:stayWebsite(tags),phone:stayPhone(tags),
+        addressApprox:false
       });
     }
     places.sort((a,b)=>a.dist-b.dist);
@@ -3236,24 +3378,14 @@ async function openStayNearbyPage(beach){
       return;
     }
 
-    $("stayResults").innerHTML=places.map((p,i)=>{
-      const maps=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name+" "+p.lat+","+p.lon)}`;
-      const directions=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(activeStayBeach.lat+","+activeStayBeach.lon)}&destination=${encodeURIComponent(p.lat+","+p.lon)}&travelmode=driving`;
-      const website=p.website?`<a class="stay-link" href="${escapeHtml(p.website)}" target="_blank" rel="noopener">🌐 Official website</a>`:"";
-      const phone=p.phone?`<div class="stay-meta">☎ ${escapeHtml(p.phone)}</div>`:"";
-      const address=p.address?`<div class="stay-meta">📍 ${escapeHtml(p.address)}</div>`:"";
-      return `<div class="stay-result">
-        <h3>${i+1}. ${escapeHtml(p.name)}</h3>
-        <div class="stay-meta">📏 ${p.dist.toFixed(1)} km from the selected beach</div>
-        ${address}${phone}
-        <span class="stay-kind">${escapeHtml(STAY_CATEGORY_LABELS[p.category]||p.category)}</span>
-        <div class="stay-actions">
-          ${website}
-          <a class="stay-link secondary" href="${escapeHtml(maps)}" target="_blank" rel="noopener">🗺 Open in Google Maps</a>
-          <a class="stay-link secondary" href="${escapeHtml(directions)}" target="_blank" rel="noopener">🚗 Directions from beach</a>
-        </div>
-      </div>`;
-    }).join("");
+    renderStayResults(places);
+
+    // Fill in the addresses OSM does not have. One request, best effort: if it
+    // fails or returns nothing the list simply stays as it was rendered above.
+    const stamp=++stayRenderToken;
+    enrichStayAddresses(places).then(changed=>{
+      if(changed && stamp===stayRenderToken) renderStayResults(places);
+    });
 
   }catch(e){
     $("stayStatus").textContent="Accommodation search failed: "+(e.message||e);
