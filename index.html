@@ -575,6 +575,7 @@
       <div class="stay-intro">
         HotelScout search: accommodation within a fixed 3 km circle around the selected beach.
         Results come from OpenStreetMap and are sorted by distance.
+        <span style="display:block;margin-top:6px;color:var(--muted);font-size:11px">build 2026-08-05-d</span>
       </div>
       <div id="stayStatus" class="stay-status">Choose a beach, then open Stay Nearby.</div>
       <div id="stayResults"></div>
@@ -3391,6 +3392,12 @@ document.addEventListener("click",function(ev){
   // Do NOT pass "noopener" in the features string: per spec window.open then
   // returns null even on success, which would trigger the fallback as well and
   // navigate this page away on top of opening the tab. Null the opener after.
+  // Do NOT trust window.open's return value on mobile. Some Android WebViews
+  // hand back a Window object and then do nothing with it, so a null-check
+  // reports success while the user sees a dead button. On mobile the sheet is
+  // shown unconditionally; window.open is only used on desktop, where its
+  // return value is reliable.
+  if(isMobileView()){ showExternalLinkSheet(href); return; }
   let w=null;
   try{ w=window.open(href,"_blank"); }catch(e){ w=null; }
   if(w){ try{ w.opener=null; }catch(e){} return; }
