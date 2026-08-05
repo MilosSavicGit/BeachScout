@@ -3323,9 +3323,13 @@ document.addEventListener("click",function(ev){
   const href=a.getAttribute("href");
   if(!href) return;
   ev.preventDefault();
+  // Do NOT pass "noopener" in the features string: per spec window.open then
+  // returns null even on success, which would trigger the fallback as well and
+  // navigate this page away on top of opening the tab. Null the opener after.
   let w=null;
-  try{ w=window.open(href,"_blank","noopener"); }catch(e){ w=null; }
-  if(!w) window.location.href=href;
+  try{ w=window.open(href,"_blank"); }catch(e){ w=null; }
+  if(w){ try{ w.opener=null; }catch(e){} }
+  else { window.location.href=href; }
 });
 
 async function openStayNearbyPage(beach){
