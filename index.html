@@ -403,6 +403,15 @@
   .stay-meta a{color:var(--accent);text-decoration:none;font-weight:bold}
   .stay-missing{color:#9ca3af;font-style:italic}
   .stay-approx{color:#9ca3af;font-style:italic;font-size:11px}
+  .extlink-sheet{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.45);display:none;align-items:flex-end}
+  .extlink-sheet.show{display:flex}
+  .extlink-card{width:100%;background:var(--panel);border-radius:16px 16px 0 0;padding:16px 14px 22px;max-width:760px;margin:0 auto;box-shadow:0 -4px 24px rgba(0,0,0,.25)}
+  .extlink-card h4{margin:0 0 4px;font-size:16px}
+  .extlink-host{font-size:13px;color:var(--muted);word-break:break-all;margin-bottom:12px}
+  .extlink-card button{display:block;width:100%;margin:7px 0;padding:12px;border:0;border-radius:10px;font:inherit;font-size:14px;font-weight:bold;cursor:pointer}
+  .extlink-go{background:#2f6b4f;color:#fff}
+  .extlink-copy{background:#fff;color:var(--accent);border:1px solid var(--accent)!important}
+  .extlink-cancel{background:#6b7280;color:#fff}
 
 </style>
 </head>
@@ -538,6 +547,20 @@
     </div>
   </div>
 
+
+  <!-- Shown only when the browser/WebView refuses window.open, i.e. inside the
+       Android wrapper. Without it the WebView would navigate away from the map
+       with no way back, since BeachScout cannot draw a button on someone
+       else's page. -->
+  <div id="extLinkSheet" class="extlink-sheet">
+    <div class="extlink-card">
+      <h4>Leave BeachScout?</h4>
+      <div class="extlink-host" id="extLinkHost"></div>
+      <button type="button" class="extlink-go" id="extLinkGo">Open the site (use Back to return to the map)</button>
+      <button type="button" class="extlink-copy" id="extLinkCopy">Copy link and stay here</button>
+      <button type="button" class="extlink-cancel" id="extLinkCancel">Cancel</button>
+    </div>
+  </div>
 
   <div id="stayPage" class="stay-page">
     <div class="stay-header">
@@ -3189,6 +3212,29 @@ function stayPhone(tags){
 }
 function telHref(phone){ return "tel:"+String(phone).replace(/[^\d+]/g,""); }
 
+// OSM stores the address parts but never the order they should be written in,
+// and the order is locale-dependent: "Bulevar oslobodjenja 12" in Serbia,
+// "425 Colorado Avenue" in the United States. Deriving it from the country is
+// the only way to avoid printing "Colorado Avenue 425" to an American user.
+const HOUSE_NUMBER_FIRST=new Set([
+  "US","CA","GB","IE","AU","NZ","FR","IN","ZA","SG","MY","PH","TH","IL","HK",
+  "BD","PK","LK","NG","KE","MT","LU"
+]);
+function addrCountryCode(tags){
+  const raw=firstTag(tags,["addr:country"]);
+  if(raw && /^[A-Za-z]{2}$/.test(raw)) return raw.toUpperCase();
+  try{
+    const c=nominatimCountryCode(currentCountry);
+    if(c) return String(c).toUpperCase();
+  }catch(e){}
+  return "";
+}
+function joinStreetAndNumber(street,number,cc){
+  if(!street) return number||"";
+  if(!number) return street;
+  return HOUSE_NUMBER_FIRST.has(cc) ? `${number} ${street}` : `${street} ${number}`;
+}
+
 // addr:place covers rural entries that have no street name at all; addr:full is
 // used in a few countries that do not decompose the address into parts.
 function stayAddress(tags){
@@ -3197,7 +3243,7 @@ function stayAddress(tags){
   if(full) return full;
   const street=firstTag(tags,["addr:street","addr:place","addr:housename"]);
   const number=firstTag(tags,["addr:housenumber"]);
-  const line1=[street,number].filter(Boolean).join(" ");
+  const line1=joinStreetAndNumber(street,number,addrCountryCode(tags));
   const rest=[
     firstTag(tags,["addr:postcode"]),
     firstTag(tags,["addr:city","addr:town","addr:village","addr:suburb","addr:municipality"]),
@@ -3223,10 +3269,12 @@ function osmRefOf(el){
 }
 function addressFromNominatim(a){
   if(!a) return "";
-  const line1=[
+  const cc=String(a.country_code||"").toUpperCase();
+  const line1=joinStreetAndNumber(
     a.road||a.pedestrian||a.footway||a.residential||a.neighbourhood||a.hamlet||"",
-    a.house_number||""
-  ].filter(Boolean).join(" ");
+    a.house_number||"",
+    cc
+  );
   const rest=[
     a.postcode,
     a.city||a.town||a.village||a.municipality||a.county,
@@ -3277,6 +3325,23 @@ function closeStayNearbyPage(returnToBeach=true){
     document.body.classList.remove("mobile-detail-open");
   }
 }
+let pendingExternalUrl="";
+
+function hideExternalLinkSheet(){
+  pendingExternalUrl="";
+  const el=$("extLinkSheet");
+  if(el) el.classList.remove("show");
+}
+function showExternalLinkSheet(href){
+  const sheet=$("extLinkSheet"), hostEl=$("extLinkHost");
+  if(!sheet||!hostEl){ window.location.href=href; return; }   // sheet missing: old behaviour
+  pendingExternalUrl=href;
+  let host=href;
+  try{ host=new URL(href).host; }catch(e){}
+  hostEl.textContent=host;
+  sheet.classList.add("show");
+}
+
 let stayRenderToken=0;
 
 function renderStayResults(places){
@@ -3328,8 +3393,8 @@ document.addEventListener("click",function(ev){
   // navigate this page away on top of opening the tab. Null the opener after.
   let w=null;
   try{ w=window.open(href,"_blank"); }catch(e){ w=null; }
-  if(w){ try{ w.opener=null; }catch(e){} }
-  else { window.location.href=href; }
+  if(w){ try{ w.opener=null; }catch(e){} return; }
+  showExternalLinkSheet(href);
 });
 
 async function openStayNearbyPage(beach){
@@ -4223,6 +4288,10 @@ $('mobileBeachMap').addEventListener('click',returnToMap);
 $('conditionsBack').addEventListener('click',()=>closeConditionsPage(true));
 $('conditionsMap').addEventListener('click',returnToMap);
 $('stayBack').addEventListener('click',()=>closeStayNearbyPage(true));
+$('extLinkGo').addEventListener('click',()=>{ const u=pendingExternalUrl; hideExternalLinkSheet(); if(u) window.location.href=u; });
+$('extLinkCopy').addEventListener('click',()=>{ if(pendingExternalUrl) copyTextToClipboard(pendingExternalUrl); hideExternalLinkSheet(); });
+$('extLinkCancel').addEventListener('click',hideExternalLinkSheet);
+$('extLinkSheet').addEventListener('click',ev=>{ if(ev.target && ev.target.id==='extLinkSheet') hideExternalLinkSheet(); });
 $('stayMap').addEventListener('click',returnToMap);
 $('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('countrySearch').addEventListener('click',()=>setTimeout(()=>$("countrySearch").select(),50));
