@@ -403,7 +403,13 @@
   .stay-meta a{color:var(--accent);text-decoration:none;font-weight:bold}
   .stay-missing{color:#9ca3af;font-style:italic}
   .stay-approx{color:#9ca3af;font-style:italic;font-size:11px}
-  .stay-copy{margin-left:8px;padding:2px 8px;border:1px solid var(--accent);border-radius:999px;background:#fff;color:var(--accent);font:inherit;font-size:11px;font-weight:bold;cursor:pointer;vertical-align:middle}
+  /* The global "select,button{width:100%;padding:12px}" rule, plus the mobile
+     override at the media query, would stretch this across the whole card.
+     Every one of those has to be beaten explicitly. */
+  .stay-copy{display:inline-block!important;width:auto!important;margin:0 0 0 8px!important;
+    padding:2px 9px!important;border:1px solid var(--accent)!important;border-radius:999px!important;
+    background:#fff!important;color:var(--accent)!important;font:inherit!important;font-size:11px!important;
+    font-weight:bold!important;line-height:1.5!important;cursor:pointer;vertical-align:middle}
   .extlink-sheet{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.45);display:none;align-items:flex-end}
   .extlink-sheet.show{display:flex}
   .extlink-card{width:100%;background:var(--panel);border-radius:16px 16px 0 0;padding:16px 14px 22px;max-width:760px;margin:0 auto;box-shadow:0 -4px 24px rgba(0,0,0,.25)}
@@ -413,6 +419,7 @@
   .extlink-go{background:#2f6b4f;color:#fff}
   .extlink-copy{background:#fff;color:var(--accent);border:1px solid var(--accent)!important}
   .extlink-cancel{background:#6b7280;color:#fff}
+  .extlink-note{margin-top:10px;font-size:12px;line-height:1.45;color:var(--muted)}
 
 </style>
 </head>
@@ -555,11 +562,16 @@
        else's page. -->
   <div id="extLinkSheet" class="extlink-sheet">
     <div class="extlink-card">
-      <h4>Leave BeachScout?</h4>
+      <h4>Open this website?</h4>
       <div class="extlink-host" id="extLinkHost"></div>
-      <button type="button" class="extlink-go" id="extLinkGo">Open the site (use Back to return to the map)</button>
-      <button type="button" class="extlink-copy" id="extLinkCopy">Copy link and stay here</button>
+      <!-- Copy is the primary action because the wrapper has no onBackPressed
+           override: opening the site replaces the WebView and the back gesture
+           then exits BeachScout entirely rather than returning to the list.
+           Reorder these once shouldOverrideUrlLoading fires an ACTION_VIEW. -->
+      <button type="button" class="extlink-go" id="extLinkCopy">Copy link and stay here</button>
+      <button type="button" class="extlink-copy" id="extLinkGo">Open it now — this closes BeachScout</button>
       <button type="button" class="extlink-cancel" id="extLinkCancel">Cancel</button>
+      <div class="extlink-note" id="extLinkNote"></div>
     </div>
   </div>
 
@@ -603,7 +615,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "v2.2 (2026-08-05) - Stay Nearby: address order by country, copyable phone numbers, external-link sheet";
+const BUILD_VERSION = "v2.6 (2026-08-05) - Stay Nearby: address order by country, copyable phone numbers, defers to native link handling in app v4+";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 const MAPTILER_KEY='L0PMr6QA6YPkhSS8n4Sv';
 const MAP_STYLES={
@@ -3344,6 +3356,25 @@ function hideExternalLinkSheet(){
   const el=$("extLinkSheet");
   if(el) el.classList.remove("show");
 }
+// Android WebViews put "; wv)" in the user agent. That is the difference that
+// matters here: in a real browser (iPhone Safari, Android Chrome) navigating to
+// an external site works and Back returns you. Inside this app's WebView it
+// hangs BeachScout badly enough to need force-stopping, so the button that does
+// it is removed rather than merely labelled. Remove this once the wrapper
+// implements shouldOverrideUrlLoading.
+function isAndroidWebView(){
+  const ua=navigator.userAgent||"";
+  return /Android/i.test(ua) && /;\s*wv\)/i.test(ua);
+}
+
+// The Android wrapper appends "BeachScoutApp/<n>" to its user agent from
+// versionCode 4 onward. That build sends external links to the browser itself,
+// so the web app must NOT intercept the click at all — doing so would replace
+// working native behaviour with a sheet nobody needs.
+function wrapperHandlesExternalLinks(){
+  return /BeachScoutApp\/(\d+)/.test(navigator.userAgent||"");
+}
+
 function showExternalLinkSheet(href){
   const sheet=$("extLinkSheet"), hostEl=$("extLinkHost");
   if(!sheet||!hostEl){ window.location.href=href; return; }   // sheet missing: old behaviour
@@ -3351,6 +3382,13 @@ function showExternalLinkSheet(href){
   let host=href;
   try{ host=new URL(href).host; }catch(e){}
   hostEl.textContent=host;
+
+  const goBtn=$("extLinkGo"), note=$("extLinkNote");
+  const trapped=isAndroidWebView();
+  if(goBtn) goBtn.style.display=trapped?"none":"block";
+  if(note) note.textContent=trapped
+    ? "Opening websites inside the app freezes it, so that option is hidden here. Copy the link and paste it into Chrome."
+    : "Opening the site replaces the map. Use your phone's Back button to return.";
   sheet.classList.add("show");
 }
 
@@ -3403,6 +3441,7 @@ document.addEventListener("click",function(ev){
   if(!a) return;
   const href=a.getAttribute("href");
   if(!href) return;
+  if(wrapperHandlesExternalLinks()) return;   // let the app open it natively
   ev.preventDefault();
   // Do NOT pass "noopener" in the features string: per spec window.open then
   // returns null even on success, which would trigger the fallback as well and
@@ -4311,7 +4350,11 @@ $('conditionsBack').addEventListener('click',()=>closeConditionsPage(true));
 $('conditionsMap').addEventListener('click',returnToMap);
 $('stayBack').addEventListener('click',()=>closeStayNearbyPage(true));
 $('extLinkGo').addEventListener('click',()=>{ const u=pendingExternalUrl; hideExternalLinkSheet(); if(u) window.location.href=u; });
-$('extLinkCopy').addEventListener('click',()=>{ if(pendingExternalUrl) copyTextToClipboard(pendingExternalUrl); hideExternalLinkSheet(); });
+$('extLinkCopy').addEventListener('click',ev=>{
+  if(pendingExternalUrl) copyTextToClipboard(pendingExternalUrl);
+  const b=ev.currentTarget; b.textContent="Link copied";
+  setTimeout(()=>{ b.textContent="Copy link and stay here"; hideExternalLinkSheet(); },900);
+});
 $('extLinkCancel').addEventListener('click',hideExternalLinkSheet);
 $('extLinkSheet').addEventListener('click',ev=>{ if(ev.target && ev.target.id==='extLinkSheet') hideExternalLinkSheet(); });
 $('stayMap').addEventListener('click',returnToMap);
