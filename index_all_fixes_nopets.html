@@ -605,7 +605,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.0.5 (2026-08-07) - dog access shown on beaches where OpenStreetMap records it";
+const BUILD_VERSION = "2.0.4 (2026-08-06) - same behaviour on iPhone and Android: links open directly, safe-area insets";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 const MAPTILER_KEY='L0PMr6QA6YPkhSS8n4Sv';
 const MAP_STYLES={
@@ -2459,42 +2459,6 @@ async function fetchOverpass(query){
 
 // A swimming pool is not a beach. They arrive because the query asks for
 // sport=swimming, which pools carry. Detected reliably from tags.
-// --- Dogs -------------------------------------------------------------------
-// OSM tags dog access as dog=yes|no|leashed|designated. Coverage measured
-// 7 Aug 2026 across 30,776 beaches in seven countries: 597 tagged, under 2%.
-// Germany is best at 5.2%, Greece has one, Serbia none.
-//
-// Too sparse to filter on — a "dog friendly" filter would hide 95% of every
-// country and look broken. So this is shown when the tag exists and stays
-// silent otherwise, like the "No phone number in OpenStreetMap" lines in
-// Stay Nearby.
-//
-// Note that dog=no outnumbers dog=yes nearly everywhere (Germany 162 v 119,
-// Croatia 69 v 28): people map prohibitions more diligently than permissions.
-// The ban is arguably the more valuable message anyway — better to know before
-// driving out with the dog in the car.
-const DOG_LABELS = {
-  yes:        { icon:"🐕", text:"Dogs allowed" },
-  designated: { icon:"🐕", text:"Dedicated dog beach" },
-  leashed:    { icon:"🐕", text:"Dogs allowed on a lead" },
-  no:         { icon:"🚫", text:"Dogs not allowed" },
-  private:    { icon:"🚫", text:"Dogs not allowed" },
-};
-
-function dogInfo(tags){
-  const raw = String(tags?.dog || tags?.dogs || "").trim().toLowerCase();
-  if(!raw) return null;
-  const hit = DOG_LABELS[raw];
-  if(!hit) return null;
-  return { ...hit, raw };
-}
-
-function dogLine(tags){
-  const d = dogInfo(tags);
-  if(!d) return "";
-  return `${d.icon} ${escapeHtml(d.text)}`;
-}
-
 function isSwimmingPool(t){
   if(t.leisure === 'swimming_pool' || t.amenity === 'swimming_pool') return true;
   // sport=swimming on something that is not a beach or beach-like feature
@@ -3763,12 +3727,6 @@ function openMobileBeachPage(b, num, source="map"){
       <button type="button" onclick="openStayNearbyPage(activeUploadBeach)" style="background:#7c3aed;">Find Places to Stay</button>
     </div>
 
-    ${dogLine(b.tags) ? `<div class="mobile-beach-section">
-      <h3>Dogs</h3>
-      <p>${dogLine(b.tags)}</p>
-      <div class="photo-note">From OpenStreetMap. Check local signs — rules change by season.</div>
-    </div>` : ""}
-
     <div class="mobile-beach-section">
       <h3>Location</h3>
       <p><b>Beach coordinates:</b><br>${coordText(b.lat,b.lon)}</p>
@@ -3860,7 +3818,6 @@ function openPopup(b,num){
         </div>
         <button type="button" onclick="openConditionsPage(activeUploadBeach)" style="margin:6px 0 8px;padding:8px 10px;font-size:13px;background:#0f766e;">🌊 Beach Conditions</button>
         <button type="button" onclick="openStayNearbyPage(activeUploadBeach)" style="margin:0 0 8px;padding:8px 10px;font-size:13px;background:#7c3aed;">🏨 Stay Nearby (3 km)</button>
-        ${dogLine(b.tags) ? `<p><b>${dogLine(b.tags)}</b><br><span class="photo-note">From OpenStreetMap. Check local signs.</span></p>` : ""}
         <p><b>Beach coordinates:</b><br>${coordText(b.lat,b.lon)}</p>
         <p><a href="${googleMapsPointLink(b.lat,b.lon)}" target="_blank">Open beach in Google Maps</a></p>
         <button type="button" onclick="copyTextToClipboard('${coordText(b.lat,b.lon)}')" style="margin-top:6px;padding:8px 10px;font-size:13px;">Copy beach coordinates</button>
