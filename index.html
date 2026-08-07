@@ -605,7 +605,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.0.5 (2026-08-07) - dog access shown on beaches where OpenStreetMap records it";
+const BUILD_VERSION = "2.0.6 (2026-08-07) - dog access shown on beaches where OpenStreetMap records it";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 const MAPTILER_KEY='L0PMr6QA6YPkhSS8n4Sv';
 const MAP_STYLES={
@@ -2474,11 +2474,18 @@ async function fetchOverpass(query){
 // The ban is arguably the more valuable message anyway — better to know before
 // driving out with the dog in the car.
 const DOG_LABELS = {
-  yes:        { icon:"🐕", text:"Dogs allowed" },
-  designated: { icon:"🐕", text:"Dedicated dog beach" },
-  leashed:    { icon:"🐕", text:"Dogs allowed on a lead" },
-  no:         { icon:"🚫", text:"Dogs not allowed" },
-  private:    { icon:"🚫", text:"Dogs not allowed" },
+  yes:         { icon:"🐕", text:"Dogs allowed" },
+  designated:  { icon:"🐕", text:"Dedicated dog beach" },
+  leashed:     { icon:"🐕", text:"Dogs allowed on a lead" },
+  // "permissive" is the OSM access value for tolerated by the owner rather
+  // than allowed by right — found on Spiaggia di Caroman in it.json, and it
+  // rendered nothing until it was added here. The wording keeps the
+  // distinction rather than flattening it to a plain yes.
+  permissive:  { icon:"🐕", text:"Dogs tolerated, not a right" },
+  destination: { icon:"🐕", text:"Dogs allowed" },
+  customers:   { icon:"🐕", text:"Dogs allowed for customers" },
+  no:          { icon:"🚫", text:"Dogs not allowed" },
+  private:     { icon:"🚫", text:"Dogs not allowed" },
 };
 
 function dogInfo(tags){
