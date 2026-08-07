@@ -161,7 +161,8 @@
     }
 
     .panel.mobile-open + #map,
-    .panel.mobile-open ~ #mobileSearchButton{
+    .panel.mobile-open ~ #mobileSearchButton,
+    .panel.mobile-open ~ #dogReturn{
       display:none;
     }
 
@@ -406,6 +407,16 @@
   /* The global "select,button{width:100%;padding:12px}" rule, plus the mobile
      override at the media query, would stretch this across the whole card.
      Every one of those has to be beaten explicitly. */
+  /* Square rather than the round beach pin, so a dog beach is obviously a
+     different kind of thing when it lands on the map on its own. */
+  .dog-marker{width:26px;height:26px;border-radius:6px;background:#2f6b4f;color:#fff;
+    display:grid;place-items:center;font-size:15px;border:2px solid #fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.4);cursor:pointer}
+  #dogReturn{position:absolute;left:14px;bottom:56px;z-index:95;display:none;
+    width:auto!important;margin:0!important;padding:12px 16px!important;
+    border-radius:999px!important;background:#2f6b4f!important;color:#fff!important;
+    border:0!important;font:bold 15px system-ui,-apple-system,Segoe UI,sans-serif!important;
+    box-shadow:0 5px 18px rgba(0,0,0,.35);cursor:pointer}
   .stay-copy{display:inline-block!important;width:auto!important;margin:0 0 0 8px!important;
     padding:2px 9px!important;border:1px solid var(--accent)!important;border-radius:999px!important;
     background:#fff!important;color:var(--accent)!important;font:inherit!important;font-size:11px!important;
@@ -422,6 +433,8 @@
   .stay-header{ padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
   .panel{ bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
   #mobileSearchButton{ bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+  #dogReturn{ bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+              left: calc(14px + env(safe-area-inset-left, 0px)); }
   .stay-content,
   .conditions-content,
   .mobile-beach-content{
@@ -449,6 +462,7 @@
       <button id="localScan">Search 10 km around place</button>
       <button id="nearMeScan" type="button" style="background:#2f6b4f;">Use my current location — 10 km</button>
       <button id="newSearch" type="button" style="background:#6b7280;">New Search / Reset</button>
+      <button id="dogBeaches" type="button" style="background:#2f6b4f;">🐕 Dog beaches in this country</button>
     </div>
 
     <div class="box legend">
@@ -565,6 +579,33 @@
 
 
 
+  <!-- Dog beaches, browsed by country. Deliberately a separate page rather than
+       a filter on the main search: only 0.5% of places carry a dog tag, so a
+       filter would empty the results and look broken. As a page of its own,
+       131 beaches in Croatia or 567 in Germany is the whole point. -->
+  <button type="button" id="dogReturn">← Back to dog beaches</button>
+
+  <div id="dogPage" class="stay-page">
+    <div class="stay-header">
+      <button type="button" id="dogBack" class="stay-nav-btn">← Back</button>
+      <div class="stay-title-wrap">
+        <div class="stay-title">🐕 Dog beaches</div>
+        <div class="stay-subtitle" id="dogCountryName"></div>
+      </div>
+      <button type="button" id="dogMap" class="stay-nav-btn stay-map-btn">🗺 Map</button>
+    </div>
+    <div class="stay-content">
+      <div class="stay-intro">
+        Beaches where OpenStreetMap records whether dogs are allowed. This is a
+        minority of beaches — the rest simply have no information either way, so
+        they are not listed here. Rules often change with the season; check
+        local signs before you travel.
+      </div>
+      <div id="dogStatus" class="stay-status">Choose a country, then open this page.</div>
+      <div id="dogResults"></div>
+    </div>
+  </div>
+
   <div id="stayPage" class="stay-page">
     <div class="stay-header">
       <button type="button" id="stayBack" class="stay-nav-btn">← Back</button>
@@ -605,7 +646,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.0.6 (2026-08-07) - dog access shown on beaches where OpenStreetMap records it";
+const BUILD_VERSION = "2.0.10 (2026-08-07) - dog beaches page: map pin, back to list, back to search";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 const MAPTILER_KEY='L0PMr6QA6YPkhSS8n4Sv';
 const MAP_STYLES={
@@ -2477,6 +2518,8 @@ const DOG_LABELS = {
   yes:         { icon:"🐕", text:"Dogs allowed" },
   designated:  { icon:"🐕", text:"Dedicated dog beach" },
   leashed:     { icon:"🐕", text:"Dogs allowed on a lead" },
+  unleashed:   { icon:"🐕", text:"Dogs allowed off the lead" },
+  official:    { icon:"🐕", text:"Dedicated dog beach" },
   // "permissive" is the OSM access value meaning the landowner allows it but
   // there is no right of access — permission can be withdrawn. Found on
   // Spiaggia di Caroman in it.json, and it rendered nothing until it was added
@@ -2489,12 +2532,31 @@ const DOG_LABELS = {
   private:     { icon:"🚫", text:"Dogs not allowed" },
 };
 
+// Scanning all 381,331 places in beaches/*.json on 7 Aug 2026 found 1,910 with
+// a dog tag, and the values are messier than the OSM wiki suggests:
+//   932 no · 600 yes · 248 leashed · 75 designated · 34 unleashed · 3 official
+// plus a tail of things people typed by hand, including "0", "1", "partially",
+// and several seasonal strings such as "no@(may 01-sep 30)" and
+// "no @ mar 15 - oct 15".
+//
+// The seasonal ones matter: rendering them as a flat "Dogs not allowed" would
+// be wrong for half the year, and showing the raw string is unreadable. They
+// get their own honest message instead. Anything still unrecognised renders
+// nothing at all — silence beats a confident wrong answer about whether
+// somebody can bring their dog.
+const DOG_SEASONAL = /@|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\b/i;
+
 function dogInfo(tags){
   const raw = String(tags?.dog || tags?.dogs || "").trim().toLowerCase();
   if(!raw) return null;
+
   const hit = DOG_LABELS[raw];
-  if(!hit) return null;
-  return { ...hit, raw };
+  if(hit) return { ...hit, raw };
+
+  if(DOG_SEASONAL.test(raw)){
+    return { icon:"🐕", text:"Dog rules change with the season — check local signs", raw };
+  }
+  return null;
 }
 
 function dogLine(tags){
@@ -3223,6 +3285,160 @@ async function toggleTranslate(){
 
 
 let activeConditionsBeach = null;
+
+// --- Dog beaches by country -------------------------------------------------
+// Reads the country file that is already downloaded for searching and picks out
+// everything carrying a dog tag. No new data, no extra request beyond the one
+// the app makes anyway.
+const DOG_GROUPS = [
+  { key:"designated",  title:"Dedicated dog beaches",
+    match:v => v === "designated" || v === "official" },
+  { key:"unleashed",   title:"Dogs allowed off the lead",
+    match:v => v === "unleashed" },
+  { key:"yes",         title:"Dogs allowed",
+    match:v => v === "yes" || v === "destination" },
+  { key:"leashed",     title:"Dogs allowed on a lead",
+    match:v => v === "leashed" },
+  { key:"permissive",  title:"Dogs at the owner's discretion",
+    match:v => v === "permissive" || v === "customers" },
+  { key:"seasonal",    title:"Seasonal rules — check local signs",
+    match:v => DOG_SEASONAL.test(v) },
+  { key:"no",          title:"Dogs not allowed",
+    match:v => v === "no" || v === "private" },
+];
+
+function dogBeachName(tags){
+  return tags.name || tags["name:en"] || tags.int_name || tags.official_name || "";
+}
+
+function closeDogPage(toSearch = false){
+  const page = $("dogPage");
+  if(page) page.classList.remove("show");
+  document.body.classList.remove("mobile-detail-open");
+  // On a phone the search controls live in a panel that is hidden while a
+  // full-screen page is open, so Back has to reopen it explicitly. On desktop
+  // the panel is always on screen and there is nothing to restore.
+  if(toSearch && isMobileView()) openMobileSearchPanel();
+}
+
+async function openDogBeachesPage(){
+  const country = $("country").value || currentCountry;
+  const cc = nominatimCountryCode(country);
+
+  closeActivePopup();
+  closeMobileSearchPanel();
+  const page = $("dogPage");
+  if(!page) return;
+  $("dogCountryName").textContent = country;
+  $("dogResults").innerHTML = "";
+  page.classList.add("show");
+  document.body.classList.add("mobile-detail-open");
+
+  if(!cc){
+    $("dogStatus").textContent =
+      "Pick a country first — this page reads that country's beach data.";
+    return;
+  }
+
+  $("dogStatus").textContent = `Reading ${country} beach data...`;
+
+  const local = await loadCountryBeachFile(cc);
+  if(!local || !local.elements.length){
+    $("dogStatus").textContent =
+      `No prepared beach data for ${country} yet, so this page cannot be built for it.`;
+    return;
+  }
+
+  const found = [];
+  for(const el of local.elements){
+    const tags = el.tags || {};
+    const raw = String(tags.dog || tags.dogs || "").trim().toLowerCase();
+    if(!raw) continue;
+    const info = dogInfo(tags);
+    if(!info) continue;                     // unparseable value, stay silent
+    found.push({
+      raw,
+      name: dogBeachName(tags) || "Unnamed beach",
+      lat: el.lat ?? el.center?.lat,
+      lon: el.lon ?? el.center?.lon,
+      status: placeStatus(tags),
+      tags,
+    });
+  }
+
+  if(!found.length){
+    $("dogStatus").textContent =
+      `No beach in ${country} records dog access in OpenStreetMap yet. ` +
+      `That is a gap in the map data, not an answer about the beaches.`;
+    return;
+  }
+
+  const welcoming = found.filter(f => !["no","private"].includes(f.raw)).length;
+  $("dogStatus").textContent =
+    `${found.length} beaches in ${country} record dog access — ` +
+    `${welcoming} allow dogs in some form, ${found.length - welcoming} do not. ` +
+    `Out of ${local.elements.length} places in total.`;
+
+  const html = [];
+  for(const g of DOG_GROUPS){
+    const rows = found.filter(f => g.match(f.raw));
+    if(!rows.length) continue;
+    rows.sort((a,b) => a.name.localeCompare(b.name));
+    html.push(`<h3 style="margin:18px 0 6px;font-size:16px">${escapeHtml(g.title)} (${rows.length})</h3>`);
+    for(const r of rows){
+      const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.lat + "," + r.lon)}`;
+      html.push(`<div class="stay-result">
+        <h3>${escapeHtml(r.name)}</h3>
+        <div class="stay-meta">${escapeHtml(r.status)}</div>
+        <div class="stay-meta">${dogLine(r.tags)}</div>
+        <div class="stay-actions">
+          <a class="stay-link secondary" href="${escapeHtml(maps)}" target="_blank" rel="noopener noreferrer">🗺 Open in Google Maps</a>
+          <button type="button" class="stay-link dog-show" style="border:0;cursor:pointer"
+            data-lat="${Number(r.lat)}" data-lon="${Number(r.lon)}"
+            data-name="${escapeHtml(r.name)}">Show on the BeachScout map</button>
+        </div>
+      </div>`);
+    }
+  }
+  $("dogResults").innerHTML = html.join("");
+}
+
+let dogMarker = null;
+let dogPopup  = null;
+
+function clearDogMarker(){
+  if(dogMarker){ dogMarker.remove(); dogMarker = null; }
+  if(dogPopup){ dogPopup.remove(); dogPopup = null; }
+  const btn = $("dogReturn");
+  if(btn) btn.style.display = "none";
+}
+
+// A dog beach opened from the list is usually nowhere near the current search
+// results, so no marker exists for it. Drop a dedicated one, label it, and
+// leave a way back to the list — without that the user lands on an unfamiliar
+// stretch of coast with nothing to say which beach they picked.
+function showDogBeachOnMap(lat, lon, name){
+  if(!isFinite(lat) || !isFinite(lon)) return;
+  closeDogPage();
+  returnToMap();
+  clearDogMarker();
+
+  const el = document.createElement("div");
+  el.className = "dog-marker";
+  el.textContent = "\u{1F415}";
+  el.title = name || "Dog beach";
+
+  dogMarker = new maplibregl.Marker({ element: el }).setLngLat([lon, lat]).addTo(map);
+  dogPopup = new maplibregl.Popup({ offset: 18, closeButton: true })
+    .setLngLat([lon, lat])
+    .setHTML(`<b>${escapeHtml(name || "Dog beach")}</b>`)
+    .addTo(map);
+
+  map.flyTo({ center:[lon, lat], zoom: 15 });
+
+  const btn = $("dogReturn");
+  if(btn) btn.style.display = "block";
+}
 
 let activeStayBeach = null;
 
@@ -4322,6 +4538,18 @@ $('mobileBeachMap').addEventListener('click',returnToMap);
 $('conditionsBack').addEventListener('click',()=>closeConditionsPage(true));
 $('conditionsMap').addEventListener('click',returnToMap);
 $('stayBack').addEventListener('click',()=>closeStayNearbyPage(true));
+$('dogBeaches').addEventListener('click',openDogBeachesPage);
+$('dogBack').addEventListener('click',()=>closeDogPage(true));
+$('dogMap').addEventListener('click',()=>{ closeDogPage(); returnToMap(); });
+$('dogReturn').addEventListener('click',()=>{ clearDogMarker(); openDogBeachesPage(); });
+
+// Delegated so the beach name never travels through an inline onclick
+// attribute — names like "Plaza d'Oro" would break the handler.
+document.addEventListener('click',function(ev){
+  const b = ev.target && ev.target.closest ? ev.target.closest('#dogResults .dog-show') : null;
+  if(!b) return;
+  showDogBeachOnMap(Number(b.dataset.lat), Number(b.dataset.lon), b.dataset.name || "");
+});
 $('stayMap').addEventListener('click',returnToMap);
 $('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('countrySearch').addEventListener('click',()=>setTimeout(()=>$("countrySearch").select(),50));
