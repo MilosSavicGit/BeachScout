@@ -2477,11 +2477,12 @@ const DOG_LABELS = {
   yes:         { icon:"🐕", text:"Dogs allowed" },
   designated:  { icon:"🐕", text:"Dedicated dog beach" },
   leashed:     { icon:"🐕", text:"Dogs allowed on a lead" },
-  // "permissive" is the OSM access value for tolerated by the owner rather
-  // than allowed by right — found on Spiaggia di Caroman in it.json, and it
-  // rendered nothing until it was added here. The wording keeps the
-  // distinction rather than flattening it to a plain yes.
-  permissive:  { icon:"🐕", text:"Dogs tolerated, not a right" },
+  // "permissive" is the OSM access value meaning the landowner allows it but
+  // there is no right of access — permission can be withdrawn. Found on
+  // Spiaggia di Caroman in it.json, and it rendered nothing until it was added
+  // here. Worded for a beach visitor rather than a mapper: the practical
+  // difference from plain "yes" is that it is the owner's call, not a right.
+  permissive:  { icon:"🐕", text:"Dogs allowed at the owner\u2019s discretion" },
   destination: { icon:"🐕", text:"Dogs allowed" },
   customers:   { icon:"🐕", text:"Dogs allowed for customers" },
   no:          { icon:"🚫", text:"Dogs not allowed" },
