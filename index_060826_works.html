@@ -410,24 +410,16 @@
     padding:2px 9px!important;border:1px solid var(--accent)!important;border-radius:999px!important;
     background:#fff!important;color:var(--accent)!important;font:inherit!important;font-size:11px!important;
     font-weight:bold!important;line-height:1.5!important;cursor:pointer;vertical-align:middle}
-
-  /* iOS home-screen installs run full-screen under the status bar and notch, so
-     the top-anchored controls sit beneath them. env() is 0 in desktop browsers
-     and 0 inside the Android app (its WebView is already inset natively by
-     MainActivity), so these calc() values only take effect where they are
-     needed. Requires viewport-fit=cover, which the viewport meta already sets. */
-  #styleSwitcher{ top: calc(10px + env(safe-area-inset-top, 0px)); }
-  .mobile-beach-header,
-  .conditions-header,
-  .stay-header{ padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
-  .panel{ bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
-  #mobileSearchButton{ bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
-  .stay-content,
-  .conditions-content,
-  .mobile-beach-content{
-    padding-left: calc(14px + env(safe-area-inset-left, 0px));
-    padding-right: calc(14px + env(safe-area-inset-right, 0px));
-  }
+  .extlink-sheet{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.45);display:none;align-items:flex-end}
+  .extlink-sheet.show{display:flex}
+  .extlink-card{width:100%;background:var(--panel);border-radius:16px 16px 0 0;padding:16px 14px 22px;max-width:760px;margin:0 auto;box-shadow:0 -4px 24px rgba(0,0,0,.25)}
+  .extlink-card h4{margin:0 0 4px;font-size:16px}
+  .extlink-host{font-size:13px;color:var(--muted);word-break:break-all;margin-bottom:12px}
+  .extlink-card button{display:block;width:100%;margin:7px 0;padding:12px;border:0;border-radius:10px;font:inherit;font-size:14px;font-weight:bold;cursor:pointer}
+  .extlink-go{background:#2f6b4f;color:#fff}
+  .extlink-copy{background:#fff;color:var(--accent);border:1px solid var(--accent)!important}
+  .extlink-cancel{background:#6b7280;color:#fff}
+  .extlink-note{margin-top:10px;font-size:12px;line-height:1.45;color:var(--muted)}
 
 </style>
 </head>
@@ -564,6 +556,24 @@
   </div>
 
 
+  <!-- Shown only when the browser/WebView refuses window.open, i.e. inside the
+       Android wrapper. Without it the WebView would navigate away from the map
+       with no way back, since BeachScout cannot draw a button on someone
+       else's page. -->
+  <div id="extLinkSheet" class="extlink-sheet">
+    <div class="extlink-card">
+      <h4>Open this website?</h4>
+      <div class="extlink-host" id="extLinkHost"></div>
+      <!-- Copy is the primary action because the wrapper has no onBackPressed
+           override: opening the site replaces the WebView and the back gesture
+           then exits BeachScout entirely rather than returning to the list.
+           Reorder these once shouldOverrideUrlLoading fires an ACTION_VIEW. -->
+      <button type="button" class="extlink-go" id="extLinkCopy">Copy link and stay here</button>
+      <button type="button" class="extlink-copy" id="extLinkGo">Open it now — this closes BeachScout</button>
+      <button type="button" class="extlink-cancel" id="extLinkCancel">Cancel</button>
+      <div class="extlink-note" id="extLinkNote"></div>
+    </div>
+  </div>
 
   <div id="stayPage" class="stay-page">
     <div class="stay-header">
@@ -605,7 +615,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.0.4 (2026-08-06) - same behaviour on iPhone and Android: links open directly, safe-area insets";
+const BUILD_VERSION = "v2.6 (2026-08-05) - Stay Nearby: address order by country, copyable phone numbers, defers to native link handling in app v4+";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 const MAPTILER_KEY='L0PMr6QA6YPkhSS8n4Sv';
 const MAP_STYLES={
@@ -3339,6 +3349,49 @@ document.addEventListener("click",function(ev){
   setTimeout(()=>{ btn.textContent=prev; },1500);
 });
 
+let pendingExternalUrl="";
+
+function hideExternalLinkSheet(){
+  pendingExternalUrl="";
+  const el=$("extLinkSheet");
+  if(el) el.classList.remove("show");
+}
+// Android WebViews put "; wv)" in the user agent. That is the difference that
+// matters here: in a real browser (iPhone Safari, Android Chrome) navigating to
+// an external site works and Back returns you. Inside this app's WebView it
+// hangs BeachScout badly enough to need force-stopping, so the button that does
+// it is removed rather than merely labelled. Remove this once the wrapper
+// implements shouldOverrideUrlLoading.
+function isAndroidWebView(){
+  const ua=navigator.userAgent||"";
+  return /Android/i.test(ua) && /;\s*wv\)/i.test(ua);
+}
+
+// The Android wrapper appends "BeachScoutApp/<n>" to its user agent from
+// versionCode 4 onward. That build sends external links to the browser itself,
+// so the web app must NOT intercept the click at all — doing so would replace
+// working native behaviour with a sheet nobody needs.
+function wrapperHandlesExternalLinks(){
+  return /BeachScoutApp\/(\d+)/.test(navigator.userAgent||"");
+}
+
+function showExternalLinkSheet(href){
+  const sheet=$("extLinkSheet"), hostEl=$("extLinkHost");
+  if(!sheet||!hostEl){ window.location.href=href; return; }   // sheet missing: old behaviour
+  pendingExternalUrl=href;
+  let host=href;
+  try{ host=new URL(href).host; }catch(e){}
+  hostEl.textContent=host;
+
+  const goBtn=$("extLinkGo"), note=$("extLinkNote");
+  const trapped=isAndroidWebView();
+  if(goBtn) goBtn.style.display=trapped?"none":"block";
+  if(note) note.textContent=trapped
+    ? "Opening websites inside the app freezes it, so that option is hidden here. Copy the link and paste it into Chrome."
+    : "Opening the site replaces the map. Use your phone's Back button to return.";
+  sheet.classList.add("show");
+}
+
 let stayRenderToken=0;
 
 function renderStayResults(places){
@@ -3379,6 +3432,31 @@ function renderStayResults(places){
   }).join("");
 }
 
+// A plain target="_blank" anchor does nothing inside an Android WebView unless
+// the host app implements onCreateWindow, which is why the website button felt
+// dead in the Play build while working in a browser. Try the popup first; if
+// the WebView refuses it, navigate in place so the link at least opens.
+document.addEventListener("click",function(ev){
+  const a=ev.target && ev.target.closest ? ev.target.closest("#stayResults a[target='_blank']") : null;
+  if(!a) return;
+  const href=a.getAttribute("href");
+  if(!href) return;
+  if(wrapperHandlesExternalLinks()) return;   // let the app open it natively
+  ev.preventDefault();
+  // Do NOT pass "noopener" in the features string: per spec window.open then
+  // returns null even on success, which would trigger the fallback as well and
+  // navigate this page away on top of opening the tab. Null the opener after.
+  // Do NOT trust window.open's return value on mobile. Some Android WebViews
+  // hand back a Window object and then do nothing with it, so a null-check
+  // reports success while the user sees a dead button. On mobile the sheet is
+  // shown unconditionally; window.open is only used on desktop, where its
+  // return value is reliable.
+  if(isMobileView()){ showExternalLinkSheet(href); return; }
+  let w=null;
+  try{ w=window.open(href,"_blank"); }catch(e){ w=null; }
+  if(w){ try{ w.opener=null; }catch(e){} return; }
+  showExternalLinkSheet(href);
+});
 
 async function openStayNearbyPage(beach){
   activeStayBeach=beach || activeUploadBeach || activeParkingBeach || null;
@@ -4271,6 +4349,14 @@ $('mobileBeachMap').addEventListener('click',returnToMap);
 $('conditionsBack').addEventListener('click',()=>closeConditionsPage(true));
 $('conditionsMap').addEventListener('click',returnToMap);
 $('stayBack').addEventListener('click',()=>closeStayNearbyPage(true));
+$('extLinkGo').addEventListener('click',()=>{ const u=pendingExternalUrl; hideExternalLinkSheet(); if(u) window.location.href=u; });
+$('extLinkCopy').addEventListener('click',ev=>{
+  if(pendingExternalUrl) copyTextToClipboard(pendingExternalUrl);
+  const b=ev.currentTarget; b.textContent="Link copied";
+  setTimeout(()=>{ b.textContent="Copy link and stay here"; hideExternalLinkSheet(); },900);
+});
+$('extLinkCancel').addEventListener('click',hideExternalLinkSheet);
+$('extLinkSheet').addEventListener('click',ev=>{ if(ev.target && ev.target.id==='extLinkSheet') hideExternalLinkSheet(); });
 $('stayMap').addEventListener('click',returnToMap);
 $('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch").select(),50));
 $('countrySearch').addEventListener('click',()=>setTimeout(()=>$("countrySearch").select(),50));
