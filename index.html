@@ -27,8 +27,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="BeachScout" />
 <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- crossorigin="anonymous" matters: without it the browser masks every
+     error thrown inside these scripts as a bare "Script error." with no
+     file or line. jsDelivr sends the CORS headers, so this costs nothing
+     and makes MapLibre failures readable. -->
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
 <style>
   :root{--ink:#1c1a17;--paper:#f4efe6;--panel:#fffdf8;--rule:#d8cfbe;--accent:#b5471f;--muted:#8a7f6d}
   *{box-sizing:border-box}
@@ -412,6 +416,11 @@
   .dog-marker{width:26px;height:26px;border-radius:6px;background:#2f6b4f;color:#fff;
     display:grid;place-items:center;font-size:15px;border:2px solid #fff;
     box-shadow:0 2px 8px rgba(0,0,0,.4);cursor:pointer}
+  #overviewClear{position:absolute;right:14px;bottom:112px;z-index:95;display:none;
+    width:auto!important;margin:0!important;padding:10px 14px!important;
+    border-radius:999px!important;background:#6b7280!important;color:#fff!important;
+    border:0!important;font:bold 14px system-ui,-apple-system,Segoe UI,sans-serif!important;
+    box-shadow:0 5px 18px rgba(0,0,0,.35);cursor:pointer}
   #dogReturn{position:absolute;left:14px;bottom:56px;z-index:95;display:none;
     width:auto!important;margin:0!important;padding:12px 16px!important;
     border-radius:999px!important;background:#2f6b4f!important;color:#fff!important;
@@ -459,13 +468,17 @@
       <div class="photo-note" style="margin:6px 0 8px;">Recommended. Type a place such as Genoa, Nice, Split or Ada Ciganlija. This version does not run large regional searches.</div>
       <input id="placeSearch" type="text" placeholder="Example: Genoa" style="width:100%;padding:12px;border:1px solid var(--rule);border-radius:8px;font:inherit;background:#fff;">
       <div id="suggestions" class="photo-note" style="margin-top:8px;"></div>
-      <button id="localScan">Search 10 km around place</button>
-      <button id="nearMeScan" type="button" style="background:#2f6b4f;">Use my current location — 10 km</button>
+      <button id="localScan">Detailed search</button>
+      <button id="nearMeScan" type="button" style="background:#2f6b4f;">Detailed search where I am</button>
+      <div class="photo-note" style="margin:-2px 0 8px;">Both cover 10 km around the point.</div>
       <button id="newSearch" type="button" style="background:#6b7280;">New Search / Reset</button>
       <button id="dogBeaches" type="button" style="background:#2f6b4f;">🐕 Dog beaches in this country</button>
+      <button id="natBeaches" type="button" style="background:#2f6b4f;">Naturist places in this country</button>
     </div>
 
-    <div class="box legend">
+    <div class="box legend" id="legend">
+      <div id="legendOverview" style="display:none"></div>
+      <div id="legendBase">
       <div><span class="dot" style="background:#2563eb"></span>Beach</div>
       <div><span class="dot" style="background:#2f6b4f"></span>Official/designated naturist</div>
       <div><span class="dot" style="background:#d97706"></span>Customary/naturist beach</div>
@@ -474,6 +487,7 @@
       <div><span class="dot" style="background:#0f766e"></span>Naturist resort / village</div>
       <div><span class="dot" style="background:#be185d"></span>Naturist campsite</div>
       <div><span class="dot" style="background:#111827"></span>Public parking near selected beach</div>
+      </div>
     </div>
 
     <div class="box filters">
@@ -583,7 +597,36 @@
        a filter on the main search: only 0.5% of places carry a dog tag, so a
        filter would empty the results and look broken. As a page of its own,
        131 beaches in Croatia or 567 in Germany is the whole point. -->
-  <button type="button" id="dogReturn">← Back to dog beaches</button>
+  <button type="button" id="dogReturn">☰ See the list</button>
+  <button type="button" id="overviewClear"></button>
+
+  <!-- Naturist places, browsed by country. Same pattern as the dog page and for
+       the same reason: the main search only ever shows what is within 10 km of
+       a place you already thought of, so there is no way to see what a whole
+       country has. -->
+  <div id="natPage" class="stay-page">
+    <div class="stay-header">
+      <button type="button" id="natBack" class="stay-nav-btn">← Back</button>
+      <div class="stay-title-wrap">
+        <div class="stay-title">Naturist places</div>
+        <div class="stay-subtitle" id="natCountryName"></div>
+      </div>
+      <button type="button" id="natMap" class="stay-nav-btn stay-map-btn">🗺 Map</button>
+    </div>
+    <div class="stay-content">
+      <div class="stay-intro">
+        Every naturist beach, resort and campsite OpenStreetMap records in this
+        country. Officially designated places are separated from those where
+        naturism is only customary or tolerated — the difference matters, and
+        local rules can change. Places listed as naturist by name only carry no
+        naturist tag at all; the name is the sole evidence, so treat those with
+        more caution than the rest.
+      </div>
+      <div id="natStatus" class="stay-status">Choose a country, then open this page.</div>
+      <div id="natResults"></div>
+    </div>
+  </div>
+
 
   <div id="dogPage" class="stay-page">
     <div class="stay-header">
@@ -646,7 +689,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.0.10 (2026-08-07) - dog beaches page: map pin, back to list, back to search";
+const BUILD_VERSION = "2.3.4 (2026-08-08) - overview dot clicks are no longer closed by the map click handler";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 const MAPTILER_KEY='L0PMr6QA6YPkhSS8n4Sv';
 const MAP_STYLES={
@@ -3046,8 +3089,17 @@ function makeBeachMemory(beach){
   }
 }
 
+// A beach opened from a country-overview dot is not in allBeaches, so it needs
+// its own memory or the Translate button flips its label and changes nothing.
+function beachesInPlay(){
+  const list = allBeaches.slice();
+  const open = activeUploadBeach;
+  if(open && !list.includes(open)) list.push(open);
+  return list;
+}
+
 function prepareTranslationMemoryForCurrentResults(){
-  for(const b of allBeaches){
+  for(const b of beachesInPlay()){
     makeBeachMemory(b);
   }
 }
@@ -3086,7 +3138,7 @@ function initializeOriginalMemoryForNewSearch(){
 function applyTranslateModeToData(){
   prepareTranslationMemoryForCurrentResults();
 
-  for(const b of allBeaches){
+  for(const b of beachesInPlay()){
     if(translateMode === "english"){
       b.name = b._englishName;
       b.status = b._englishStatus;
@@ -3183,10 +3235,21 @@ function openPopupBeach(){
   const lat = Number(popup.dataset.beachLat);
   const lon = Number(popup.dataset.beachLon);
 
-  return allBeaches.find(b =>
+  const hit = allBeaches.find(b =>
     Math.abs(Number(b.lat) - lat) < 0.00001 &&
     Math.abs(Number(b.lon) - lon) < 0.00001
-  ) || null;
+  );
+  if(hit) return hit;
+
+  // A popup opened from a country-overview dot is not in allBeaches — that
+  // array only holds the last search. Fall back to whatever the popup was
+  // actually built from, or the Translate button silently does nothing.
+  if(activeUploadBeach &&
+     Math.abs(Number(activeUploadBeach.lat) - lat) < 0.00001 &&
+     Math.abs(Number(activeUploadBeach.lon) - lon) < 0.00001){
+    return activeUploadBeach;
+  }
+  return null;
 }
 
 function updateCurrentDisplayWithoutRedraw(){
@@ -3226,7 +3289,7 @@ function updateCurrentDisplayWithoutRedraw(){
     const statusEl = mobileContent.querySelector(".mobile-status");
     const mBtn = mobileContent.querySelector(".translate-toggle-btn");
 
-    if(h2) h2.textContent = `${activeMobileNum}. ${b.name}`;
+    if(h2) h2.textContent = `${activeMobileNum ? activeMobileNum + ". " : ""}${b.name}`;
     if(statusEl) statusEl.textContent = b.status;
     if(mBtn) mBtn.textContent = translateButtonLabel();
   }
@@ -3237,7 +3300,7 @@ function updateCurrentDisplayWithoutRedraw(){
     const btn = popup.querySelector(".translate-toggle-btn");
     const num = popup.dataset.num || "";
 
-    if(h3) h3.textContent = `${num}. ${b.name}`;
+    if(h3) h3.textContent = `${(num && num !== "0") ? num + ". " : ""}${b.name}`;
     if(statusEl) statusEl.textContent = b.status;
     if(btn) btn.textContent = translateButtonLabel();
   }
@@ -3321,7 +3384,11 @@ function closeDogPage(toSearch = false){
   if(toSearch && isMobileView()) openMobileSearchPanel();
 }
 
-async function openDogBeachesPage(){
+// showList=false builds the list silently so the caller can go straight to
+// the map. Returns the rows found, or null when there is nothing to show —
+// the caller then opens the page so the user reads why.
+async function openDogBeachesPage(showList = true){
+  lastCountryPage = "dog";
   const country = $("country").value || currentCountry;
   const cc = nominatimCountryCode(country);
 
@@ -3331,13 +3398,15 @@ async function openDogBeachesPage(){
   if(!page) return;
   $("dogCountryName").textContent = country;
   $("dogResults").innerHTML = "";
-  page.classList.add("show");
-  document.body.classList.add("mobile-detail-open");
+  if(showList){
+    page.classList.add("show");
+    document.body.classList.add("mobile-detail-open");
+  }
 
   if(!cc){
     $("dogStatus").textContent =
       "Pick a country first — this page reads that country's beach data.";
-    return;
+    return null;
   }
 
   $("dogStatus").textContent = `Reading ${country} beach data...`;
@@ -3346,7 +3415,7 @@ async function openDogBeachesPage(){
   if(!local || !local.elements.length){
     $("dogStatus").textContent =
       `No prepared beach data for ${country} yet, so this page cannot be built for it.`;
-    return;
+    return null;
   }
 
   const found = [];
@@ -3370,9 +3439,10 @@ async function openDogBeachesPage(){
     $("dogStatus").textContent =
       `No beach in ${country} records dog access in OpenStreetMap yet. ` +
       `That is a gap in the map data, not an answer about the beaches.`;
-    return;
+    return null;
   }
 
+  dogRows = found;
   const welcoming = found.filter(f => !["no","private"].includes(f.raw)).length;
   $("dogStatus").textContent =
     `${found.length} beaches in ${country} record dog access — ` +
@@ -3386,21 +3456,12 @@ async function openDogBeachesPage(){
     rows.sort((a,b) => a.name.localeCompare(b.name));
     html.push(`<h3 style="margin:18px 0 6px;font-size:16px">${escapeHtml(g.title)} (${rows.length})</h3>`);
     for(const r of rows){
-      const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.lat + "," + r.lon)}`;
-      html.push(`<div class="stay-result">
-        <h3>${escapeHtml(r.name)}</h3>
-        <div class="stay-meta">${escapeHtml(r.status)}</div>
-        <div class="stay-meta">${dogLine(r.tags)}</div>
-        <div class="stay-actions">
-          <a class="stay-link secondary" href="${escapeHtml(maps)}" target="_blank" rel="noopener noreferrer">🗺 Open in Google Maps</a>
-          <button type="button" class="stay-link dog-show" style="border:0;cursor:pointer"
-            data-lat="${Number(r.lat)}" data-lon="${Number(r.lon)}"
-            data-name="${escapeHtml(r.name)}">Show on the BeachScout map</button>
-        </div>
-      </div>`);
+      html.push(countryListRow(r.name, r.status, dogLine(r.tags), r.lat, r.lon));
     }
   }
+  html.unshift(`<button type="button" class="stay-link" id="dogShowAll" style="border:0;cursor:pointer;margin-bottom:6px">🗺 Show all ${found.length} on the map</button>`);
   $("dogResults").innerHTML = html.join("");
+  return found;
 }
 
 let dogMarker = null;
@@ -3413,31 +3474,394 @@ function clearDogMarker(){
   if(btn) btn.style.display = "none";
 }
 
-// A dog beach opened from the list is usually nowhere near the current search
-// results, so no marker exists for it. Drop a dedicated one, label it, and
+// A place opened from a country list is usually nowhere near the current
+// search results, so no marker exists for it. Drop a dedicated one, label it, and
 // leave a way back to the list — without that the user lands on an unfamiliar
 // stretch of coast with nothing to say which beach they picked.
-function showDogBeachOnMap(lat, lon, name){
+// Which country page the map pin came from, so the floating return button
+// reopens the right one instead of always going back to dogs.
+// --- Country overview layer -------------------------------------------------
+// Every naturist or dog place in a country, drawn at once so the user can see
+// which stretch of coast to aim for. Deliberately a MapLibre GeoJSON layer
+// rather than one DOM marker per place: Germany has 567 dog beaches and Croatia
+// several hundred naturist places, and that many DOM markers makes a phone
+// crawl. A circle layer handles thousands without noticing.
+const OVERVIEW_SRC = "country-overview";
+let overviewCurrent = null;          // {kind, rows} kept so the button can redraw
+let natRows = [], dogRows = [];      // last list built by each country page
+
+function clearCountryOverview(){
+  for(const id of [OVERVIEW_SRC + "-hit", OVERVIEW_SRC + "-circles", OVERVIEW_SRC + "-halo"]){
+    if(map.getLayer(id)) map.removeLayer(id);
+  }
+  if(map.getSource(OVERVIEW_SRC)) map.removeSource(OVERVIEW_SRC);
+  const btn = $("overviewClear");
+  if(btn) btn.style.display = "none";
+  // The list button belongs to whatever is currently on the map, so it goes
+  // with the pins.
+  const listBtn = $("dogReturn");
+  if(listBtn && !dogMarker) listBtn.style.display = "none";
+  resetLegend();
+}
+
+// The legend describes the search markers. While a country overview is on the
+// map those markers are not what the user is looking at, so the legend has to
+// describe the dots instead — otherwise it explains colours that are not on
+// screen and stays silent about the ones that are.
+//
+// Only categories actually present in the data are listed. A legend row for
+// "Dogs not allowed" when the country has none of them invites the reader to go
+// looking for a colour that isn't there.
+function legendRow(colour, label, count){
+  return `<div><span class="dot" style="background:${colour}"></span>${escapeHtml(label)}` +
+         (count ? ` <span class="photo-note">(${count})</span>` : "") + `</div>`;
+}
+
+function overviewLegendRows(kind, pts){
+  const tally = new Map();                       // colour -> [label, count]
+  const bump = (colour, label) => {
+    const hit = tally.get(colour);
+    if(hit) hit[1]++; else tally.set(colour, [label, 1]);
+  };
+
+  for(const r of pts){
+    const colour = overviewColour(kind, r);
+    if(kind === "dog"){
+      const raw = String((r.tags && (r.tags.dog || r.tags.dogs)) || "").toLowerCase();
+      if(raw === "no" || raw === "private")       bump(colour, "Dogs not allowed");
+      else if(DOG_SEASONAL.test(raw))            bump(colour, "Dog rules change with the season");
+      else if(raw === "designated" || raw === "official")
+                                                 bump(colour, "Dedicated dog beach / dogs allowed");
+      else                                       bump(colour, "Dogs allowed in some form");
+    }else{
+      bump(colour, r.status || "Naturist place");
+    }
+  }
+
+  // Most-common first, so the colour the eye meets most is explained first.
+  return [...tally.entries()]
+    .sort((a, b) => b[1][1] - a[1][1])
+    .map(([colour, [label, count]]) => legendRow(colour, label, count))
+    .join("");
+}
+
+function setOverviewLegend(kind, pts, countryLabel){
+  const box = $("legendOverview"), base = $("legendBase");
+  if(!box || !base) return;
+  const heading = kind === "dog"
+    ? `\u{1F415} Dog access in ${countryLabel || "this country"}`
+    : `\u{1F9CD} Naturist places in ${countryLabel || "this country"}`;
+  box.innerHTML =
+    `<div style="margin-bottom:6px"><b>${escapeHtml(heading)}</b></div>` +
+    overviewLegendRows(kind, pts) +
+    `<div class="photo-note" style="margin-top:6px">` +
+    `From OpenStreetMap. Absence of a tag is not a rule \u2014 check local signs.</div>`;
+  box.style.display = "block";
+  base.style.display = "none";
+}
+
+function resetLegend(){
+  const box = $("legendOverview"), base = $("legendBase");
+  if(!box || !base) return;
+  box.style.display = "none";
+  box.innerHTML = "";
+  base.style.display = "";
+}
+
+function overviewColour(kind, row){
+  if(kind === "dog"){
+    const raw = String(row.tags.dog || row.tags.dogs || "").toLowerCase();
+    if(raw === "no" || raw === "private") return "#9a4226";      // banned
+    if(DOG_SEASONAL.test(raw)) return "#8a7f6d";                 // depends on season
+    return "#2f6b4f";                                            // allowed in some form
+  }
+  // Naturist colours match the main map exactly, with one exception: a place
+  // that is naturist only because of its name has no nudism tag, so colourFor()
+  // returns the ordinary-beach blue — which on a naturist map reads as the
+  // opposite of what it means. Give those their own muted grey.
+  if(row.status === "Naturist by name only") return "#8a7f6d";
+  return colourFor(row.tags);
+}
+
+// The panel buttons go straight to the map, because "where are they" is the
+// question people actually have. The list is one tap away from there.
+async function showCountryMap(kind){
+  status("Reading country data...");
+  const rows = kind === "nat" ? await openNaturistPage(false)
+                              : await openDogBeachesPage(false);
+  lastCountryPage = kind;
+
+  if(!rows || !rows.length){
+    // Nothing to draw — open the page so the user reads the reason rather than
+    // being left on a map with no explanation.
+    const page = $(kind === "nat" ? "natPage" : "dogPage");
+    if(page){
+      page.classList.add("show");
+      document.body.classList.add("mobile-detail-open");
+    }
+    return;
+  }
+  showCountryOverview(kind, rows, $("country").value);
+}
+
+function showCountryOverview(kind, rows, countryLabel, attempt = 0){
+  if(!rows || !rows.length){
+    status("Nothing to show on the map \u2014 open a country list first.");
+    return;
+  }
+
+  // addSource throws if the style has not finished loading, which happens on a
+  // cold start or just after a basemap switch. switchStyle() already uses this
+  // same wait-and-retry shape.
+  if(!map.isStyleLoaded()){
+    if(attempt > 40){                       // ~8 seconds, then give up loudly
+      status("The map is still loading. Try Show all again in a moment.");
+      return;
+    }
+    setTimeout(() => showCountryOverview(kind, rows, countryLabel, attempt + 1), 200);
+    return;
+  }
+
+  closeDogPage(); closeNatPage(); returnToMap();
+  clearCountryOverview();
+  clearDogMarker();
+
+  // Keep the drawable subset separately. A dot's click handler only receives
+  // the feature's properties, so it needs an index it can look a row back up
+  // with — and that index has to point into the same array the features were
+  // built from, not into rows, which may contain entries with no coordinates.
+  const pts = rows.filter(r => isFinite(Number(r.lat)) && isFinite(Number(r.lon)));
+  overviewCurrent = { kind, rows, pts, countryLabel };
+
+  try{
+  map.addSource(OVERVIEW_SRC, {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: pts.map((r, i) => ({
+        type: "Feature",
+        properties: {
+          idx: i,
+          name: r.name || "Unnamed place",
+          status: r.status || "",
+          colour: overviewColour(kind, r),
+          detail: kind === "dog" ? (dogLine(r.tags) || "") : "",
+        },
+        geometry: { type: "Point", coordinates: [Number(r.lon), Number(r.lat)] },
+      })),
+    },
+  });
+
+  // White halo under each dot so they stay legible over satellite imagery.
+  map.addLayer({
+    id: OVERVIEW_SRC + "-halo", type: "circle", source: OVERVIEW_SRC,
+    paint: { "circle-radius": 7, "circle-color": "#ffffff", "circle-opacity": 0.9 },
+  });
+  map.addLayer({
+    id: OVERVIEW_SRC + "-circles", type: "circle", source: OVERVIEW_SRC,
+    paint: {
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 3.5, 10, 5.5, 14, 8],
+      "circle-color": ["get", "colour"],
+      "circle-stroke-width": 1,
+      "circle-stroke-color": "rgba(255,255,255,.9)",
+    },
+  });
+  // An invisible layer on top, big enough to hit with a thumb. A 4-pixel dot is
+  // fine to look at and impossible to tap on a phone; this keeps the dots small
+  // while giving each one a ~22-pixel target. All the click handlers bind here.
+  map.addLayer({
+    id: OVERVIEW_SRC + "-hit", type: "circle", source: OVERVIEW_SRC,
+    paint: {
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 9, 10, 12, 14, 16],
+      "circle-color": "#000000",
+      "circle-opacity": 0,
+    },
+  });
+
+  }catch(err){
+    // Any MapLibre failure used to surface as a bare "Script error." from a
+    // cross-origin script. Say what actually happened, on screen.
+    console.error("country overview failed:", err);
+    status("Could not draw the map overview: " + (err && err.message ? err.message : err));
+    clearCountryOverview();
+    return;
+  }
+
+  const lats = rows.map(r => Number(r.lat)), lons = rows.map(r => Number(r.lon));
+  map.fitBounds([[Math.min(...lons), Math.min(...lats)],
+                 [Math.max(...lons), Math.max(...lats)]], { padding: 50, maxZoom: 11 });
+
+  const clearBtn = $("overviewClear");
+  if(clearBtn){
+    clearBtn.textContent = `✕ Clear ${rows.length} ${kind === "dog" ? "dog" : "naturist"} pins`;
+    clearBtn.style.display = "block";
+  }
+  const listBtn = $("dogReturn");
+  if(listBtn){
+    listBtn.textContent = kind === "dog" ? "☰ See the dog list" : "☰ See the naturist list";
+    listBtn.style.display = "block";
+  }
+  setOverviewLegend(kind, pts, countryLabel);
+  status(`Showing all ${rows.length} ${kind === "dog" ? "dog" : "naturist"} places in ${countryLabel}. Tap a dot for details.`);
+}
+
+let lastCountryPage = null;
+
+// One row, used by both country pages. Keeping this shared means the two lists
+// cannot drift apart in layout or behaviour.
+function countryListRow(name, statusText, detailHtml, lat, lon){
+  const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lat + "," + lon)}`;
+  return `<div class="stay-result">
+    <h3>${escapeHtml(name)}</h3>
+    <div class="stay-meta">${escapeHtml(statusText)}</div>
+    ${detailHtml ? `<div class="stay-meta">${detailHtml}</div>` : ""}
+    <div class="stay-actions">
+      <a class="stay-link secondary" href="${escapeHtml(maps)}" target="_blank" rel="noopener noreferrer">🗺 Open in Google Maps</a>
+      <button type="button" class="stay-link place-show" style="border:0;cursor:pointer"
+        data-lat="${Number(lat)}" data-lon="${Number(lon)}"
+        data-name="${escapeHtml(name)}">Show on the BeachScout map</button>
+    </div>
+  </div>`;
+}
+
+function closeNatPage(toSearch = false){
+  const page = $("natPage");
+  if(page) page.classList.remove("show");
+  document.body.classList.remove("mobile-detail-open");
+  if(toSearch && isMobileView()) openMobileSearchPanel();
+}
+
+// Groups follow placeStatus(), so a place is described here exactly as it is
+// described in the popup and coloured on the map. Order runs from the most
+// formally sanctioned to the least, because that is the distinction a naturist
+// traveller actually cares about.
+const NAT_ORDER = [
+  "Official naturist beach",
+  "Customary naturist beach",
+  "Naturist beach",
+  "Naturist resort / village",
+  "Naturist campsite",
+  "Naturist swimming pool",
+  "Naturist by name only",
+];
+
+// isNaturistTagged() also matches on the name, so a place called "FKK Bucht"
+// with no nudism tag counts as naturist — but placeStatus() calls it a plain
+// "Beach", which would put it under a heading called Beach on a naturist page.
+// Say what the evidence actually is instead: the name, and nothing else.
+function naturistStatus(tags){
+  const st = placeStatus(tags);
+  return NAT_ORDER.includes(st) ? st : "Naturist by name only";
+}
+
+// showList=false builds the list silently so the caller can go straight to
+// the map. Returns the rows found, or null when there is nothing to show —
+// the caller then opens the page so the user reads why.
+async function openNaturistPage(showList = true){
+  lastCountryPage = "nat";
+  const country = $("country").value || currentCountry;
+  const cc = nominatimCountryCode(country);
+
+  closeActivePopup();
+  closeMobileSearchPanel();
+  const page = $("natPage");
+  if(!page) return;
+  $("natCountryName").textContent = country;
+  $("natResults").innerHTML = "";
+  if(showList){
+    page.classList.add("show");
+    document.body.classList.add("mobile-detail-open");
+  }
+
+  if(!cc){
+    $("natStatus").textContent =
+      "Pick a country first — this page reads that country's beach data.";
+    return null;
+  }
+
+  $("natStatus").textContent = `Reading ${country} beach data...`;
+
+  const local = await loadCountryBeachFile(cc);
+  if(!local || !local.elements.length){
+    $("natStatus").textContent =
+      `No prepared beach data for ${country} yet, so this page cannot be built for it.`;
+    return null;
+  }
+
+  const found = [];
+  for(const el of local.elements){
+    const tags = el.tags || {};
+    if(!isNaturistTagged(tags)) continue;
+    const lat = el.lat ?? el.center?.lat, lon = el.lon ?? el.center?.lon;
+    if(lat == null || lon == null) continue;
+    found.push({
+      name: tags.name || tags["name:en"] || tags.int_name || tags.official_name || "Unnamed place",
+      status: naturistStatus(tags),
+      lat, lon, tags,
+    });
+  }
+
+  if(!found.length){
+    $("natStatus").textContent =
+      `OpenStreetMap records no naturist places in ${country} yet. ` +
+      `That is a gap in the map data, not a statement about the country.`;
+    return null;
+  }
+
+  natRows = found;
+  const official = found.filter(f => f.status === "Official naturist beach").length;
+  $("natStatus").textContent =
+    `${found.length} naturist places in ${country}, ${official} of them officially ` +
+    `designated. Out of ${local.elements.length} places in total.`;
+
+  const groups = NAT_ORDER;
+
+  const html = [];
+  for(const g of groups){
+    const rows = found.filter(f => f.status === g);
+    if(!rows.length) continue;
+    rows.sort((a,b) => a.name.localeCompare(b.name));
+    html.push(`<h3 style="margin:18px 0 6px;font-size:16px">${escapeHtml(g)} (${rows.length})</h3>`);
+    for(const r of rows){
+      html.push(countryListRow(r.name, r.status, dogLine(r.tags), r.lat, r.lon));
+    }
+  }
+  html.unshift(`<button type="button" class="stay-link" id="natShowAll" style="border:0;cursor:pointer;margin-bottom:6px">🗺 Show all ${found.length} on the map</button>`);
+  $("natResults").innerHTML = html.join("");
+  return found;
+}
+
+function showPlaceOnMap(lat, lon, name){
   if(!isFinite(lat) || !isFinite(lon)) return;
   closeDogPage();
+  closeNatPage();
   returnToMap();
   clearDogMarker();
 
+  // The pin is shared by both country lists, so the glyph follows whichever
+  // list opened it: a standing figure for naturist places, a dog for dog
+  // beaches. Same square shape either way, so it still reads as "a place you
+  // picked from a list" rather than one of the numbered search markers.
+  const fromNaturist = lastCountryPage === "nat";
   const el = document.createElement("div");
   el.className = "dog-marker";
-  el.textContent = "\u{1F415}";
-  el.title = name || "Dog beach";
+  el.textContent = fromNaturist ? "\u{1F9CD}" : "\u{1F415}";
+  el.title = name || (fromNaturist ? "Naturist place" : "Dog beach");
 
   dogMarker = new maplibregl.Marker({ element: el }).setLngLat([lon, lat]).addTo(map);
   dogPopup = new maplibregl.Popup({ offset: 18, closeButton: true })
     .setLngLat([lon, lat])
-    .setHTML(`<b>${escapeHtml(name || "Dog beach")}</b>`)
+    .setHTML(`<b>${escapeHtml(name || (fromNaturist ? "Naturist place" : "Dog beach"))}</b>`)
     .addTo(map);
 
   map.flyTo({ center:[lon, lat], zoom: 15 });
 
   const btn = $("dogReturn");
-  if(btn) btn.style.display = "block";
+  if(btn){
+    btn.textContent = lastCountryPage === "nat"
+      ? "☰ See the naturist list" : "☰ See the dog list";
+    btn.style.display = "block";
+  }
 }
 
 let activeStayBeach = null;
@@ -3718,6 +4142,11 @@ function returnToMap(){
   if(beachContent) beachContent.innerHTML = "";
   if(conditionsPage) conditionsPage.classList.remove("show");
   if(stayPage) stayPage.classList.remove("show");
+  // The two country pages were added later and were not in this list, so
+  // "Show on the map" left the naturist page sitting on top of the map.
+  const dogP = $("dogPage"), natP = $("natPage");
+  if(dogP) dogP.classList.remove("show");
+  if(natP) natP.classList.remove("show");
 
   document.body.classList.remove("mobile-detail-open");
 }
@@ -3963,7 +4392,7 @@ function openMobileBeachPage(b, num, source="map"){
   if(subtitle) subtitle.textContent = coordText(b.lat,b.lon);
 
   content.innerHTML = `
-    <h2>${num}. ${escapeHtml(b.name)}</h2>
+    <h2>${num ? num + ". " : ""}${escapeHtml(b.name)}</h2>
     <div class="mobile-status">${escapeHtml(b.status)}</div>
 
     <button type="button" class="translate-toggle-btn" onclick="toggleTranslate()" style="background:#2563eb;">${translateButtonLabel()}</button>
@@ -4076,7 +4505,7 @@ function openPopup(b,num){
     .setHTML(`
       <div class="popup" data-beach-lat="${b.lat}" data-beach-lon="${b.lon}" data-num="${num}">
         <button type="button" class="popup-top-close" onclick="closeActivePopup()">Close</button>
-        <h3>${num}. ${escapeHtml(b.name)}</h3>
+        <h3>${num ? num + ". " : ""}${escapeHtml(b.name)}</h3>
         <button type="button" class="translate-toggle-btn" onclick="toggleTranslate()" style="margin:6px 0 8px;padding:8px 10px;font-size:13px;background:#2563eb;">${translateButtonLabel()}</button>
         <p><b>${escapeHtml(b.status)}</b></p>
         <div id="${photoId}">
@@ -4538,17 +4967,94 @@ $('mobileBeachMap').addEventListener('click',returnToMap);
 $('conditionsBack').addEventListener('click',()=>closeConditionsPage(true));
 $('conditionsMap').addEventListener('click',returnToMap);
 $('stayBack').addEventListener('click',()=>closeStayNearbyPage(true));
-$('dogBeaches').addEventListener('click',openDogBeachesPage);
+$('dogBeaches').addEventListener('click',()=>showCountryMap('dog'));
 $('dogBack').addEventListener('click',()=>closeDogPage(true));
 $('dogMap').addEventListener('click',()=>{ closeDogPage(); returnToMap(); });
-$('dogReturn').addEventListener('click',()=>{ clearDogMarker(); openDogBeachesPage(); });
+$('dogReturn').addEventListener('click',()=>{
+  clearDogMarker();
+  if(lastCountryPage === "nat") openNaturistPage(); else openDogBeachesPage();
+});
+$('natBeaches').addEventListener('click',()=>showCountryMap('nat'));
+$('natBack').addEventListener('click',()=>closeNatPage(true));
+$('natMap').addEventListener('click',()=>{ closeNatPage(); returnToMap(); });
+$('overviewClear').addEventListener('click',()=>{ clearCountryOverview(); status("Country overview cleared."); });
+
+document.addEventListener('click',function(ev){
+  const t = ev.target;
+  if(!t || !t.closest) return;
+  if(t.closest('#natShowAll')) showCountryOverview('nat', natRows, $("country").value);
+  if(t.closest('#dogShowAll')) showCountryOverview('dog', dogRows, $("country").value);
+});
+
+// A dot on the overview carries the same place as a search marker, so it gets
+// the same popup — photos, Beach Conditions, Stay Nearby with address and
+// phone, parking, coordinates. Building a second, thinner popup here would
+// mean two things to keep in step forever.
+function beachFromOverviewRow(row){
+  return {
+    name: row.name || "Unnamed place",
+    originalName: row.name || "",
+    lat: Number(row.lat),
+    lon: Number(row.lon),
+    tags: row.tags || {},
+    status: row.status || "",
+    wiki: (typeof wikilink === "function" && row.tags) ? (wikilink(row.tags) || "") : "",
+  };
+}
+
+// A dot is a GL layer feature, not a DOM marker, so its click lands on the map
+// canvas — the very same canvas click that the handler further down uses to
+// close an open popup. A separate map.on('click', layer, ...) fired first and
+// then had its popup closed a moment later by that handler, which looked from
+// the outside like nothing happening at all. The numbered search markers never
+// hit this because they are DOM elements calling stopPropagation().
+//
+// So the dot is handled inside the one canvas click handler, before the close.
+// One handler, one order, nothing to get out of sequence.
+function overviewRowAt(point){
+  const id = OVERVIEW_SRC + "-hit";
+  if(!map.getLayer(id)) return null;
+  let hits = [];
+  try{ hits = map.queryRenderedFeatures(point, { layers: [id] }); }
+  catch(e){ return null; }
+  if(!hits.length) return null;
+  const idx = Number(hits[0].properties.idx);
+  if(!overviewCurrent || !overviewCurrent.pts) return null;
+  return overviewCurrent.pts[idx] || null;
+}
+
+function openOverviewRow(row){
+  // So the floating list button returns to the right list afterwards.
+  lastCountryPage = overviewCurrent && overviewCurrent.kind === "nat" ? "nat" : "dog";
+  const b = beachFromOverviewRow(row);
+  if(isMobileView()) openMobileBeachPage(b, "", 'map');
+  else openPopup(b, "");
+}
+
+// Cursor feedback, done by query rather than a layer-scoped mouseenter, so it
+// cannot depend on whether the layer existed when the handler was registered.
+map.on('mousemove', e => {
+  if(suggestPlaceMode) return;                 // crosshair belongs to that mode
+  const canvas = map.getCanvas();
+  if(!map.getLayer(OVERVIEW_SRC + "-hit")){
+    if(canvas.style.cursor === 'pointer') canvas.style.cursor = '';
+    return;
+  }
+  let hits = [];
+  try{ hits = map.queryRenderedFeatures(e.point, { layers: [OVERVIEW_SRC + "-hit"] }); }
+  catch(err){ hits = []; }
+  if(hits.length) canvas.style.cursor = 'pointer';
+  else if(canvas.style.cursor === 'pointer') canvas.style.cursor = '';
+});
 
 // Delegated so the beach name never travels through an inline onclick
 // attribute — names like "Plaza d'Oro" would break the handler.
 document.addEventListener('click',function(ev){
-  const b = ev.target && ev.target.closest ? ev.target.closest('#dogResults .dog-show') : null;
+  const b = ev.target && ev.target.closest
+    ? ev.target.closest('#dogResults .place-show, #natResults .place-show') : null;
   if(!b) return;
-  showDogBeachOnMap(Number(b.dataset.lat), Number(b.dataset.lon), b.dataset.name || "");
+  lastCountryPage = b.closest('#natResults') ? "nat" : "dog";
+  showPlaceOnMap(Number(b.dataset.lat), Number(b.dataset.lon), b.dataset.name || "");
 });
 $('stayMap').addEventListener('click',returnToMap);
 $('countrySearch').addEventListener('focus',()=>setTimeout(()=>$("countrySearch").select(),50));
@@ -4603,6 +5109,9 @@ map.on('click',(e)=>{
     openSuggestPlacePopup(e.lngLat.lng, e.lngLat.lat);
     return;
   }
+  // A country-overview dot under the pointer wins over "close the popup".
+  const row = overviewRowAt(e.point);
+  if(row){ openOverviewRow(row); return; }
   closeActivePopup();
 });
 map.on('load',()=>{
