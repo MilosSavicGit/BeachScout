@@ -59,8 +59,9 @@ Single Page Application (SPA)
 ## Mapping
 
 -   MapLibre GL JS
--   MapTiler
--   OpenStreetMap
+-   OpenFreeMap (streets basemap — keyless OSM vector tiles)
+-   Esri World Imagery (satellite basemap — keyless)
+-   OpenStreetMap (map data)
 
 ## Search
 
