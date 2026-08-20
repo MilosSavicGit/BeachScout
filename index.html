@@ -688,12 +688,12 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.3.4 (2026-08-08) - overview dot clicks are no longer closed by the map click handler";
+const BUILD_VERSION = "2.3.5 (2026-08-20) - keyless basemaps; search and country overview no longer overlap; overview survives a basemap switch";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
-/* Keyless basemaps — no vendor key, so no monthly request/session limit to hit.
+/* Keyless basemaps - no vendor key, so no monthly request/session limit to hit.
    Streets: OpenFreeMap (free OSM vector tiles, no key, no sign-up).
    Satellite: Esri World Imagery (keyless raster, fair-use, attributed).
-   Default is Streets — satellite is the tile-heavy one, so it's opt-in per view. */
+   Default is Streets - satellite is the tile-heavy one, so it's opt-in per view. */
 const MAP_STYLES={
   streets:'https://tiles.openfreemap.org/styles/liberty',
   satellite:{
@@ -701,16 +701,17 @@ const MAP_STYLES={
     sources:{ esri:{ type:'raster',
       tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
       tileSize:256, maxzoom:19,
-      attribution:'Imagery © Esri, Maxar, Earthstar Geographics' } },
+      attribution:'Imagery \u00a9 Esri, Maxar, Earthstar Geographics' } },
     layers:[{ id:'esri', type:'raster', source:'esri' }]
   }
 };
 let currentMapStyle='streets';
 const map=new maplibregl.Map({container:'map',style:MAP_STYLES.streets,center:[12.5,42.5],zoom:5,attributionControl:false});
 map.addControl(new maplibregl.NavigationControl(),'top-right');
-// Acknowledge the keyless map providers. OSM (from the OpenFreeMap style) and Esri (satellite
-// source) are added automatically by the control; customAttribution adds the OpenFreeMap credit.
-map.addControl(new maplibregl.AttributionControl({ compact:true, customAttribution:'Streets © OpenFreeMap' }));
+// Acknowledge the keyless map providers. OSM (from the OpenFreeMap style) and Esri
+// (satellite source) are added automatically by the control; customAttribution adds
+// the OpenFreeMap credit.
+map.addControl(new maplibregl.AttributionControl({ compact:true, customAttribution:'Streets \u00a9 OpenFreeMap' }));
 
 const countryNames = ["Worldwide", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "North Korea", "Norway", "Oman", "Pakistan", "Palestine (disputed)", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan, China", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Western Sahara (disputed)", "Vietnam", "Yemen", "Zambia", "Zimbabwe", "Aruba", "Bermuda", "British Virgin Islands", "Cayman Islands", "Cook Islands", "Curaçao", "French Guiana", "French Polynesia", "Gibraltar", "Greenland", "Guadeloupe", "Guam", "Hong Kong", "Jersey", "Martinique", "Montserrat", "New Caledonia", "Puerto Rico", "Réunion", "Saint Martin", "Sint Maarten", "Turks and Caicos Islands", "U.S. Virgin Islands"];
 
@@ -1744,6 +1745,9 @@ async function runLocalSearchFromResult(result){
   closeMobileSearchPanel();
   const lat=Number(result.lat),lon=Number(result.lon),label=result.display_name||"selected place",radius=localRadiusMeters();
   $("suggestions").innerHTML=`Selected: ${escapeHtml(label)}`;
+  // Without this, several hundred country-overview dots stay under the new
+  // search markers and the legend keeps describing them.
+  clearCountryOverview(); clearDogMarker();
   clearMarkers(); allBeaches=[]; $('list').innerHTML=''; $('stats').textContent='Loading local places...';
   map.flyTo({center:[lon,lat],zoom:11}); status(`Searching within ${Math.round(radius/1000)} km of ${label}...`);
   setBusy(true,"Local 10 km search...");
@@ -3501,6 +3505,18 @@ const OVERVIEW_SRC = "country-overview";
 let overviewCurrent = null;          // {kind, rows} kept so the button can redraw
 let natRows = [], dogRows = [];      // last list built by each country page
 
+// A country overview and a 10 km search are two different answers to two
+// different questions, and they must never share the map. Leaving the numbered
+// search markers under the overview dots also leaves allBeaches populated, so
+// the next render() - a filter checkbox, a basemap switch - silently redraws
+// them on top of the dots.
+function clearSearchResults(){
+  clearMarkers();
+  allBeaches = [];
+  const list = $('list');   if(list) list.innerHTML = '';
+  const stats = $('stats'); if(stats) stats.textContent = 'No beaches loaded yet.';
+}
+
 function clearCountryOverview(){
   for(const id of [OVERVIEW_SRC + "-hit", OVERVIEW_SRC + "-circles", OVERVIEW_SRC + "-halo"]){
     if(map.getLayer(id)) map.removeLayer(id);
@@ -3512,6 +3528,7 @@ function clearCountryOverview(){
   // with the pins.
   const listBtn = $("dogReturn");
   if(listBtn && !dogMarker) listBtn.style.display = "none";
+  overviewCurrent = null;
   resetLegend();
 }
 
@@ -3636,6 +3653,7 @@ function showCountryOverview(kind, rows, countryLabel, attempt = 0){
   closeDogPage(); closeNatPage(); returnToMap();
   clearCountryOverview();
   clearDogMarker();
+  clearSearchResults();
 
   // Keep the drawable subset separately. A dot's click handler only receives
   // the feature's properties, so it needs an index it can look a row back up
@@ -4970,7 +4988,43 @@ async function showParking(b, infoId=null){
 }
 function distanceKm(a,b,c,d){const R=6371,dl=(c-a)*Math.PI/180,dn=(d-b)*Math.PI/180,x=Math.sin(dl/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dn/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
 
-function switchStyle(s){if(!MAP_STYLES[s]||s===currentMapStyle)return;currentMapStyle=s;closeActivePopup();clearParking();markers.forEach(m=>m.remove());markers=[];document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));map.setStyle(MAP_STYLES[s]);const redraw=()=>{if(!map.isStyleLoaded()){setTimeout(redraw,100);return}render(false)};map.once('style.load',redraw);map.once('idle',redraw);setTimeout(redraw,700)}
+// map.setStyle() throws away every source and layer, so anything drawn as a GL
+// layer has to be put back. render() handles the DOM markers; the country
+// overview is a GeoJSON layer and used to simply vanish, while the "Clear N
+// pins" button and the legend carried on describing dots that were no longer
+// there. Three separate triggers (style.load, idle, a 700ms fallback) race to
+// run the redraw, so it is latched to run exactly once.
+function switchStyle(s){
+  if(!MAP_STYLES[s] || s===currentMapStyle) return;
+  currentMapStyle=s;
+  closeActivePopup();
+  clearParking();
+  markers.forEach(m=>m.remove()); markers=[];
+  document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active',b.dataset.style===s));
+
+  // Captured BEFORE setStyle, because redrawing goes through
+  // clearCountryOverview(), which nulls it.
+  const keep = overviewCurrent;
+
+  map.setStyle(MAP_STYLES[s]);
+
+  let done=false;
+  const redraw=()=>{
+    if(done) return;
+    if(!map.isStyleLoaded()){ setTimeout(redraw,100); return }
+    done=true;
+    if(keep){
+      // An overview was on screen. It owns the map, so don't render() a search
+      // that was already cleared when the overview opened.
+      showCountryOverview(keep.kind, keep.rows, keep.countryLabel);
+    }else{
+      render(false);
+    }
+  };
+  map.once('style.load',redraw);
+  map.once('idle',redraw);
+  setTimeout(redraw,700);
+}
 document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',()=>switchStyle(b.dataset.style)));
 $('mobileSearchButton').addEventListener('click',openMobileSearchPanel);
 $('mobileBeachBack').addEventListener('click',closeMobileBeachPage);
