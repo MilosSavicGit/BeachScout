@@ -688,7 +688,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.3.5 (2026-08-20) - keyless basemaps; search and country overview no longer overlap; overview survives a basemap switch";
+const BUILD_VERSION = "2.3.6 (2026-08-22) - a failed country-data fetch is no longer cached as an answer, so going offline once no longer disables that country for the whole session";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 /* Keyless basemaps - no vendor key, so no monthly request/session limit to hit.
    Streets: OpenFreeMap (free OSM vector tiles, no key, no sign-up).
@@ -1674,10 +1674,28 @@ out center tags;`
 // that have no file yet.
 const BEACH_FILE_CACHE = new Map();   // cc -> {elements, bbox} | null
 
+// Why the last load failed, if it did. Read straight after the call.
+//   'network' — we could not ask (offline, DNS, timeout). Nothing was learned.
+//   null      — we did ask and got a real answer.
+let lastBeachFileError = null;
+
+/* BUG THIS REPLACES: a fetch that THREW was stored in BEACH_FILE_CACHE exactly
+   like a real answer. So one moment offline killed that country for the entire
+   life of the page: Italy failed once, the null was cached, and every later
+   request for Italy returned that cached null instantly - without ever trying
+   again, even with the connection long since restored. From the outside the app
+   looked stuck on "No prepared beach data for Italy yet", and only a reload
+   fixed it.
+
+   The distinction that was missing: a 404 is an ANSWER (the file genuinely is
+   not there - cache it, it will not change). A thrown fetch is NOT an answer
+   (we never reached the server - do not remember it). Not caching the failure
+   is also all the retry logic needed: the next call simply asks again. */
 async function loadCountryBeachFile(cc){
   if(!cc) return null;
   if(BEACH_FILE_CACHE.has(cc)) return BEACH_FILE_CACHE.get(cc);
 
+  lastBeachFileError = null;
   let result = null;
   try{
     // The ?v= is what breaks the cache. Without it the browser will happily
@@ -1696,11 +1714,27 @@ async function loadCountryBeachFile(cc){
         result = { elements, bbox:[minLat,minLon,maxLat,maxLon] };
       }
     }
+    // A non-ok response IS an answer: the file is not there. Falling through
+    // caches the null deliberately, which is right - it will not appear later.
   }catch(e){
-    result = null;   // missing file is not an error, just means "use Overpass"
+    // Never reached the server, so we know nothing about whether the file
+    // exists. Return without caching, so the next attempt actually retries.
+    lastBeachFileError = 'network';
+    return null;
   }
   BEACH_FILE_CACHE.set(cc, result);
   return result;
+}
+
+/* One wording, used by both country pages. Saying "not prepared yet" to someone
+   who is merely offline is simply untrue - the file exists, we could not fetch
+   it - and it reads as "your country is not supported", which loses a user in a
+   country we cover well. */
+function countryDataMessage(country){
+  return lastBeachFileError === 'network'
+    ? `Could not load ${country} beach data — you appear to be offline. `
+      + `Reconnect and try again; nothing is missing, it just could not be fetched.`
+    : `No prepared beach data for ${country} yet, so this page cannot be built for it.`;
 }
 
 // Guard against using France's file for a point in Brazil, e.g. if the country
@@ -3428,8 +3462,7 @@ async function openDogBeachesPage(showList = true){
 
   const local = await loadCountryBeachFile(cc);
   if(!local || !local.elements.length){
-    $("dogStatus").textContent =
-      `No prepared beach data for ${country} yet, so this page cannot be built for it.`;
+    $("dogStatus").textContent = countryDataMessage(country);
     return null;
   }
 
@@ -3812,8 +3845,7 @@ async function openNaturistPage(showList = true){
 
   const local = await loadCountryBeachFile(cc);
   if(!local || !local.elements.length){
-    $("natStatus").textContent =
-      `No prepared beach data for ${country} yet, so this page cannot be built for it.`;
+    $("natStatus").textContent = countryDataMessage(country);
     return null;
   }
 
