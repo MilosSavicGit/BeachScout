@@ -1856,7 +1856,7 @@ async function runLocalSearchFromResult(result){
   try{
     const data=await fetchBeachesNear(lat,lon,radius),seen=new Set(),arr=[];
     for(const el of data.elements||[]){
-      const tags=el.tags||{},originalName=localNameFromOsmTags(tags, tags.name||tags.official_name||tags['name:en']||''),fallbackName=(isNaturistTagged(tags)&&!isActualBeach(tags)?'Unnamed naturist place':'Unnamed beach'),name=originalName||fallbackName,elLat=el.lat??el.center?.lat,elLon=el.lon??el.center?.lon;
+      const tags=el.tags||{},rawOriginalName=localNameFromOsmTags(tags, tags.name||tags.official_name||tags['name:en']||''),originalName=(rawOriginalName==='Unnamed beach'?'':rawOriginalName),fallbackName=(isNaturistTagged(tags)&&!isActualBeach(tags)?'Unnamed naturist place':'Unnamed beach'),name=originalName||fallbackName,elLat=el.lat??el.center?.lat,elLon=el.lon??el.center?.lon;
       if(elLat==null||elLon==null)continue;
       const related=tags.natural==='beach'||tags.leisure==='beach'||tags.leisure==='swimming_area'||tags.sport==='swimming'||tags.tourism==='beach_resort'||tags.leisure==='beach_resort'||isNaturistTagged(tags)||/beach|plaža|plaza|strand|badesee|badeplatz|kupalište|kupaliste|jezero|lake|river|swimming|spiaggia|lido|mare|bagni|naturist|naturista|naturiste|nudist|nudista|nudiste|fkk/i.test(name);
       if(!related)continue;
