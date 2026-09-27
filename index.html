@@ -1,3 +1,4 @@
+```
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -755,7 +756,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.3.6 (2026-08-22) - a failed country-data fetch is no longer cached as an answer, so going offline once no longer disables that country for the whole session";
+const BUILD_VERSION = "2.3.7 (2026-09-27) - naturist places are now classified by their actual OSM feature type instead of being labelled as beaches by default";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 /* Keyless basemaps - no vendor key, so no monthly request/session limit to hit.
    Streets: OpenFreeMap (free OSM vector tiles, no key, no sign-up).
@@ -1855,7 +1856,7 @@ async function runLocalSearchFromResult(result){
   try{
     const data=await fetchBeachesNear(lat,lon,radius),seen=new Set(),arr=[];
     for(const el of data.elements||[]){
-      const tags=el.tags||{},originalName=localNameFromOsmTags(tags, tags.name||tags.official_name||tags['name:en']||''),name=originalName||'Unnamed beach',elLat=el.lat??el.center?.lat,elLon=el.lon??el.center?.lon;
+      const tags=el.tags||{},originalName=localNameFromOsmTags(tags, tags.name||tags.official_name||tags['name:en']||''),fallbackName=(isNaturistTagged(tags)&&!isActualBeach(tags)?'Unnamed naturist place':'Unnamed beach'),name=originalName||fallbackName,elLat=el.lat??el.center?.lat,elLon=el.lon??el.center?.lon;
       if(elLat==null||elLon==null)continue;
       const related=tags.natural==='beach'||tags.leisure==='beach'||tags.leisure==='swimming_area'||tags.sport==='swimming'||tags.tourism==='beach_resort'||tags.leisure==='beach_resort'||isNaturistTagged(tags)||/beach|plaža|plaza|strand|badesee|badeplatz|kupalište|kupaliste|jezero|lake|river|swimming|spiaggia|lido|mare|bagni|naturist|naturista|naturiste|nudist|nudista|nudiste|fkk/i.test(name);
       if(!related)continue;
@@ -2407,7 +2408,8 @@ function newSearchReset(){
 
 function isNaturistTagged(tags){const nudism=tags.nudism||tags.naturism||'';const txt=((tags.name||'')+' '+(tags.operator||'')+' '+(tags.description||'')).toLowerCase();return ['designated','official','yes','customary','permissive'].includes(nudism)||/naturist|naturista|naturiste|nudist|nudista|nudiste|nudistič|nudisticka|nudistička|naturistič|naturisticka|naturistička|fkkt|fkk/.test(txt)}
 function colourFor(tags){const nudism=tags.nudism||tags.naturism||'';if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'#be185d';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'#0f766e';if(isSwimmingPool(tags))return'#0891b2';if(nudism==='designated'||nudism==='official')return'#2f6b4f';if(['yes','customary','permissive'].includes(nudism))return'#d97706';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'#7c3aed';return'#2563eb'}
-function placeStatus(tags){const nudism=tags.nudism||tags.naturism||'';if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'Naturist campsite';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'Naturist resort / village';if(isSwimmingPool(tags))return isNaturistTagged(tags)?'Naturist swimming pool':'Swimming pool';if(nudism==='designated'||nudism==='official')return'Official naturist beach';if(nudism==='customary')return'Customary naturist beach';if(['yes','permissive'].includes(nudism))return'Naturist beach';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'Beach resort / lido';return'Beach'}
+function isActualBeach(tags){return tags.natural==='beach'||tags.leisure==='beach'||tags.leisure==='swimming_area'}
+function placeStatus(tags){const nudism=tags.nudism||tags.naturism||'',actualBeach=isActualBeach(tags);if(isNaturistTagged(tags)&&(tags.tourism==='camp_site'||tags.tourism==='caravan_site'))return'Naturist campsite';if(isNaturistTagged(tags)&&['resort','hotel','guest_house','chalet','apartment'].includes(tags.tourism))return'Naturist resort / village';if(isSwimmingPool(tags))return isNaturistTagged(tags)?'Naturist swimming pool':'Swimming pool';if(actualBeach&&(nudism==='designated'||nudism==='official'))return'Official naturist beach';if(actualBeach&&nudism==='customary')return'Customary naturist beach';if(actualBeach&&['yes','permissive'].includes(nudism))return'Naturist beach';if(isNaturistTagged(tags)&&!actualBeach)return'Naturist place';if(tags.tourism==='beach_resort'||tags.leisure==='beach_resort')return'Beach resort / lido';return'Beach'}
 function wikilink(tags){if(!tags.wikipedia||!tags.wikipedia.includes(':'))return'';const i=tags.wikipedia.indexOf(':'),lang=tags.wikipedia.slice(0,i),title=tags.wikipedia.slice(i+1).replaceAll(' ','_');return`https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}`}
 
 function buildQuery(bbox){const box=`(${bbox[0]},${bbox[1]},${bbox[2]},${bbox[3]})`;return`
@@ -5292,3 +5294,4 @@ window.addEventListener('load',()=>{
 </script>
 </body>
 </html>
+```
