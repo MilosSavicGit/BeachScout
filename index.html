@@ -755,7 +755,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.3.8 (2026-10-09) - desktop three-second community contribution pin";
+const BUILD_VERSION = "2.3.8 (2026-10-09) - desktop and mobile three-second community contribution pin";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 /* Keyless basemaps - no vendor key, so no monthly request/session limit to hit.
    Streets: OpenFreeMap (free OSM vector tiles, no key, no sign-up).
@@ -5321,6 +5321,49 @@ function clearCoordinatePin(){
   window.addEventListener('pointerup',cancel);
   window.addEventListener('pointercancel',cancel);
   window.addEventListener('blur',cancel);
+  // Touchscreens: a finger hold is not a mouse pointerdown. On iOS Safari and
+  // Android Chrome native long-press / map-pan gestures can cancel pointer events.
+  // Listen for touch independently, tolerating small finger movement.
+  let touchTimer=null, touchOrigin=null, touchFired=false;
+  const stopTouch=()=>{
+    if(touchTimer!==null) clearTimeout(touchTimer);
+    touchTimer=null; touchOrigin=null;
+  };
+  canvas.addEventListener('touchstart',e=>{
+    stopTouch(); touchFired=false;
+    if(!detailedSearchReady || suggestPlaceMode || e.touches.length!==1) return;
+    const t=e.touches[0], rect=canvas.getBoundingClientRect();
+    touchOrigin={x:t.clientX,y:t.clientY,px:t.clientX-rect.left,py:t.clientY-rect.top};
+    touchTimer=setTimeout(()=>{
+      if(!touchOrigin || !detailedSearchReady) return;
+      const point={x:touchOrigin.px,y:touchOrigin.py};
+      const coord=map.unproject(point);
+      touchFired=true;
+      stopTouch();
+      clearCoordinatePin();
+      coordinatePin=new maplibregl.Marker({color:'#b5471f'})
+        .setLngLat([coord.lng,coord.lat]).addTo(map);
+      openSuggestPlacePopup(coord.lng,coord.lat);
+      coordinatePopup=suggestPlacePopup;
+      coordinatePopup.on('close',()=>{
+        if(coordinatePin){coordinatePin.remove();coordinatePin=null;}
+        if(suggestPlacePopup===coordinatePopup)suggestPlacePopup=null;
+        coordinatePopup=null;
+      });
+    },3000);
+  },{passive:true});
+  canvas.addEventListener('touchmove',e=>{
+    if(!touchOrigin) return;
+    if(e.touches.length!==1){stopTouch();return;}
+    const t=e.touches[0];
+    if(Math.hypot(t.clientX-touchOrigin.x,t.clientY-touchOrigin.y)>18) stopTouch();
+    else if(e.cancelable) e.preventDefault(); // hold still: prevent map pan
+  },{passive:false});
+  window.addEventListener('touchend',stopTouch);
+  window.addEventListener('touchcancel',stopTouch);
+  canvas.addEventListener('contextmenu',e=>{
+    if(detailedSearchReady && !suggestPlaceMode) e.preventDefault();
+  });
 })();
 map.on('click',(e)=>{
   if(suggestPlaceMode){
