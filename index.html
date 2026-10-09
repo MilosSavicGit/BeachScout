@@ -1,4 +1,3 @@
-```
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -756,7 +755,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.3.7 (2026-09-27) - naturist places are now classified by their actual OSM feature type instead of being labelled as beaches by default";
+const BUILD_VERSION = "2.3.8 (2026-10-09) - desktop three-second community contribution pin";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 /* Keyless basemaps - no vendor key, so no monthly request/session limit to hit.
    Streets: OpenFreeMap (free OSM vector tiles, no key, no sign-up).
@@ -804,6 +803,8 @@ let activeParkingBeach=null, activeParkingInfoId=null, parkingSearchRunning=fals
 let activeUploadBeach=null, activeUploadStatusId=null;
 let placeSuggestTimer=null, placeSuggestToken=0, countrySuggestTimer=null;
 let suggestPlaceMode=false, suggestPlacePopup=null;
+let detailedSearchReady=false;
+let coordinatePin=null, coordinatePopup=null;
 
 /* =====================================================================
    SUPABASE ANALYTICS
@@ -1841,6 +1842,8 @@ async function fetchBeachesNear(lat, lon, radius){
 }
 
 async function runLocalSearchFromResult(result){
+  detailedSearchReady=false;
+  clearCoordinatePin();
   autoCorrectCountryFromResult(result);
   translateMode = "original";
   resetTranslationForNewResults();
@@ -1881,6 +1884,7 @@ async function runLocalSearchFromResult(result){
     allBeaches=arr;
     initializeOriginalMemoryForNewSearch();
     render(true);
+    detailedSearchReady=true;
 
     trackEvent("beachscout_search_completed", "local", {
       country: currentCountry,
@@ -2137,6 +2141,8 @@ function clearSuggestPlacePopup(){
     suggestPlacePopup.remove();
     suggestPlacePopup = null;
   }
+  // The new long-press contribution owns a temporary coordinate marker.
+  if(coordinatePin) clearCoordinatePin();
 }
 
 function setSuggestMode(on){
@@ -2188,6 +2194,9 @@ function openSuggestPlacePopup(lng, lat){
         <h3>Suggest a new place</h3>
         <div class="row-note">Coordinates: ${coordText(latNum,lngNum)}</div>
 
+        <label>Add Name</label>
+        <input id="${formId}_name" type="text" placeholder="Enter beach or place name" maxlength="160" required>
+
         <label style="margin-top:6px;">Place type</label>
         <select id="${formId}_type">
           <option value="beach">Beach</option>
@@ -2202,14 +2211,11 @@ function openSuggestPlacePopup(lng, lat){
           <option value="other">Other</option>
         </select>
 
-        <label>Name</label>
-        <input id="${formId}_name" type="text" placeholder="Place name">
-
-        <label>Photos</label>
+        <label>Add Photos</label>
         <input id="${photoInputId}" type="file" accept="image/jpeg,image/png,image/webp" multiple>
         <div id="${photoCountId}" class="word-count">No photos selected.</div>
 
-        <label>Description</label>
+        <label>Optional Description</label>
         <textarea id="${descId}" placeholder="Optional description, max 300 characters, any language"></textarea>
         <div id="${wcId}" class="word-count">0 / 300 characters</div>
 
@@ -2374,6 +2380,8 @@ function clearMarkers(){clearParking();markers.forEach(m=>m.remove());markers=[]
 function closeActivePopup(){if(activePopup){activePopup.remove();activePopup=null}}
 
 function newSearchReset(){
+  detailedSearchReady=false;
+  clearCoordinatePin();
   resetTranslationForNewResults();
   openMobileSearchPanel();
   parkingSearchRunning = false;
@@ -5270,6 +5278,50 @@ $('country').addEventListener('change',()=>{
   if(ps){ ps.focus(); ps.select(); }
 });
 document.querySelectorAll('.filterToggle').forEach(cb=>cb.addEventListener('change',()=>render(false)));
+// Desktop-only coordinate pin. This is independent of Detailed Search and Supabase.
+// It never changes search results, markers, filters, or the existing click handler.
+function clearCoordinatePin(){
+  if(coordinatePopup){coordinatePopup.remove(); coordinatePopup=null;}
+  if(coordinatePin){coordinatePin.remove(); coordinatePin=null;}
+}
+(function installDesktopCoordinateHold(){
+  const canvas=map.getCanvas();
+  let timer=null, origin=null, activePointer=null, fired=false;
+  const cancel=()=>{if(timer!==null)clearTimeout(timer);timer=null;origin=null;activePointer=null;};
+  canvas.addEventListener('pointerdown',e=>{
+    cancel(); fired=false;
+    if(!detailedSearchReady || e.pointerType!=='mouse' || e.button!==0 || suggestPlaceMode) return;
+    if(e.target!==canvas) return;
+    const rect=canvas.getBoundingClientRect();
+    origin={x:e.clientX,y:e.clientY,px:e.clientX-rect.left,py:e.clientY-rect.top};
+    activePointer=e.pointerId;
+    timer=setTimeout(()=>{
+      if(!origin || activePointer!==e.pointerId || !detailedSearchReady) return;
+      const point={x:origin.px,y:origin.py};
+      const coord=map.unproject(point);
+      fired=true;
+      cancel();
+      clearCoordinatePin();
+      coordinatePin=new maplibregl.Marker({color:'#b5471f'})
+        .setLngLat([coord.lng,coord.lat]).addTo(map);
+      // Reuse the existing moderated suggestion form and its Supabase upload logic.
+      // The pin is temporary; only approved submissions appear in searches.
+      openSuggestPlacePopup(coord.lng, coord.lat);
+      coordinatePopup=suggestPlacePopup;
+      coordinatePopup.on('close',()=>{
+        if(coordinatePin){coordinatePin.remove();coordinatePin=null;}
+        if(suggestPlacePopup===coordinatePopup)suggestPlacePopup=null;
+        coordinatePopup=null;
+      });
+    },3000);
+  });
+  window.addEventListener('pointermove',e=>{
+    if(origin && e.pointerId===activePointer && Math.hypot(e.clientX-origin.x,e.clientY-origin.y)>7)cancel();
+  });
+  window.addEventListener('pointerup',cancel);
+  window.addEventListener('pointercancel',cancel);
+  window.addEventListener('blur',cancel);
+})();
 map.on('click',(e)=>{
   if(suggestPlaceMode){
     openSuggestPlacePopup(e.lngLat.lng, e.lngLat.lat);
@@ -5294,4 +5346,3 @@ window.addEventListener('load',()=>{
 </script>
 </body>
 </html>
-```
