@@ -518,6 +518,14 @@
     padding-right: calc(14px + env(safe-area-inset-right, 0px));
   }
 
+
+  /* Name suggestions are a foreground dialog, never a map popup behind the search panel. */
+  .name-dialog-overlay{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.45)}
+  .name-dialog-card{background:var(--panel);color:var(--ink);border-radius:14px;border:1px solid var(--rule);padding:18px;width:min(440px,100%);max-height:calc(100dvh - 32px);overflow-y:auto;box-shadow:0 12px 35px rgba(0,0,0,.3)}
+  .name-dialog-card h3{margin:0 0 10px}
+  .name-dialog-card .suggest-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .name-dialog-card .suggest-actions button{margin-top:8px}
+  @media(max-width:900px){.name-dialog-overlay{padding:8px;align-items:center}.name-dialog-card{max-height:calc(100dvh - 16px);padding:14px}}
 </style>
 </head>
 <body>
@@ -566,7 +574,7 @@
       <label><input type="checkbox" class="filterToggle" value="resort" checked> Beach resorts / lidos</label>
       <label><input type="checkbox" class="filterToggle" value="naturist_resort" checked> Naturist resorts / villages</label>
       <label><input type="checkbox" class="filterToggle" value="naturist_campsite" checked> Naturist campsites</label>
-      <label><input type="checkbox" class="filterToggle" value="unnamed"> Unnamed beaches</label>
+      <label><input type="checkbox" class="filterToggle" value="unnamed" checked> Unnamed beaches</label>
       <label><input type="checkbox" class="filterToggle" value="inland" checked> Lake / river beaches</label>
       <label><input type="checkbox" class="filterToggle" value="pool" checked> Swimming pools</label>
     </div>
@@ -755,7 +763,7 @@
 // DATA_VERSION_LINE — do not rename this marker, the script looks for it.
 const BEACH_DATA_VERSION = "2026-07-13";
 
-const BUILD_VERSION = "2.3.9 (2026-10-12) - suggest names for unnamed places";
+const BUILD_VERSION = "2.3.9 (2026-10-13) - naming dialog foreground and unnamed places visible";
 console.log("%cBeachScout build: " + BUILD_VERSION, "font-weight:bold");
 /* Keyless basemaps - no vendor key, so no monthly request/session limit to hit.
    Streets: OpenFreeMap (free OSM vector tiles, no key, no sign-up).
@@ -2172,34 +2180,48 @@ async function applyApprovedCommunityNames(places, lat, lon, radiusKm){
     }
   }catch(e){console.warn('Approved name lookup unavailable:',e);}
 }
+function closeSuggestNameDialog(backToSearch=false){
+  const dialog=document.getElementById('nameSuggestionOverlay');
+  if(dialog) dialog.remove();
+  if(backToSearch && isMobileView()){
+    closeMobileBeachPage();
+    openMobileSearchPanel();
+  }
+}
 function openSuggestNameForCurrentBeach(){
   const b=activeUploadBeach;
   if(!isUnnamedForSuggestion(b)) return;
   if(!supaReady || !supa){alert('Community contributions are temporarily unavailable.');return;}
-  closeActivePopup();
+  closeSuggestNameDialog();
   const id='nameSuggestion_'+Date.now();
   const statusId=id+'_status';
   const ref=suggestionRef(b);
-  const popup=new maplibregl.Popup({offset:20,closeButton:true,closeOnClick:false})
-    .setLngLat([b.lon,b.lat]).setHTML(`
-      <div class="popup suggest-form">
-        <h3>Suggest a name</h3>
-        <div class="row-note">Existing unnamed place · ${coordText(b.lat,b.lon)}</div>
-        <label>Add Name</label>
-        <input id="${id}_name" maxlength="160" placeholder="Proposed place name">
-        <label>Add Photos</label>
-        <input id="${id}_photos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
-        <div class="photo-note">Up to 5 photos, optional.</div>
-        <label>Optional Description</label>
-        <textarea id="${id}_desc" maxlength="300" placeholder="Alternative or local names, up to 300 characters"></textarea>
-        <div class="photo-note">This renames the existing marker after approval. It does not add a new beach.</div>
-        <div class="suggest-actions"><button type="button" id="${id}_submit">Submit</button>
-        <button type="button" class="cancel-btn" id="${id}_cancel">Cancel</button></div>
-        <div id="${statusId}" class="photo-note">Waiting for your submission.</div>
-      </div>`).addTo(map);
-  const root=popup.getElement();
-  root.querySelector('#'+id+'_cancel')?.addEventListener('click',()=>popup.remove());
-  root.querySelector('#'+id+'_submit')?.addEventListener('click',async()=>{
+  const overlay=document.createElement('div');
+  overlay.id='nameSuggestionOverlay';
+  overlay.className='name-dialog-overlay';
+  overlay.setAttribute('role','dialog');
+  overlay.setAttribute('aria-modal','true');
+  overlay.setAttribute('aria-label','Suggest a name');
+  overlay.innerHTML=`
+    <div class="name-dialog-card suggest-form">
+      <h3>Suggest a name</h3>
+      <div class="row-note">Existing unnamed place · ${coordText(b.lat,b.lon)}</div>
+      <label>Add Name</label>
+      <input id="${id}_name" maxlength="160" placeholder="Proposed place name">
+      <label>Add Photos</label>
+      <input id="${id}_photos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+      <div class="photo-note">Up to 5 photos, optional.</div>
+      <label>Optional Description</label>
+      <textarea id="${id}_desc" maxlength="300" placeholder="Alternative or local names, up to 300 characters"></textarea>
+      <div class="photo-note">After approval this renames the existing marker; no new beach is added.</div>
+      <div class="suggest-actions"><button type="button" id="${id}_submit">Submit</button>
+      <button type="button" class="cancel-btn" id="${id}_cancel">Back to Detailed Search</button></div>
+      <div id="${statusId}" class="photo-note">Waiting for your submission.</div>
+    </div>`;
+  document.body.appendChild(overlay);
+  const root=overlay;
+  root.querySelector('#'+id+'_cancel').addEventListener('click',()=>closeSuggestNameDialog(true));
+  root.querySelector('#'+id+'_submit').addEventListener('click',async()=>{
     const name=root.querySelector('#'+id+'_name')?.value.trim()||'';
     const description=root.querySelector('#'+id+'_desc')?.value.trim()||'';
     const files=Array.from(root.querySelector('#'+id+'_photos')?.files||[]);
@@ -2228,8 +2250,10 @@ function openSuggestNameForCurrentBeach(){
       const {error}=await supa.from(BEACH_PHOTO_TABLE).insert(rows);
       if(error) throw error;
       msg.textContent='Name suggestion submitted. Waiting for approval.';
+      btn.textContent='Submitted';
     }catch(e){msg.textContent='Submission failed: '+(e.message||e);btn.disabled=false;}
   });
+  root.querySelector('#'+id+'_name')?.focus();
 }
 
 function clearSuggestPlacePopup(){
